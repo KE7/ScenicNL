@@ -7,6 +7,7 @@ setup(
     package_dir={"": "src"},
     install_requires=[
         "scenic==3.0.0b2",
+        "openai>=0.28,<=0.28.1",
     ],
     entry_points={
         "console_scripts": [
@@ -21,6 +22,7 @@ setup(
             "mock",
             "pytest-mock",
             "beautifulsoup4",
+            "openai",
         ],
     },
     python_requires=">=3.11",
