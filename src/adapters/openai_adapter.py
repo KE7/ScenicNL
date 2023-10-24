@@ -1,5 +1,6 @@
-import openai
 import os
+
+import openai
 
 
 class OpenAIAdapter:

@@ -24,6 +24,7 @@ setup(
             "pytest-mock",
             "beautifulsoup4",
             "openai",
+            "pytype",
         ],
     },
     python_requires=">=3.11",
