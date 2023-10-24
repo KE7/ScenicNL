@@ -1,3 +1,4 @@
+from enum import Enum
 import json
 import random
 from dataclasses import dataclass
@@ -5,6 +6,11 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
 MAX_TOKEN_LENGTH = 1000
+
+class LLMPromptType(Enum):
+    PREDICT_ZERO_SHOT = "detection_zero_shot"
+    PREDICT_FEW_SHOT = "detection_few_shot"
+
 
 @dataclass(frozen=True)
 class ModelInput:

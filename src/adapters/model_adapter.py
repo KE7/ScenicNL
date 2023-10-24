@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from cache import APIError, Cache
-from common import ModelInput
+from common import LLMPromptType, ModelInput
 
 """
 A lot of the code in this file is inspired from Java and copied from TensorTrust AI.
@@ -28,6 +28,7 @@ class ModelAdapter(abc.ABC):
         model_input: ModelInput,
         temperature: float,
         max_tokens: int,
+        prompt_type: LLMPromptType,
     ) -> str:
         """Generate a cache key for a given input. Must be implemented by
         subclasses.
@@ -46,6 +47,7 @@ class ModelAdapter(abc.ABC):
         model_input: ModelInput,
         temperature: float,
         max_length_tokens: int,
+        prompt_type: LLMPromptType,
     ) -> str:
         """Perform a single prediction. Must be overriden by subclasses."""
         raise NotImplementedError
@@ -58,7 +60,8 @@ class ModelAdapter(abc.ABC):
         temperature: float,
         max_tokens: int,
         should_cache_retry_errors: bool,
-        cache: Cache
+        cache: Cache,
+        prompt_type: LLMPromptType,
     ) -> Callable[[ModelInput], list[str | APIError]]:
         """
         Return a function that takes a list of model inputs and returns a
@@ -70,6 +73,7 @@ class ModelAdapter(abc.ABC):
                 model_input=model_input,
                 temperature=temperature,
                 max_tokens=max_tokens,
+                prompt_type=prompt_type,
             )
             responses: list[str | APIError] = cache.get(cache_key)[:num_predictions]
             if should_cache_retry_errors:
@@ -84,6 +88,7 @@ class ModelAdapter(abc.ABC):
                             model_input=model_input,
                             temperature=temperature,
                             max_length_tokens=max_tokens,
+                            prompt_type=prompt_type,
                         )
                     except Exception as e:
                         stacktrace = traceback.format_exc()
@@ -108,6 +113,7 @@ class ModelAdapter(abc.ABC):
         num_predictions: int,
         temperature: float,
         max_tokens: int,
+        prompt_type: LLMPromptType,
         should_cache_retry_errors: bool = True,
         verbose: bool = False,
         num_workers: int = 10,
@@ -130,6 +136,7 @@ class ModelAdapter(abc.ABC):
                 max_tokens=max_tokens,
                 should_cache_retry_errors=should_cache_retry_errors,
                 cache=cache,
+                prompt_type=prompt_type,
             )
 
             with ThreadPool(num_workers) as pool:
