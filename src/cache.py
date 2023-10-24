@@ -80,8 +80,8 @@ class Cache:
         def deserialize_into_api_error(item):
             if isinstance(item, dict):
                 if item.get("__type__") != "APIError":
-                    warnings.warn(f"Expected an APIError when pulling from the cache. 
-                                Found Unknown type {item.get('__type__')}")
+                    warnings.warn(f"Expected an APIError when pulling from the cache." +
+                                  "Found Unknown type {item.get('__type__')}")
                 item = dict(item)
                 item.pop("__type__")
                 return APIError(**item)

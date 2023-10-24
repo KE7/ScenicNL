@@ -1,8 +1,8 @@
 import abc
+from multiprocessing.pool import ThreadPool
 import time
 import traceback
 import warnings
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Callable, Iterable
 
@@ -65,25 +65,25 @@ class ModelAdapter(abc.ABC):
         list of predictions. This function will be used by the batch_predict
         method.
         """
-        def process_single(self, model_input: ModelInput) -> list[str | APIError]:
+        def process_single(model_input: ModelInput) -> list[str | APIError]:
             cache_key = self.get_cache_key(
                 model_input=model_input,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
+                temperature=temperature,
+                max_tokens=max_tokens,
             )
-            responses: list[str | APIError] = self.cache.get(cache_key)[:self.num_predictions]
-            if self.should_cache_retry_errors:
+            responses: list[str | APIError] = cache.get(cache_key)[:num_predictions]
+            if should_cache_retry_errors:
                 responses = [r for r in responses if not isinstance(r, APIError)]
             # error checking in case we fell short of the number of predictions
-            if len(responses) < self.num_predictions:
-                num_missing = self.num_predictions - len(responses)
+            if len(responses) < num_predictions:
+                num_missing = num_predictions - len(responses)
                 for _ in range(num_missing):
                     # each individual model adapter is responsible for doing their own retries
                     try:
                         prediction = self._predict(
                             model_input=model_input,
-                            temperature=self.temperature,
-                            max_length_tokens=self.max_tokens,
+                            temperature=temperature,
+                            max_length_tokens=max_tokens,
                         )
                     except Exception as e:
                         stacktrace = traceback.format_exc()
@@ -132,8 +132,8 @@ class ModelAdapter(abc.ABC):
                 cache=cache,
             )
 
-            with ThreadPoolExecutor(max_workers=num_workers) as executor:
-                for idx, predictions in enumerate(executor.imap_unordered(processor, model_inputs)):
+            with ThreadPool(num_workers) as pool:
+                for idx, predictions in enumerate(pool.imap(processor, model_inputs)):
                     yield predictions
 
                     if verbose and (idx + 1) % 10 == 0:
@@ -141,7 +141,6 @@ class ModelAdapter(abc.ABC):
                         avg_time_per_example = elapsed_time / (idx + 1)
                         print(f"Predicted {idx + 1} examples in {elapsed_time:.2f} seconds " + 
                               f"({avg_time_per_example:.2f} seconds per example)")
-                        print(f"Estimated time remaining: {avg_time_per_example * (len(model_inputs) - idx - 1):.2f} seconds")
                         print(f"Example output: {predictions=}")
 
             if verbose:
