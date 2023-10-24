@@ -1,7 +1,7 @@
 import json
+import random
 from dataclasses import dataclass
 from pathlib import Path
-import random
 from typing import Any, Dict, Iterable, Optional
 
 MAX_TOKEN_LENGTH = 1000
