@@ -8,7 +8,8 @@ setup(
     install_requires=[
         "scenic==3.0.0b2",
         "openai>=0.28,<=0.28.1",
-        "SQLAlchemy"
+        "SQLAlchemy",
+        "tenacity",
     ],
     entry_points={
         "console_scripts": [
