@@ -8,6 +8,8 @@ setup(
     install_requires=[
         "scenic==3.0.0b2",
         "openai>=0.28,<=0.28.1",
+        "SQLAlchemy",
+        "tenacity",
     ],
     entry_points={
         "console_scripts": [
@@ -23,6 +25,7 @@ setup(
             "pytest-mock",
             "beautifulsoup4",
             "openai",
+            "pytype",
         ],
     },
     python_requires=">=3.11",
