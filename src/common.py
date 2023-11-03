@@ -10,6 +10,8 @@ MAX_TOKEN_LENGTH = 1000
 class LLMPromptType(Enum):
     PREDICT_ZERO_SHOT = "detection_zero_shot"
     PREDICT_FEW_SHOT = "detection_few_shot"
+    PREDICT_SCENIC_TUTORIAL = "detection_scenic_tutorial"
+    PREDICT_PYTHON_API = "detection_python_api"
 
 
 @dataclass(frozen=True)
