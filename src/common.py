@@ -12,6 +12,7 @@ class LLMPromptType(Enum):
     PREDICT_FEW_SHOT = "detection_few_shot"
     PREDICT_SCENIC_TUTORIAL = "detection_scenic_tutorial"
     PREDICT_PYTHON_API = "detection_python_api"
+    PREDICT_PYTHON_API_ONELINE = "detection_python_api_oneline"
 
 
 @dataclass(frozen=True)

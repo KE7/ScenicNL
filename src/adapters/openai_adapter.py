@@ -60,10 +60,9 @@ class OpenAIAdapter(ModelAdapter):
     ) -> list[Dict[str, str]]:
         """
         Format the message for the OpenAI API for scenic tutorial (technically zero-shot?) prediction.
-        @TODO: Karim feel free to move this code or rename this to a more relevant name.
-        @TODO: Experiments - moving most of sys prompt to first user prompt, one vs multiple messages, etc.
-        Note: did this all with a single user prompt and no system prompt locally, results may differ.
-        Note: API for GPT 3.5 not great with long system prompts, may help to break into 1+ user prompts.
+        Design considerations: short system prompt for GPT 3.5.
+        Note: originally implemented with no system prompt, one system prompt locally.
+        Note: future work - sys vs user prompt usage, one vs multiple messages, etc.
         """
         return [
             {"role": "system", "content": "Please generate a scenic program for a CARLA " +
@@ -77,18 +76,38 @@ class OpenAIAdapter(ModelAdapter):
     ) -> list[Dict[str, str]]:
         """
         Format the message for the OpenAI API for scenic3_api usage (?) prediction.
-        @TODO: Karim how can we call expr() or eval() on the output of this prompt?
+        @TODO: Karim let me know if there is a better way for me to expr() / eval() the output of this prompt?
 
-        @TODO: Refer to the TODOs below where the API is for an updated list of TODOs.
-        @TODO: TODOs presented for _scenic_tutorial_prompt still hold for this prompt.
-        Note that some API issues can be resolved by changing prompting and vice versa.
+        Note: TODOs presented for _scenic_tutorial_prompt still hold for this prompt.
+        Note: Some API issues can be resolved by changing prompting and vice versa.
         """
         return [
             {"role": "system", "content": "Please write me python3 code to generate a scenic program for a CARLA " +
              "simulation from a natural language description using the scenic3 API as described below.\n" + 
              self._format_python_api_prompt(model_input)},
             {"role": "user", "content": "Natural language description: " + model_input.nat_lang_scene_des},
-        ] 
+        ]
+
+    def _python_api_prompt_oneline(
+        model_input: ModelInput
+    ) -> list[Dict[str, str]]:
+        """
+        Format the message for the OpenAI API for scenic3_api usage (?) prediction.
+        @TODO: Karim let me know if there is a better way for me to expr() / eval() the output of this prompt?
+
+        Note: TODOs presented for _scenic_tutorial_prompt still hold for this prompt.
+        Note: Some API issues can be resolved by changing prompting and vice versa.
+        """
+        intro_prompt = f"Consider the following Scenic-3 programs.\n"
+        intro_prompt += f"\n\n\n{model_input.examples[0]}\n\n\n{model_input.examples[1]}\n\n\n{model_input.examples[2]}"
+        main_prompt = "Write me one line of valid Scenic-3 code based on the Python API input provided."
+        main_prompt += f"\nThe output should be a single block of valid Scenic code from the API call: {model_input}"
+        main_prompt += "\nOutput just one short block of Scenic-3 code as your output, with four spaces per indent if any. Provide no other output text."
+
+        return [
+            {"role": "user", "content": intro_prompt},
+            {"role": "user", "content": main_prompt},
+        ]
     
     def _format_message(
         self,
@@ -107,6 +126,8 @@ class OpenAIAdapter(ModelAdapter):
             return self._scenic_tutorial_prompt(model_input=model_input)
         elif prompt_type == LLMPromptType.PREDICT_PYTHON_API:
             return self._python_api_prompt(model_input=model_input)
+        elif prompt_type == LLMPromptType.PREDICT_PYTHON_API_ONELINE: # for one-line corrections of function calling
+            return OpenAIAdapter._python_api_prompt_oneline(model_input=model_input)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -192,17 +213,9 @@ class OpenAIAdapter(ModelAdapter):
         pa_prompt += "\nIn scenic3_api, to specify a map, you would use the `set_map` method, for example: `scenic3.set_map('../../../assets/maps/CARLA/Town01.xodr')`."
         pa_prompt += "\nTo specify the model, you would use the `set_model` method, for example: `scenic3.set_model('scenic.simulators.carla.model')`."
         pa_prompt += "\nConstants can be defined using the `define_constant` method, for example: `scenic3.define_constant('EGO_SPEED', 10)`."
-        # pa_prompt += "\nIn scenic3_api, to specify a map, you would use the `set_map` method, for example: `scenic3.set_map('../../../assets/maps/CARLA/Town01.xodr')`."
-        # pa_prompt += "\nTo specify the model, you would use the `set_model` method, for example: `scenic3.set_model('scenic.simulators.carla.model')`."
-        # pa_prompt += "\nConstants can be defined using the `define_constant` method, for example: `scenic3.define_constant('EGO_SPEED', 10)`."
-        
+
         # Behavior definitions part
         pa_prompt += "\n\n--- Behavior Definitions ---"
-        # pa_prompt += "\nBehaviors are defined using the `define_behavior` method, for example: `scenic3.define_behavior('EgoBehavior', speed=10)`."
-        # pa_prompt += "\nInside the behavior, actions are specified using the `do` method followed by the behavior name and parameters, for example: `scenic3.do('FollowLaneBehavior', speed)`."
-        # pa_prompt += "\nLooping structures can be created with `do_while`, `do_until`, and `try_except` methods, for example: `scenic3.do_while('FollowLaneBehavior', speed, 'some_condition')`."
-        # pa_prompt += "\nInterrupts can be used to specify conditions under which the behavior should be interrupted, for example: `scenic3.interrupt('withinDistanceToAnyCars(self, DISTANCE_THRESHOLD)')`."
-        # pa_prompt += "\nAfter an interrupt, the `take` method can be used to specify an action to take, for example: `scenic3.take('SetBrakeAction', BRAKE_ACTION)`."
         pa_prompt += "\nIn scenic3_api, behaviors are defined using the `define_behavior` method."
         pa_prompt += "\nInside the behavior, code is indented in python style and specified using the `do` method followed by the behavior name and parameters."
         pa_prompt += "\nFor example (multiline with indents): `scenic3.define_behavior('EgoBehavior', speed=10)`."
@@ -214,162 +227,14 @@ class OpenAIAdapter(ModelAdapter):
         pa_prompt += "\nFor example: `scenic3.interrupt('withinDistanceToAnyCars(self, DISTANCE_THRESHOLD)')`."
         pa_prompt += "\nAfter an interrupt, the `take` method can be used to specify an action to take."
         pa_prompt += "\nFor example: `scenic3.take('SetBrakeAction', BRAKE_ACTION)`."
-        # pa_prompt += "\nAssignments for objects to have blueprints and behaviors can be done using `assign_blueprint` and `assign_behavior` methods."
-        # pa_prompt += "\nFor example: `scenic3.assign_blueprint(ego, 'vehicle.lincoln.mkz_2017')` and `scenic3.assign_behavior(ego, 'EgoBehavior', EGO_SPEED)`."
-        
+
         # Assignments and object placements part
         pa_prompt += "\n\n--- Assignments and Object Placements ---"
-        # pa_prompt += "\nAssignments for objects to have blueprints and behaviors can be done using `assign_blueprint` and `assign_behavior` methods, for example: `scenic3.assign_blueprint(ego, 'vehicle.lincoln.mkz_2017')` and `scenic3.assign_behavior(ego, 'EgoBehavior', EGO_SPEED)`."
         pa_prompt += "\nNew objects can be created and placed using the `new` method, for example: `scenic3.new(var_name='ego', obj_type='Car', at='spawnPt', blueprint='EGO_MODEL', behavior='EgoBehavior(EGO_SPEED)')`."
         pa_prompt += "\nSpatial relations between objects can be defined using the `spatial_relation` method, for example: `scenic3.spatial_relation('ego', 'following', 'leadCar', distance='Range(-15, -10)')`."
 
         # pa_prompt += "\n\nYour output must be only executable Python code to create a complete Scenic-3 script as per the given requirements. No explanation needed."
         pa_prompt += "\n\n--- Output Rules ---"
         pa_prompt += "\nYour output must be only executable Python code that sets up the scenario. Every line should invoke a method or nested method of the form scenic3.<method>(args) - every line should start wiht scenic3.<method>(args) and no placeholder values <> should be present. No explanation or imports needed."
+        pa_prompt += "\nPlease enter all function inputs with strings surrounding, ie scenic3.do('AvoidObstacleBehavior', speed='EGO_SPEED', indent=1)"
         return pa_prompt
-
-
-
-"""
-Scenic3 Mini API Helper Class
-@TODO: Karim convert args to string when possible to prevent errors from failing.
-@TODO: Devan add try / except blocks inside methods to avoid errors thrown by string arguments.
-(For context, calling ```exec()``` on all lines of LLM output throws some errors
- that can be caught by calling the str() command on function calling inputs or adding quotes to args. )
-@TODO: Devan create a more extensive API that can fully express Scenic programs.
-(All TODOs for Devan but anyone with extra time welcome to look over.)
-@TODO: Devan make the API usage 1. more closely resemble UCLID5 paper 2. find better indentation solution
-
-Usage:
-llm_output_text = (.. output of LLM call - see below for an ex..)
-scenic3 = Scenic3()
-exec(llm_output_text) 
-# equivalent of calling [eval(line) for line in llm_output_text.split('\n')]
-# line-by-line eval approach might be more reliable
-
-
-# Example LLM Output - yes it's slightly improper scenic #
-scenic3.set_map('../../../assets/maps/CARLA/Town01.xodr')
-scenic3.set_model('scenic.simulators.carla.model')
-
-scenic3.define_constant('EGO_SPEED', 10)
-
-scenic3.define_behavior('EgoBehavior', speed=EGO_SPEED)
-scenic3.do('FollowLaneBehavior', speed=EGO_SPEED, indent=1)
-scenic3.do_while('FollowIntersectionBehavior', indent=2, condition='not hasClearedIntersection()')
-scenic3.interrupt('withinDistanceToAnyCars(self, DISTANCE_THRESHOLD)')
-scenic3.take('SetBrakeAction', 1)
-
-scenic3.new(var_name='ego', obj_type='Car', at='spawnPt', blueprint='EGO_MODEL', behavior='EgoBehavior(EGO_SPEED)')
-scenic3.new(var_name='leadCar', obj_type='Car', at='leadSpawnPt')
-scenic3.spatial_relation('ego', 'following', 'leadCar', distance='Range(-10, -5)')
-# End Ex #
-
-## Example Expr Error ## 
-NameError                                 Traceback (most recent call last)
-/... ... line 3
-      1 print(llm_output_text)
-      2 scenic3 = Scenic3()
-----> 3 exec(llm_output_text)
-
-File <string>:6
-
-NameError: name 'EGO_SPEED' is not defined
->> from this: scenic3.define_behavior('EgoBehavior', speed=EGO_SPEED)
-"""
-
-_indent_ = '    '
-class Scenic3:
-
-    def __init__(self):
-        self.code = []
-
-    def set_map(self, map_name, indent=0):
-        indent_str = _indent_ * indent
-        self.code.append(f"{indent_str}param map = localPath('{map_name}')")
-
-    def set_model(self, model_name, indent=0):
-        indent_str = _indent_ * indent
-        self.code.append(f"{indent_str}model {model_name}")
-
-    def define_constant(self, name, value, indent=0):
-        indent_str = _indent_ * indent
-        self.code.append(f"{indent_str}{name} = {value}")
-
-    def define_behavior(self, name, indent=0, **kwargs):
-        indent_str = _indent_ * indent
-        kwargs_str = ', '.join(f'{str(k)}={str(v)}' for k, v in kwargs.items())
-        self.code.append(f"{indent_str}behavior {name}({kwargs_str}):")
-
-    def do(self, behavior_name, indent=0, **kwargs):
-        indent_str = _indent_ * indent
-        behavior_name = str(behavior_name)
-        kwargs_str = ', '.join(f'{str(k)}={str(v)}' for k, v in kwargs.items())
-        self.code.append(f"{indent_str}do {behavior_name}({kwargs_str})")
-
-    def do_while(self, behavior_name, var_name, condition, indent=0):
-        indent_str = _indent_ * indent
-        behavior_name, var_name, condition = str(behavior_name), str(var_name), str(condition)
-        self.code.append(f"{indent_str}do {behavior_name}({var_name}) while {condition}")
-
-    def do_until(self, behavior_name, var_name, condition, indent=0):
-        indent_str = _indent_ * indent
-        behavior_name, var_name = str(behavior_name), str(var_name)
-        self.code.append(f"{indent_str}do {behavior_name}({var_name}) until {condition}")
-
-    def try_except(self, try_behavior, except_behavior, indent=0):
-        indent_str = _indent_ * indent
-        try_behavior, except_behavior = str(try_behavior), str(except_behavior)
-        self.code.append(f"{indent_str}try:")
-        self.code.append(f"{indent_str}{_indent_}do {try_behavior}")
-        self.code.append(f"{indent_str}except:")
-        self.code.append(f"{indent_str}{_indent_}do {except_behavior}")
-
-    def interrupt(self, condition, indent=0, *args):
-        indent_str = _indent_ * indent
-        args_str = ', '.join(str(arg) for arg in args)
-        self.code.append(f"{indent_str}interrupt when {condition}({args_str}):")
-
-    def take(self, action_name, indent=0, **params):
-        indent_str = _indent_ * indent
-        params_str = ', '.join(f'{str(k)}={str(v)}' for k, v in params.items())
-        self.code.append(f"{indent_str}take {action_name}({params_str})")
-
-    def new(self, var_name, obj_type, at=None, indent=0, **kwargs):
-        indent_str = _indent_ * indent
-        new_line = f"{indent_str}{var_name} = new {obj_type.capitalize()}"
-        
-        if at:
-            new_line += f" at {at}"
-        
-        for k, v in kwargs.items():
-            new_line += f", {str(k)}={str(v)}"
-
-        self.code.append(new_line)
-
-    def spatial_relation(self, obj1, keyword, obj2, distance=None, indent=0):
-        indent_str = _indent_ * indent
-
-        if distance:
-            self.code.append(f"{indent_str}{obj1} {keyword} {obj2} for {distance}")
-        else:
-            self.code.append(f"{indent_str}{obj1} {keyword} {obj2}")
-
-    def Uniform(self, seq, indent=0):
-        indent_str = _indent_ * indent
-        return f"{indent_str}Uniform({seq})"
-
-    def Range(self, start, end, indent=0):
-        indent_str = _indent_ * indent
-        return f"{indent_str}Range({start}, {end})"
-
-    def require(self, condition, indent=0):
-        indent_str = _indent_ * indent
-        self.code.append(f"{indent_str}require {condition}")
-
-    def terminate(self, condition, indent=0):
-        indent_str = _indent_ * indent
-        self.code.append(f"{indent_str}terminate when {condition}")
-
-    def get_code(self):
-        return "\n".join(self.code).strip()
