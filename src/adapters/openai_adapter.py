@@ -1,6 +1,8 @@
+from .api_adapter import Scenic3
+from .model_adapter import ModelAdapter
+
 import json
 from typing import Dict
-from model_adapter import ModelAdapter
 from enum import Enum
 from tenacity import retry, stop_after_attempt, wait_exponential_jitter
 import os
@@ -89,6 +91,7 @@ class OpenAIAdapter(ModelAdapter):
         ]
 
     def _python_api_prompt_oneline(
+        self,
         model_input: ModelInput
     ) -> list[Dict[str, str]]:
         """
@@ -101,7 +104,7 @@ class OpenAIAdapter(ModelAdapter):
         intro_prompt = f"Consider the following Scenic-3 programs.\n"
         intro_prompt += f"\n\n\n{model_input.examples[0]}\n\n\n{model_input.examples[1]}\n\n\n{model_input.examples[2]}"
         main_prompt = "Write me one line of valid Scenic-3 code based on the Python API input provided."
-        main_prompt += f"\nThe output should be a single block of valid Scenic code from the API call: {model_input}"
+        main_prompt += f"\nThe output should be a single block of valid Scenic code from the API call: {model_input.nat_lang_scene_des}"
         main_prompt += "\nOutput just one short block of Scenic-3 code as your output, with four spaces per indent if any. Provide no other output text."
 
         return [
@@ -118,16 +121,16 @@ class OpenAIAdapter(ModelAdapter):
         """
         Format the message for the OpenAI API.
         """
-        if prompt_type == LLMPromptType.PREDICT_ZERO_SHOT:
+        if prompt_type.value == LLMPromptType.PREDICT_ZERO_SHOT.value:
             return self._zero_shot_prompt(model_input=model_input)
-        elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT:
+        elif prompt_type.value == LLMPromptType.PREDICT_FEW_SHOT.value:
             return self._few_shot_prompt(model_input=model_input)
-        elif prompt_type == LLMPromptType.PREDICT_SCENIC_TUTORIAL:
+        elif prompt_type.value == LLMPromptType.PREDICT_SCENIC_TUTORIAL.value:
             return self._scenic_tutorial_prompt(model_input=model_input)
-        elif prompt_type == LLMPromptType.PREDICT_PYTHON_API:
+        elif prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
             return self._python_api_prompt(model_input=model_input)
-        elif prompt_type == LLMPromptType.PREDICT_PYTHON_API_ONELINE: # for one-line corrections of function calling
-            return OpenAIAdapter._python_api_prompt_oneline(model_input=model_input)
+        elif prompt_type.value == LLMPromptType.PREDICT_PYTHON_API_ONELINE.value: # for one-line corrections of function calling
+            return self._python_api_prompt_oneline(model_input=model_input)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -161,8 +164,7 @@ class OpenAIAdapter(ModelAdapter):
         prompt_type: LLMPromptType,
     ) -> str:
         messages = self._format_message(model_input=model_input, prompt_type=prompt_type)
-
-        response = openai.Completion.create(
+        response = openai.ChatCompletion.create(
             temperature=temperature,
             model=self.model.value,
             max_tokens=max_length_tokens,
@@ -238,3 +240,40 @@ class OpenAIAdapter(ModelAdapter):
         pa_prompt += "\nYour output must be only executable Python code that sets up the scenario. Every line should invoke a method or nested method of the form scenic3.<method>(args) - every line should start wiht scenic3.<method>(args) and no placeholder values <> should be present. No explanation or imports needed."
         pa_prompt += "\nPlease enter all function inputs with strings surrounding, ie scenic3.do('AvoidObstacleBehavior', speed='EGO_SPEED', indent=1)"
         return pa_prompt
+
+    def _api_fallback(
+        self,
+        model_input: ModelInput
+    ) -> str:
+        """Generate code from API calls, with _line_helper generating backups in case of API failures."""
+        scenic3 = Scenic3() # aggregate function calls
+        description = model_input.nat_lang_scene_des
+        for line in description.split('\n'):
+            if not line: continue
+            try:
+                eval(line)
+            except:
+                result = self._line_helper(ModelInput(examples=model_input.examples, nat_lang_scene_des=line))
+                scenic3.add_code(result.split('\n'))
+        return scenic3.get_code()
+
+    def _line_helper(
+        self,
+        line_input: ModelInput
+    ) -> str:
+        """
+        Intent: use mini LLM calls to correct any malformed Scenic3_API calls (ones that fail `eval`).
+        Idea: even imperfect API calls contain all info needed to formulate Scenic expression.
+        @TODO: Karim how can I turn off caching for these one-line calls?
+        Wasn't sure how to handle post-API-call eval from openai_adapter block.
+
+        I might just get rid of this despite the performance boost if it gets too messy.
+        This is also openai_specific as of right now so might be better to move to openai_adapter if we use.
+        """
+        prediction = self._predict(
+            model_input=line_input,  # self._python_api_prompt_oneline(line_input),
+            temperature=0,
+            max_length_tokens=40,
+            prompt_type=LLMPromptType.PREDICT_PYTHON_API_ONELINE, # timeout 
+        )
+        return prediction #['choices'][0]['message']['content'] # may timeout or error

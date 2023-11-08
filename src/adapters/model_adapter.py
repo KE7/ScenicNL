@@ -1,5 +1,6 @@
+from .api_adapter import Scenic3
+# from .openai_adapter import OpenAIAdapter
 import abc
-from api_adapter import Scenic3
 from multiprocessing.pool import ThreadPool
 import time
 import traceback
@@ -55,22 +56,15 @@ class ModelAdapter(abc.ABC):
 
     def _api_fallback(
         self,
-        description: str
+        description: ModelInput
     ) -> str:
         """Generate code from API calls, with _line_helper generating backups in case of API failures."""
-        scenic3 = Scenic3() # aggregate function calls
-        for line in description.split('\n'):
-            if not line: continue
-            try:
-                eval(line)
-            except:
-                result = self._line_helper(line)
-                scenic3.add_code(result.split('\n'))
-        return scenic3.get_code()    
+        raise NotImplementedError 
 
     def _line_helper(
-            self,
-            line):
+        self,
+        line: ModelInput
+    ) -> str:
         """
         Intent: use mini LLM calls to correct any malformed Scenic3_API calls (ones that fail `eval`).
         Idea: even imperfect API calls contain all info needed to formulate Scenic expression.
@@ -80,15 +74,7 @@ class ModelAdapter(abc.ABC):
         I might just get rid of this despite the performance boost if it gets too messy.
         This is also openai_specific as of right now so might be better to move to openai_adapter if we use.
         """
-        from openai_adapter import OpenAIAdapter
-        prediction = self._predict(
-            model_input=OpenAIAdapter._python_api_prompt_oneline(line),
-            temperature=0,
-            max_length_tokens=40,
-            prompt_type=LLMPromptType.PREDICT_PYTHON_API_ONELINE,
-            timeout=20,
-        )
-        return prediction['choices'][0]['message']['content'] # may timeout or error
+        raise NotImplementedError
 
     def _batch_processor(
         self, 
@@ -127,8 +113,9 @@ class ModelAdapter(abc.ABC):
                             max_length_tokens=max_tokens,
                             prompt_type=prompt_type,
                         )
-                        if prompt_type == LLMPromptType.PREDICT_PYTHON_API:
-                            prediction = self._api_fallback(prediction) # specific function calling handlers
+                        if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
+                            api_input = ModelInput(model_input.examples, prediction)
+                            prediction = self._api_fallback(api_input) # specific function calling handlers
                     except Exception as e:
                         stacktrace = traceback.format_exc()
                         prediction = APIError(
