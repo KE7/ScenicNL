@@ -10,6 +10,9 @@ setup(
         "openai>=0.28,<=0.28.1",
         "SQLAlchemy",
         "tenacity",
+        "lmql[hf]",
+        "openai",
+        "pytype",
     ],
     entry_points={
         "console_scripts": [
@@ -24,8 +27,6 @@ setup(
             "mock",
             "pytest-mock",
             "beautifulsoup4",
-            "openai",
-            "pytype",
         ],
     },
     python_requires=">=3.11",
