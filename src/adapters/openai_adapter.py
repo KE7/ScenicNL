@@ -78,7 +78,6 @@ class OpenAIAdapter(ModelAdapter):
     ) -> list[Dict[str, str]]:
         """
         Format the message for the OpenAI API for scenic3_api usage (?) prediction.
-        @TODO: Karim let me know if there is a better way for me to expr() / eval() the output of this prompt?
 
         Note: TODOs presented for _scenic_tutorial_prompt still hold for this prompt.
         Note: Some API issues can be resolved by changing prompting and vice versa.

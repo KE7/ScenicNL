@@ -1,5 +1,4 @@
 from .api_adapter import Scenic3
-# from .openai_adapter import OpenAIAdapter
 import abc
 from multiprocessing.pool import ThreadPool
 import time
@@ -68,11 +67,6 @@ class ModelAdapter(abc.ABC):
         """
         Intent: use mini LLM calls to correct any malformed Scenic3_API calls (ones that fail `eval`).
         Idea: even imperfect API calls contain all info needed to formulate Scenic expression.
-        @TODO: Karim how can I turn off caching for these one-line calls?
-        Wasn't sure how to handle post-API-call eval from openai_adapter block.
-
-        I might just get rid of this despite the performance boost if it gets too messy.
-        This is also openai_specific as of right now so might be better to move to openai_adapter if we use.
         """
         raise NotImplementedError
 
