@@ -25,6 +25,7 @@ class OpenAIAdapter(ModelAdapter):
         super().__init__()
         openai.api_key = os.environ["OPENAI_API_KEY"]
         self.model = model
+        self.PROMPT_PATH = 'prompts'
         
     def _zero_shot_prompt(
             self,
@@ -178,66 +179,18 @@ class OpenAIAdapter(ModelAdapter):
         """
         Formats the message providing introduction to Scenic language and syntax.
         """
-        preamble = "param map = localPath('../../../assets/maps/CARLA/Town05.xodr')\nparam carla_map = 'Town05'\nmodel scenic.simulators.carla.model"
-        param_def = "speed = Range(15, 25)"
-        obstacle_def = "lane = Uniform(*network.lanes)\nspawnPt = new OrientedPoint on lane.centerline\nobstacle = new Trash at spawnPt offset by Range(1, -1) @ 0"
-        ego_def = "behavior EgoBehavior(speed=10):\n\ttry:\n\t\tdo FollowLaneBehavior(speed)\n\tinterrupt when withinDistanceToAnyObjs(self, EGO_BRAKING_THRESHOLD):\n\t\ttake SetBrakeAction(BRAKE_ACTION)"
-        ego_assign = "ego = new Car following roadDirection from spawnPt for Range(-50, -30),\n\twith blueprint EGO_MODEL,\n\twith behavior EgoBehavior(EGO_SPEED)"
-        ex_require = "require (distance to intersection) > 75"
-        ex_terminate = "terminate when ego.speed < 0.1 and (distance to obstacle) < 15"
-        st_prompt = "Here is a quick tutorial about the Scenic language."
-        st_prompt += "\nScenic scripts are typically divided into three sections: parameter definitions, scene setup, and behaviors."
-        st_prompt += "\n\n1. Parameter Definitions:\n In the parameter definitions section, you handle imports and define any parameters your scenario will use."
-        st_prompt += "\nA Scenic script begins with importing necessary libraries."
-        st_prompt += f"\nThe first lines could be: \"{preamble}\" to import the simulator library."
-        st_prompt += f"\nThen define any scene parameters, for example: \"{param_def}\" defines a parameter speed with values ranging from 15 to 25."
-        st_prompt += "\n\n2. Scene Setup:\nIn the scene setup section, you describe the static aspects of the scenario."
-        st_prompt += f"\nFor example, \"{obstacle_def}\" creates a Trash obstacle offset from the centerline of a random lane."
-        st_prompt += "\n\n3. Behaviors:\nIn the behavior section, you describe the dynamic aspects of the scenario."
-        st_prompt += f"\nFor example, \"{ego_def}\" defines a behavior for a vehicle to follow a lane and brake once any vehicle comes within a certain distance."
-        st_prompt += f"\nAfter this, \"{ego_assign}\" defines a dynamic agent with this behavior and other properties. All scenes must have an ego vehicle."
-        st_prompt += "\nScenic provides a rich set of built-in behaviors but also allows for custom behavior definitions."
-        st_prompt += "\nAfter all behaviors and agents are defined, the last optional require and terminate statements can be used to enforce conditions that determine how long the simulationa runs."
-        st_prompt += f"\nFor example (require statement): \"{ex_require}\" or (terminate statement): \"{ex_terminate}\" might be added to the end of a program but are optional."
-        st_prompt += "\nThe output should be a single block of Python code for a Scenic script that sets up a scene that models the given natural language description."
+        st_prompt = ''
+        with open(os.join(self.PROMPT_PATH), 'python_api_prompt.txt') as f:
+            st_prompt = f.read()
         return st_prompt
 
     def _format_python_api_prompt(
         self,
         model_input: ModelInput
     ) -> str:
-        pa_prompt = "Here is a comprehensive tutorial about the scenic3_api."
-        pa_prompt += " The Scenic-3 script is structured in a way that initially sets up the scenario by specifying the map, model, and any constants, followed by defining behaviors and object placements for scenario dynamics."
-        
-        # Setup part
-        pa_prompt += "\n\n--- Setup ---"
-        pa_prompt += "\nIn scenic3_api, to specify a map, you would use the `set_map` method, for example: `scenic3.set_map('../../../assets/maps/CARLA/Town01.xodr')`."
-        pa_prompt += "\nTo specify the model, you would use the `set_model` method, for example: `scenic3.set_model('scenic.simulators.carla.model')`."
-        pa_prompt += "\nConstants can be defined using the `define_constant` method, for example: `scenic3.define_constant('EGO_SPEED', 10)`."
-
-        # Behavior definitions part
-        pa_prompt += "\n\n--- Behavior Definitions ---"
-        pa_prompt += "\nIn scenic3_api, behaviors are defined using the `define_behavior` method."
-        pa_prompt += "\nInside the behavior, code is indented in python style and specified using the `do` method followed by the behavior name and parameters."
-        pa_prompt += "\nFor example (multiline with indents): `scenic3.define_behavior('EgoBehavior', speed=10)`."
-        pa_prompt += "\n`scenic3.do('FollowLaneBehavior', speed, indent=1)`." # speed
-        pa_prompt += "\nLooping structures can be created with `do_while`, `do_until`, and `try_except` methods."
-        pa_prompt += "\nFor example (multiline with indents): `scenic3.define_behavior('EgoBehavior', safety_distance=10)`."
-        pa_prompt += "\n`scenic3.do_while('FollowLaneBehavior', speed, 'withinDistanceToAnyObjs(self, DISTANCE_THRESHOLD)', indent=1)`." # speed
-        pa_prompt += "\nInterrupts can be used to specify conditions under which the behavior should be interrupted."
-        pa_prompt += "\nFor example: `scenic3.interrupt('withinDistanceToAnyCars(self, DISTANCE_THRESHOLD)')`."
-        pa_prompt += "\nAfter an interrupt, the `take` method can be used to specify an action to take."
-        pa_prompt += "\nFor example: `scenic3.take('SetBrakeAction', BRAKE_ACTION)`."
-
-        # Assignments and object placements part
-        pa_prompt += "\n\n--- Assignments and Object Placements ---"
-        pa_prompt += "\nNew objects can be created and placed using the `new` method, for example: `scenic3.new(var_name='ego', obj_type='Car', at='spawnPt', blueprint='EGO_MODEL', behavior='EgoBehavior(EGO_SPEED)')`."
-        pa_prompt += "\nSpatial relations between objects can be defined using the `spatial_relation` method, for example: `scenic3.spatial_relation('ego', 'following', 'leadCar', distance='Range(-15, -10)')`."
-
-        # pa_prompt += "\n\nYour output must be only executable Python code to create a complete Scenic-3 script as per the given requirements. No explanation needed."
-        pa_prompt += "\n\n--- Output Rules ---"
-        pa_prompt += "\nYour output must be only executable Python code that sets up the scenario. Every line should invoke a method or nested method of the form scenic3.<method>(args) - every line should start wiht scenic3.<method>(args) and no placeholder values <> should be present. No explanation or imports needed."
-        pa_prompt += "\nPlease enter all function inputs with strings surrounding, ie scenic3.do('AvoidObstacleBehavior', speed='EGO_SPEED', indent=1)"
+        pa_prompt = ''
+        with open(os.join(self.PROMPT_PATH), 'python_api_prompt.txt') as f:
+            pa_prompt = f.read()
         return pa_prompt
 
     def _api_fallback(
