@@ -7,6 +7,8 @@ A Scenic script begins with importing necessary libraries.
 The first lines could be: "param map = localPath('../../../assets/maps/CARLA/Town05.xodr')
 param carla_map = 'Town05'
 model scenic.simulators.carla.model" to import the simulator library.
+The set of maps allowed is only of the format ../../../assets/maps/CARLA/Town01.xodr for Town01, Town02, Town03, Town04, Town05, Town06, Town07.
+No other map can be accessed. Please do not access exact streets or lanes as a result.
 Then define any scene parameters, for example: "speed = Range(15, 25)" defines a parameter speed with values ranging from 15 to 25.
 
 2. Scene Setup:
@@ -30,3 +32,5 @@ After all behaviors and agents are defined, the last optional require and termin
 For example (require statement): "require (distance to intersection) > 75" or (terminate statement): "terminate when ego.speed < 0.1 and (distance to obstacle) < 15" might be added to the end of a program but are optional.
 The output should be a single block of Python code for a Scenic script that sets up a scene that models the given natural language description.
 Do not include any sort of command simulate at the end. The simulation will be run separately.
+All actions and values must be specified before being used as values, besides very few scenic built-ins included in the examples.
+Any try block must have at least one corresponding except block for the program to work properly.

@@ -84,7 +84,7 @@ def main(
                 print(line.strip())
 
     adapter = OpenAIAdapter(OpenAIModel.GPT_35_TURBO)
-    prompt_type = LLMPromptType.PREDICT_SCENIC_TUTORIAL
+    prompt_type = LLMPromptType.PREDICT_FEW_SHOT
 
     example_list = []
 
@@ -108,7 +108,7 @@ def main(
     for index, outputs in enumerate(adapter.predict_batch(
             model_inputs=model_input_list, 
             cache_path=cache_path, num_predictions=1, 
-            temperature=0, max_tokens=500, prompt_type=prompt_type)):
+            temperature=0, max_tokens=600, prompt_type=prompt_type)):
         for attempt, output in enumerate(outputs):
             print(f'{output}\n\n')
             fname = os.path.join(scenic_path, f'{index}-{attempt}.scenic')

@@ -1,5 +1,5 @@
-from api_adapter import Scenic3
-from model_adapter import ModelAdapter
+from .api_adapter import Scenic3
+from .model_adapter import ModelAdapter
 
 import json
 from typing import Dict
