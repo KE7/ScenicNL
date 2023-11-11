@@ -24,7 +24,8 @@ class PDFParser():
             lang=lang,
             builder=pyocr.builders.TextBuilder()
         )
-        return PDFParser.clean_output(pdf_text)
+        output_text = PDFParser.clean_output(pdf_text)
+        return output_text
 
     def clean_output(
         text:str, 

@@ -1,5 +1,5 @@
-from .api_adapter import Scenic3
-from .model_adapter import ModelAdapter
+from api_adapter import Scenic3
+from model_adapter import ModelAdapter
 
 import json
 from typing import Dict
@@ -49,12 +49,20 @@ class OpenAIAdapter(ModelAdapter):
         Format the message for the OpenAI API for few shot prediction.
         @TODO: Devan please figure out this format.
         Add back + model_input.examples[3]
-        """
         return [
             {"role": "system", "content": "Please generate a scenic program for a CARLA " +
              "simulation from this natural language description." + 
              "Here are some examples of how to do that: " + model_input.examples[0] +
              model_input.examples[1] + model_input.examples[2]},
+            {"role": "user", "content": model_input.nat_lang_scene_des},
+        ]
+        """
+        return [
+            {"role": "system", "content": "Please generate a scenic program for a CARLA " +
+             "simulation based on the input natural language description below." + 
+             "\n-- Here is a scenic tutorial. --\n" + self._format_scenic_tutorial_prompt(model_input) +
+             "\n-- Here are some example scenic programs. --\n" + model_input.examples[0] 
+             + model_input.examples[1] + model_input.examples[2]},
             {"role": "user", "content": model_input.nat_lang_scene_des},
         ]
 
