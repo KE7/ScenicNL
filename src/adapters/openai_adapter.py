@@ -25,12 +25,12 @@ class OpenAIAdapter(ModelAdapter):
         super().__init__()
         openai.api_key = os.environ["OPENAI_API_KEY"]
         self.model = model
-        self.PROMPT_PATH = 'prompts'
-        
+        self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'adapters', 'prompts')
+
     def _zero_shot_prompt(
-            self,
-            model_input: ModelInput
-        ) -> list[Dict[str, str]]:
+        self,
+        model_input: ModelInput
+    ) -> list[Dict[str, str]]:
         """
         Format the message for the OpenAI API for zero shot prediction.
         @TODO: Ana please figure out this format.
@@ -42,9 +42,9 @@ class OpenAIAdapter(ModelAdapter):
         ]
     
     def _few_shot_prompt(
-            self,
-            model_input: ModelInput
-        ) -> list[Dict[str, str]]:
+        self,
+        model_input: ModelInput
+    ) -> list[Dict[str, str]]:
         """
         Format the message for the OpenAI API for few shot prediction.
         @TODO: Devan please figure out this format.
@@ -180,7 +180,7 @@ class OpenAIAdapter(ModelAdapter):
         Formats the message providing introduction to Scenic language and syntax.
         """
         st_prompt = ''
-        with open(os.join(self.PROMPT_PATH), 'python_api_prompt.txt') as f:
+        with open(os.path.join(self.PROMPT_PATH, 'scenic_tutorial_prompt.txt')) as f:
             st_prompt = f.read()
         return st_prompt
 
@@ -189,7 +189,7 @@ class OpenAIAdapter(ModelAdapter):
         model_input: ModelInput
     ) -> str:
         pa_prompt = ''
-        with open(os.join(self.PROMPT_PATH), 'python_api_prompt.txt') as f:
+        with open(os.path.join(self.PROMPT_PATH, 'python_api_prompt.txt')) as f:
             pa_prompt = f.read()
         return pa_prompt
 
@@ -198,14 +198,15 @@ class OpenAIAdapter(ModelAdapter):
         model_input: ModelInput
     ) -> str:
         """Generate code from API calls, with _line_helper generating backups in case of API failures."""
-        scenic3 = Scenic3() # aggregate function calls
+        scenic3 = Scenic3() # function call aggregator
         description = model_input.nat_lang_scene_des
         for line in description.split('\n'):
             if not line: continue
             try:
                 eval(line)
             except:
-                result = self._line_helper(ModelInput(examples=model_input.examples, nat_lang_scene_des=line))
+                new_input = ModelInput(examples=model_input.examples, nat_lang_scene_des=line)
+                result = self._line_helper(new_input)
                 scenic3.add_code(result.split('\n'))
         return scenic3.get_code()
 
@@ -218,14 +219,11 @@ class OpenAIAdapter(ModelAdapter):
         Idea: even imperfect API calls contain all info needed to formulate Scenic expression.
         @TODO: Karim how can I turn off caching for these one-line calls?
         Wasn't sure how to handle post-API-call eval from openai_adapter block.
-
-        I might just get rid of this despite the performance boost if it gets too messy.
-        This is also openai_specific as of right now so might be better to move to openai_adapter if we use.
         """
         prediction = self._predict(
-            model_input=line_input,  # self._python_api_prompt_oneline(line_input),
+            model_input=line_input,
             temperature=0,
             max_length_tokens=40,
-            prompt_type=LLMPromptType.PREDICT_PYTHON_API_ONELINE, # timeout 
+            prompt_type=LLMPromptType.PREDICT_PYTHON_API_ONELINE, # @TODO: timeout 
         )
-        return prediction #['choices'][0]['message']['content'] # may timeout or error
+        return prediction

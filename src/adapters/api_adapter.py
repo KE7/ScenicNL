@@ -1,47 +1,15 @@
 
 """
 Scenic3 Mini API Helper Class
+@TODO: [urgent] Make sure that code rewritten by the oneline helper is consistent with the rest of the code!
+General Notes:
+Not adding function types yet since the LLM output is not consistent and the try/catches currently handle edge* cases.
 @TODO: Devan add try / except blocks inside methods to avoid errors thrown by string arguments.
 (For context, calling ```exec()``` on all lines of LLM output throws some errors
  that can be caught by calling the str() command on function calling inputs or adding quotes to args. )
 @TODO: Devan create a more extensive API that can fully express Scenic programs.
 (All TODOs for Devan but anyone with extra time welcome to look over.)
 @TODO: Devan make the API usage 1. more closely resemble UCLID5 paper 2. find better indentation solution
-
-Usage:
-llm_output_text = (.. output of LLM call - see below for an ex..)
-scenic3 = Scenic3()
-exec(llm_output_text) 
-# equivalent of calling [eval(line) for line in llm_output_text.split('\n')]
-# line-by-line eval approach might be more reliable
-# Example LLM Output - yes it's slightly improper scenic #
-scenic3.set_map('../../../assets/maps/CARLA/Town01.xodr')
-scenic3.set_model('scenic.simulators.carla.model')
-
-scenic3.define_constant('EGO_SPEED', 10)
-
-scenic3.define_behavior('EgoBehavior', speed=EGO_SPEED)
-scenic3.do('FollowLaneBehavior', speed=EGO_SPEED, indent=1)
-scenic3.do_while('FollowIntersectionBehavior', indent=2, condition='not hasClearedIntersection()')
-scenic3.interrupt('withinDistanceToAnyCars(self, DISTANCE_THRESHOLD)')
-scenic3.take('SetBrakeAction', 1)
-
-scenic3.new(var_name='ego', obj_type='Car', at='spawnPt', blueprint='EGO_MODEL', behavior='EgoBehavior(EGO_SPEED)')
-scenic3.new(var_name='leadCar', obj_type='Car', at='leadSpawnPt')
-scenic3.spatial_relation('ego', 'following', 'leadCar', distance='Range(-10, -5)')
-# End Ex #
-
-## Example Expr Error ## 
-NameError                                 Traceback (most recent call last)
-/... ... line 3
-      1 print(llm_output_text)
-      2 scenic3 = Scenic3()
-----> 3 exec(llm_output_text)
-
-File <string>:6
-
-NameError: name 'EGO_SPEED' is not defined
->> from this: scenic3.define_behavior('EgoBehavior', speed=EGO_SPEED)
 """
 
 

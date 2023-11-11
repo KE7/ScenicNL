@@ -5,6 +5,7 @@ import scenic
 from src.adapters.model_adapter import ModelAdapter
 from src.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
 from src.common import ModelInput, LLMPromptType
+from src.pdf_parse import PDFParser
 import sys
 
 
@@ -14,10 +15,10 @@ def main():
 
 @main.command()  # This decorator turns the function into a command.
 @click.argument(
-    "query_set",
+    "query_path",
     type=click.Path(
         file_okay=True,
-        dir_okay=False,
+        dir_okay=True,
         exists=True,
     ),
 )
@@ -59,7 +60,7 @@ def main():
 
 
 def main(
-    query_set: Path,
+    query_path: Path,
     output_path: Path,
     example_path: Path,
     cache_path: Path,
@@ -69,10 +70,18 @@ def main(
     Generate simulator scenes from natural language descriptions.
     """
     query_list = []
-    with open(query_set) as file:
-        for line in file:
-            query_list.append(line.strip())
-            print(line.strip())
+    if os.path.isdir(query_path):
+        for filename in os.listdir(query_path):
+            if filename.endswith('.pdf'):
+                full_path = os.path.join(query_path, filename)
+                parsed_text = PDFParser.pdf_from_path(full_path)
+                print(parsed_text)
+                query_list.append(parsed_text)
+    else:
+        with open(query_path) as file:
+            for line in file:
+                query_list.append(line.strip())
+                print(line.strip())
 
     adapter = OpenAIAdapter(OpenAIModel.GPT_35_TURBO)
     prompt_type = LLMPromptType.PREDICT_SCENIC_TUTORIAL
@@ -80,7 +89,7 @@ def main(
     example_list = []
 
     for filename in os.listdir(example_path):
-        if filename.endswith('.txt'):
+        if filename.endswith('.txt') or filename.endswith('.scenic'):
             file_path = os.path.join(example_path, filename)
             if os.path.isfile(file_path):
                 with open(file_path, 'r') as file:

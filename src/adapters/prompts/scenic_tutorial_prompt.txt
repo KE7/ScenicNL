@@ -29,3 +29,4 @@ Scenic provides a rich set of built-in behaviors but also allows for custom beha
 After all behaviors and agents are defined, the last optional require and terminate statements can be used to enforce conditions that determine how long the simulationa runs.
 For example (require statement): "require (distance to intersection) > 75" or (terminate statement): "terminate when ego.speed < 0.1 and (distance to obstacle) < 15" might be added to the end of a program but are optional.
 The output should be a single block of Python code for a Scenic script that sets up a scene that models the given natural language description.
+Do not include any sort of command simulate at the end. The simulation will be run separately.
