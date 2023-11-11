@@ -8,6 +8,8 @@ setup(
     install_requires=[
         "scenic==3.0.0b2",
         "openai>=0.28,<=0.28.1",
+        "pdf2image",
+        "pyocr",
         "SQLAlchemy",
         "tenacity",
     ],

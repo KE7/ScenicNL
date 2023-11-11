@@ -48,12 +48,13 @@ class OpenAIAdapter(ModelAdapter):
         """
         Format the message for the OpenAI API for few shot prediction.
         @TODO: Devan please figure out this format.
+        Add back + model_input.examples[3]
         """
         return [
             {"role": "system", "content": "Please generate a scenic program for a CARLA " +
              "simulation from this natural language description." + 
              "Here are some examples of how to do that: " + model_input.examples[0] +
-             model_input.examples[1] + model_input.examples[2] + model_input.examples[3]},
+             model_input.examples[1] + model_input.examples[2]},
             {"role": "user", "content": model_input.nat_lang_scene_des},
         ]
 
