@@ -7,7 +7,7 @@ setup(
     package_dir={"": "src"},
     install_requires=[
         "scenic==3.0.0b2",
-        "openai>=0.28,<=0.28.1",
+        "openai",
         "SQLAlchemy",
         "tenacity",
         "lmql[hf]",
