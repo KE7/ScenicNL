@@ -1,0 +1,10 @@
+An Argo AI Autonomous Vehicle ("Argo AV") was impacted by a cyclist while traveling east on Park Ave and approaching Cambridge
+Ave. The Argo AV was traveling in its lane adjacent to a cyclist who was traveling in a marked bike lane. As the Argo AV was passing the
+cyclist (while maintaining more than 2 meters of lateral margin), the cyclist veered left into the Argo AV's lane. In response, the Argo
+
+AV steered away from the cyclist, but the cyclist continued into the lane and the bicycle's left handlebar made contact with the Argo
+
+AV's passenger side door handle. The Test Specialist brought the AV to a stop. The cyclist maintained balance, continued to cross
+
+the lanes behind the stopped Argo AV, and left the scene after a brief conversation with the left seat Test Specialist, during which the
+cyclist indicated that he was fine and apologized. The Argo AV sustained minor damage to its passenger side door handle.

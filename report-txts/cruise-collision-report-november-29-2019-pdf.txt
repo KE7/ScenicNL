@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southeast bound on The Embarcadero at the
+intersection with Washington Street when the Cruise AV slowed down. The driver of the Cruise AV disengaged from autonomous mode
+and, shortly thereafter, another vehicle made contact with the rear bumper of the Cruise AV, damaging the Cruise AV’s rear fascia assembly
+
+and radars. There were no injuries reported at the scene by either party and police were not called. Both of the Cruise AV test operators later
+mentioned neck and back pain.

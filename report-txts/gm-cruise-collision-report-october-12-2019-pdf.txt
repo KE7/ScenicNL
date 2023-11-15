@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southeast bound on Spear Street between
+Howard and Folsom Streets when the Cruise AV slowed down to change into the right adjacent lane due to traffic cones ahead. The driver
+of the Cruise AV disengaged from autonomous mode and, shortly thereafter, a lane-splitting car made contact with the right rear corner of
+the Cruise AV, damaging the Cruise AV’s right lower tail lamp. The driver of the other vehicle drove away without exchanging
+information. There were no injuries reported. Police were called but were not dispatched to the scene.

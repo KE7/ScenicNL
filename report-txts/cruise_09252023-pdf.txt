@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("AV"), operating in manual mode, was traveling northbound on 25th Avenue between California Street and
+Clement Street. The AV operator improperly engaged from manual into autonomous mode while the AV was in motion, temporarily
+causing the AV to steer to the right. The AV operator then disengaged from autonomous mode into manual mode, and shortly thereafter, the
+AV made contact with an unoccupied and parked red Chrysler Voyager. This caused damage to the AV’s front passenger side bumper
+fascia. The AV operator left contact information for the other party and there were no reported injuries.

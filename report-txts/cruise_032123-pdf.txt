@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling eastbound on Clay Street between
+Hyde Street and Leavenworth Street. Shortly before the intersection with Leavenworth Street, the Cruise AV made contact with a downed
+
+power cable on Clay Street and came to a stop. This caused damage to the Cruise AV’s front driver side radar assembly. There were no
+injuries.

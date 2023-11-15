@@ -1,0 +1,8 @@
+On March 26, 2022 at 1:16 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a SUV on Oakdale Avenue and Toland Street.
+
+The Waymo AV was slowing for a stop sign while traveling westbound on Oakdale Avenue in autonomous mode. An SUV approached
+from behind and made contact with the rear of the Waymo AV. The other party immediately left the scene of the event. At the time of the
+
+impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position).
+Both vehicles sustained moderate damage.

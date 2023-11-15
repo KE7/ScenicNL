@@ -1,0 +1,3 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was waiting for oncoming traffic to clear the intersection
+before making a left turn onto Bush Street from southbound Steiner Street when another vehicle made contact with the right rear corner of
+the Cruise AV, damaging the Cruise AV’s right rear fascia, bumper, and wheel well. There were no injuries and police were not called.

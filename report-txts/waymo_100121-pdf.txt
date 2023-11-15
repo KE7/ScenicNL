@@ -1,0 +1,7 @@
+On October 1, 2021 at 3:51 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was ina
+collision involving an SUV at John F. Kennedy Drive at Stanyan Street.
+
+The Waymo AV was traveling in autonomous mode westbound on Fell Street / John F. Kennedy Drive when it stopped for pedestrians who
+were in a crosswalk and between the westbound and eastbound lanes of John F. Kennedy Drive. An SUV following behind the Waymo AV
+struck the rear of the Waymo AV. The Waymo AV sustained minor damage to its rear bumper and trunk, and the SUV sustained minor
+damage to its front bumper and hood. The Waymo AV test driver later reported lower back pain.

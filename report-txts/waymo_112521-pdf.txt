@@ -1,0 +1,7 @@
+On November 25, 2021 at 1:31 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA made contact with
+a curb at 32nd Avenue and Taraval Street.
+
+While in manual mode, the Waymo AV test driver was completing a right turn from northbound 32nd Avenue onto eastbound Taraval
+Street when the Waymo AV’s passenger side rear tire made contact with the curb at the corner of the intersection. At the time of the impact,
+the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. The Waymo AV’s
+passenger side rear tire and wheel sustained minor damage.

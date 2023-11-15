@@ -1,0 +1,6 @@
+On February 4, 2022 at 11:00 AM PST a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on 2nd Avenue at Fulton Street.
+
+While the Waymo AV was parked on the right side of the road on 2nd Avenue, a passenger vehicle reversed out of an adjacent driveway
+and made contact with the front right bumper of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not
+engaged and a test driver was operating the Waymo AV in manual mode. Both vehicles sustained minor damage.

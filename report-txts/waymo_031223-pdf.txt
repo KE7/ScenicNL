@@ -1,0 +1,9 @@
+On March 12, 2023 at 9:28 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger car on Cesar Chavez Street at Mission Street.
+
+The Waymo AV was stopped in the dedicated left turn lane facing west on Cesar Chavez Street, awaiting a green signal to turn onto
+Mission Street. The signal for traffic proceeding west on Cesar Chavez Street turned green, and traffic in adjacent lanes began moving. The
+left turn arrow signal for the dedicated turn lane occupied by the Waymo AV remained red. The passenger car that had been stopped
+directly behind the Waymo AV began moving forward. The front of the passenger car made contact with the rear of the Waymo AV.
+
+At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s

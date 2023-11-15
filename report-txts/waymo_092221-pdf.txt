@@ -1,0 +1,6 @@
+On September 22, 2021 at 4:29 AM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving a passenger vehicle at Lombard Street and Scott Street. The Waymo AV was stopped at a red light facing west on Lombard Street
+in manual mode. A passenger vehicle approaching the rear of the Waymo AV at approximately 26 miles per hour collided with the right
+
+rear bumper of the vehicle. Both vehicles sustained major damage. Occupants of the Waymo vehicle reported soreness in their shoulders
+after leaving the scene.

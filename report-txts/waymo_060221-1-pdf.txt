@@ -1,0 +1,7 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling eastbound in reverse on Eugenia Avenue at Elsie Street in San Francisco was
+involved in a collision. While in manual mode, the Waymo AV test driver was backing up on a narrow street in order to make room for an
+oncoming passenger vehicle to pass. As the Waymo AV test driver reversed, the Waymo AV’s rear passenger’s side sensor housing came in
+contact with an unoccupied parked passenger vehicle’s driver’s side rear fender. The Waymo AV was traveling approximately 1 MPH. The
+
+Waymo AV sustained minor damage to its rear passenger’s side sensor housing, and the unoccupied parked passenger vehicle’s sustained
+minor damage to its driver’s side rear fender. No injuries were reported at the scene.

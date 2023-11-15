@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was at a complete stop in response to a red light on
+southbound Cayuga Street at the intersection with Geneva Street. As the Cruise AV entered the intersection on a green light and continued
+southbound on Cayuga Street, a Honda Civic traveling northbound on Cayuga Street initiated an unprotected left turn in the intersection.
+
+The Cruise AV hard braked but, shortly thereafter, the Honda Civic made contact with the Cruise AV, damaging the back left bumper of the
+Cruise AV. Police were not called to the scene and no injuries were reported.

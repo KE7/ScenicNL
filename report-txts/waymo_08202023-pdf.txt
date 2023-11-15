@@ -1,0 +1,9 @@
+On August 20, 2023 at 5:49 PM PT the mirror of a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was
+struck by a cyclist on Martin Luther King Jr. Drive at Crossover Drive.
+
+The Waymo AV was stopped in traffic on eastbound Martin Luther King Jr. Drive at the intersection with Crossover Drive, when a cyclist
+that had been traveling behind the Waymo AV passed the Waymo AV on the left. As the cyclist passed the Waymo AV, the cyclist made
+contact with the driver side mirror of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in
+
+autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained damage and the cyclist did not
+stop, leaving the scene without exchanging information.

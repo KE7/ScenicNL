@@ -1,0 +1,3 @@
+A Cruise autonomous vehicle ("Cruise AV") in conventional mode was involved in a collision on eastbound Fulton Street between Steiner
+Street and Pierce Street. While the Cruise AV was parked parallel to the curb on the street, another vehicle attempting to park made contact
+with the rear bumper of the Cruise AV, damaging the Cruise AV's rear bumper. There were no injuries and police were not called.

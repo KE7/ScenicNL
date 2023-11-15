@@ -34,12 +34,13 @@ class Cache:
             with self.conn:
                 self.conn.execute(
                     '''
-                    CREATE TABLE IF NOT EXISTS cache (
+                    CREATE TABLE IF NOT EXISTS kv_store (
                         key TEXT PRIMARY KEY,
                         value TEXT
                     )
                     '''
                 )
+                self.conn.commit()
 
     def set(self, key: str, value: list[Union[str, APIError]]) -> None:
         # Convert APIErrors into dicts so they're json serializable

@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in manual mode, was parked in a parking space in a Costco garage facility. As the
+
+Cruise AV operator was reversing out of the parking space, the Cruise AV made contact with a cement pillar, damaging the front driver side
+radar assembly of the Cruise AV. There were no reported injuries.

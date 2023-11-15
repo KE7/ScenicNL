@@ -1,0 +1,7 @@
+On October 18, 2021 at 12:57 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving an SUV at Cesar Chavez and Evans Avenue.
+
+As the Waymo AV approached a right turn from Cesar Chavez onto Evans Avenue, it braked behind stopped traffic. An SUV following
+behind the Waymo AV made contact with the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was
+engaged in autonomous mode, and a test driver was present in the driver’s seating position. The Waymo AV sustained minor damage to its
+rear bumper and trunk, and the SUV sustained minor damage to its front bumper and hood.

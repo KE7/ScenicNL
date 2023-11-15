@@ -1,0 +1,9 @@
+A Cruise autonomous vehicle (“Cruise AV”), was in autonomous mode and traveling northbound on De Haro Street between 23rd and 22nd
+streets. The AV braked in response to a pedestrian in the middle of the intersection on De Haro, running directly towards the AV. The
+AVTO, concerned for their safety, disengaged from autonomous mode to attempt to move the AV around the pedestrian who was still
+rapidly heading directly towards the AV in the center of the street. The Cruise AV was then struck by a skateboarder that suddenly entered
+the crosswalk from the southeast sidewalk, coming downhill from 22nd street. Contact was made by the skateboarder to the Cruise AV.
+This caused damage to the front quarter panel area and the articulating radar of the Cruise AV. Because the skateboarder appeared injured,
+
+911 was immediately called. The skateboarder left the scene shortly after the incident and before the police arrived. The Cruise AVTOs
+remained on the scene and gave a statement to the police.

@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling northbound on Spruce Street approaching Euclid Avenue in San Francisco was
+involved in a collision. The Waymo AV had been traveling in autonomous mode on Spruce Street when the Waymo AV test driver
+disengaged autonomous mode. Approximately 6 seconds after the disengagement, the Waymo AV’s passenger side rearview mirror made
+contact with an unattended parked passenger vehicle’s driver side rearview mirror at approximately 15 MPH. The Waymo AV sustained
+minor damage to its passenger side rearview mirror, and the passenger vehicle sustained minor damage to its driver side rearview mirror. No
+injuries were reported. The Waymo AV test driver left insurance information with the parked vehicle.

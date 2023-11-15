@@ -1,0 +1,8 @@
+On April 3, 2023 at 10:56 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving an SUV on Jack London Alley at Varney Place.
+
+While traveling northwest on Jack London Alley, the Waymo AV came to a stop to yield to an oncoming SUV in a narrow passageway. The
+SUV proceeded around the Waymo AV and made contact with the left rear sensor housing of the Waymo AV. At the time of the impact, the
+
+Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). The driver of
+the SUV stopped briefly but left before sharing their information. The Waymo sustained damage.

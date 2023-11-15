@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southeast bound on Howard Street near the
+intersection with 9th Street when a bicyclist in the right adjacent dedicated bike lane veered away from a wayward pedestrian throwing an
+unknown object in the bicyclist's direction in the crosswalk. The driver of the Cruise AV disengaged from autonomous mode and, shortly
+thereafter, the bicyclist veered into the Cruise AV's lane and made contact with the right front passenger door of the Cruise AV. No injuries
+were reported at the scene by either party. Police were called but not dispatched to the scene. The bicyclist later reported injuries.

@@ -1,0 +1,6 @@
+On July 14, 2021 at 4:47 PM PDT, a Waymo Autonomous Vehicle (“Waymo AV”) was proceeding straight westbound on Clement Street
+in San Francisco, when a passenger vehicle struck the Waymo AV from behind two times. The passenger vehicle then struck the Waymo
+AV a third time, on the left side of the Waymo AV, as it passed on the left, then immediately fled the scene. The San Francisco Police
+
+Department is investigating the event as a criminal act. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in
+autonomous mode, and a test driver was present (in the driver’s seating position).

@@ -1,0 +1,31 @@
+Here is a comprehensive tutorial about the scenic3_api. The Scenic-3 script is structured in a way that initially sets up the scenario by specifying the map, model, and any constants, followed by defining behaviors and object placements for scenario dynamics.
+
+--- Setup ---
+In scenic3_api, to specify a map, you would use the `set_map` method, for example: `scenic3.set_map('../../../assets/maps/CARLA/Town01.xodr')`.
+To specify the model, you would use the `set_model` method, for example: `scenic3.set_model('scenic.simulators.carla.model')`.
+Constants can be defined using the `define_constant` method, for example: `scenic3.define_constant('EGO_SPEED', 10)`.
+The set of maps allowed is only of the format ../../../assets/maps/CARLA/Town01.xodr for Town01, Town02, Town03, Town04, Town05, Town06, Town07.
+No other map can be accessed. Please do not access exact streets or lanes as a result.
+
+--- Behavior Definitions ---
+In scenic3_api, behaviors are defined using the `define_behavior` method.
+Inside the behavior, code is indented in python style and specified using the `do` method followed by the behavior name and parameters.
+For example (multiline with indents): `scenic3.define_behavior('EgoBehavior', speed=10)`.
+`scenic3.do('FollowLaneBehavior', speed, indent=1)`.
+Looping structures can be created with `do_while`, `do_until`, and `try_except` methods.
+For example (multiline with indents): `scenic3.define_behavior('EgoBehavior', safety_distance=10)`.
+`scenic3.do_while('FollowLaneBehavior', speed, 'withinDistanceToAnyObjs(self, DISTANCE_THRESHOLD)', indent=1)`.
+Interrupts can be used to specify conditions under which the behavior should be interrupted.
+For example: `scenic3.interrupt('withinDistanceToAnyCars(self, DISTANCE_THRESHOLD)')`.
+After an interrupt, the `take` method can be used to specify an action to take.
+For example: `scenic3.take('SetBrakeAction', BRAKE_ACTION)`.
+All actions and values must be specified before being used as values, besides very few scenic built-ins included in the examples.
+Any try block must have at least one corresponding except block for the program to work properly.
+
+--- Assignments and Object Placements ---
+New objects can be created and placed using the `new` method, for example: `scenic3.new(var_name='ego', obj_type='Car', at='spawnPt', blueprint='EGO_MODEL', behavior='EgoBehavior(EGO_SPEED)')`.
+Spatial relations between objects can be defined using the `spatial_relation` method, for example: `scenic3.spatial_relation('ego', 'following', 'leadCar', distance='Range(-15, -10)')`.
+
+--- Output Rules ---
+Your output must be only executable Python code that sets up the scenario. Every line should invoke a method or nested method of the form scenic3.<method>(args) - every line should start wiht scenic3.<method>(args) and no placeholder values <> should be present. No explanation or imports needed. No simulate command needed.
+Please enter all function inputs with strings surrounding, ie scenic3.do('AvoidObstacleBehavior', speed='EGO_SPEED', indent=1).

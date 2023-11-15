@@ -1,0 +1,4 @@
+An Apollo autonomous vehicle (“AV”) was traveling westbound on Ortega Street in San Francisco in conventional mode with a safety
+operator driving. At the intersection with 46th Ave., the right front of the AV made contact with the curb and the AV traveled onto the
+curb. The safety operator was able to drive off the curb and back onto the street. No other vehicles or property were involved. There were
+no injuries and the police were not called. The AV sustained minor damage to right wheel fender shield and the right lower bumper.

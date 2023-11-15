@@ -1,0 +1,8 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was at a complete stop in response to a red light on
+eastbound Martin Luther King Jr. Drive at the intersection with Crossover Drive. A white Honda SUV approaching from the rear in the lane
+to the left of the Cruise AV changed into the Cruise AV’s lane, came to a complete stop behind the Cruise AV, and then proceeded forward
+to make contact with the rear driver side bumper of the Cruise AV. The white Honda SUV reversed backwards several feet, proceeded
+forward, came to a complete stop, and then proceeded forward to make contact with the Cruise AV again. This caused damage to the Cruise
+
+AV’s rear driver side fascia. The driver of the other vehicle left the scene without exchanging information. Both Cruise AV operators
+reported injuries.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was turning from northbound Stanyan St. to westbound on
+Parnassus Street. As the Cruise AV was starting to turn, a black GMC Denali behind the Cruise AV attempted to overtake the Cruise AV
+causing the AVTO to disengage from autonomous mode. The GMC Denali made contact with the front driver side bumper of the Cruise
+
+AV, which caused minor damage to the front bumper. There were no injuries and police were not called. The driver of the GMC Denali did
+not stop after the incident and could not be contacted.

@@ -1,0 +1,7 @@
+On September 17, 2021 at 11:39 AM PDT a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on the 400 block of Washington Street. While in autonomous mode, the Waymo AV was stopped
+behind a double-parked passenger vehicle in the right-hand lane of traffic with slow-moving (same directional) traffic to its left. The driver
+of the Waymo AV transitioned the vehicle to manual mode and initiated a lane change into the congested left-hand lane. Before the driver
+
+of the Waymo AV could complete this maneuver, the passenger vehicle in front of the Waymo AV shifted into reverse and proceeded to
+make contact with the rear right sensor of the Waymo AV. Both vehicles sustained minor damage.

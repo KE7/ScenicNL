@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”) being driven in conventional mode was involved in a collision while traveling eastbound on
+13th Street near the intersection with Bryant Street. While pulling up behind another vehicle in the left turn lane, the driver of the Cruise AV
+
+accelerated and made contact with the other vehicle’s right rear bumper, damaging the Cruise AV’s front right headlight, front center radar,
+and radar assembly. There were no injuries and police were not called.

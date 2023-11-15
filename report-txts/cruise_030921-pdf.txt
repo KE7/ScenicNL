@@ -1,0 +1,3 @@
+A Cruise autonomous vehicle (“Cruise AV”) operating in manual mode was traveling southwest on Folsom Street. When the Cruise AV
+was turning right onto Fremont Street, it made contact with the curb at the front passenger tire. This caused damage to the front right tire of
+the Cruise AV. There were no other vehicles or property involved. There were no injuries and the police were not called.

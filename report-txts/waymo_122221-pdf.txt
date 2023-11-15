@@ -1,0 +1,8 @@
+On December 22, 2021 at 12:35 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle at Cesar Chavez and Valencia Street.
+
+While traveling in manual mode at approximately 25 MPH on westbound Cesar Chavez, the Waymo AV proceeded through a green light
+into the intersection at Valencia Street. A passenger vehicle traveling southbound on Valencia Street with no headlights on entered the same
+intersection against the light, making contact with the Waymo AV at approximately 14 MPH. At the time of the impact, the Waymo AV’s
+Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. The Waymo AV sustained moderate
+damage to the passenger side rear quarter panel. The other vehicle left the scene without exchanging information.

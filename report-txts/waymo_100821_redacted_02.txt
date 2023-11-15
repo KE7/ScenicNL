@@ -1,0 +1,7 @@
+On October 8, 2021 at 6:39 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was ina
+collision involving a passenger vehicle at Mission Street at Avalon Avenue. While traveling northwest on Mission Street in autonomous
+mode, the Waymo AV navigated around a double-parked vehicle stopped in the right lane. After re-entering the right lane, the Waymo AV
+came to a complete stop behind a second passenger vehicle, at which time the driver of the Waymo AV transitioned into manual mode. The
+
+second passenger vehicle reversed into the Waymo AV, making contact with its front bumper. Both vehicles sustained minor bumper
+damage.

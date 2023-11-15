@@ -1,0 +1,5 @@
+On August 31,2021 at 7:30 AM PDT, a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving another vehicle near the intersection of 25th Street at York Street. The Waymo AV was stopped near the end of the 2500
+block of 25th Street after having executed a pull-over in autonomous mode, at which time the operator of the Waymo AV took manual
+control of the Waymo AV and proceeded into the driving lane. The Waymo AV then made contact with the right rear fender of a passenger
+vehicle passing the Waymo AV on the left side. Both vehicles incurred minor damage.

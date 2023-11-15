@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) in autonomous mode was yielding to check for cross traffic while in the slip lane to turn
+from southbound Shoreline Boulevard to westbound El Camino Real in Mountain View when it was rear-ended by a passenger vehicle at
+approximately 5 MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger vehicle had minor damage to its
+front bumper. The two Waymo AV operators reported neck/back pain but declined medical attention at the scene.

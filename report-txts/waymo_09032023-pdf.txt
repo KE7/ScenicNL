@@ -1,0 +1,6 @@
+On September 3, 2023 at 12:25 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in Los Angeles, California was in a
+collision involving a passenger car on East 8th Street and South Main Street.
+
+The Waymo AV was parked on the right side of East 8th Street when a passenger car approached from the left and made contact with the
+left side mirror of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was
+operating the Waymo AV in manual mode. Both vehicles sustained damage.

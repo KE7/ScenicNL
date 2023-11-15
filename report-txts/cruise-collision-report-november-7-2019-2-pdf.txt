@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling eastbound on 24th Street at the intersection with
+Mission Street when the Cruise AV yielded to an electric scooterist traveling northbound on Mission Street and violating a red light. The
+driver of the Cruise AV disengaged from autonomous mode and, shortly thereafter, the electric scooterist made contact with the right rear
+corner of the Cruise AV, damaging the Cruise AV’s right rear fascia and brake light. The electric scooterist left the scene without
+exchanging information. There were no injuries and police were not called.

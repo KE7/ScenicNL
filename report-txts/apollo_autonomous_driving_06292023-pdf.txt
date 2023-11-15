@@ -1,0 +1,9 @@
+On June 29, 2023 at 3:39 PM PDT, an Apollo Autonomous Vehicle (“Apollo AV”) operating in San Francisco, California, was in a
+collision involving a scooter on Moraga Street near 34th Ave.
+
+The Apollo AV was traveling westbound on Moraga Street passing the intersection with 34th Ave. The intersection has stop signs clearly
+installed at all four ways, which require vehicles to make full stop before entering the intersection. The Apollo AV made a full stop, entered
+and passed approximately 75% of the intersection. A person on scooter coming southbound from 34th Ave., approached the intersection.
+The person on scooter entered the intersection without stopping, then made contact with the passenger rear-side of Apollo AV. Our Apollo
+AV operator immediately disengaged the AV, pulled over to the closest safe place to park, got out of the car to check the person on scooter,
+who already left the scene on his scooter without exchanging any information. The Apollo AV had small minor paint scratch, which do not

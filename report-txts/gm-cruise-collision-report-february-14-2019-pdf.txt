@@ -1,0 +1,4 @@
+Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southbound on Gough Street at the intersection
+with Fell Street when the Cruise AV began to yield to a car on its right. The driver of the Cruise AV disengaged from autonomous mode,
+and shortly thereafter, another vehicle made contact with the center rear bumper of the Cruise AV, damaging the rear radar mounting
+bracket of the Cruise AV. There were no injuries and police were not called.

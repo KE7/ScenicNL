@@ -1,0 +1,7 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling northbound on Jones Street approaching Clay Street in San Francisco was
+involved in a collision. After the Waymo AV made a right turn from Pleasant Street in autonomous mode, the Waymo AV test driver
+disengaged autonomous mode to maneuver past an oncoming vehicle on Jones Street that was drifting toward the Waymo AV. While in
+manual mode, the Waymo AV’s passenger side view mirror then made contact with an unoccupied parked passenger vehicle’s driver side
+view mirror at approximately 6 MPH. The Waymo AV sustained minor damage to its passenger side view mirror. The unoccupied
+passenger vehicle’s driver-side mirror was cracked, but most or all of the damage appeared to have been pre-existing. No other damage was
+observed to the unoccupied passenger vehicle. No injuries were reported at the scene.

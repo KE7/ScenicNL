@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV), operating in autonomous mode, was yielding to oncoming traffic prior to making a left turn
+onto northbound Palm Avenue from eastbound Geary Boulevard when another vehicle made contact with the rear bumper of the Cruise AV.
+
+There were no injuries reported at the scene by either party and police were not called. The Cruise AV tester sitting in the front passenger
+seat later mentioned neck pain.

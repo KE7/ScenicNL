@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling straight through a green light northbound on
+Fillmore Street at the intersection with Fell Street when another vehicle, traveling westbound and violating a red light on Fell Street, came
+into the Cruise AV’s path. The driver of the Cruise AV disengaged from autonomous mode, and thereafter, the Cruise AV and the other
+
+vehicle made contact, damaging the other vehicle’s left rear door and the Cruise AV’s front bumper assembly, grill, and both front wheel
+wells. There were no injuries and police were not called.

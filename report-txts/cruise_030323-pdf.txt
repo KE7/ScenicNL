@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling eastbound on Bryant Street in the
+rightmost lane between 11th Street and 10th Street. As the Cruise AV proceeded straight into the intersection with 10th Street, a semi-trailer
+truck traveling in the lane to the left of the Cruise AV began to make a right turn onto 10th Street and crossed into the Cruise AV’s lane
+without a turn signal. The Cruise AV braked and the semi-trailer truck made contact with the left side of the Cruise AV, causing damage to
+the driver side front, rear, and bumper of the Cruise AV. The parties exchanged information and there were no injuries.

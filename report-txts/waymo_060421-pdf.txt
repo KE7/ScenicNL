@@ -1,0 +1,9 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in manual mode southbound on Jones Street at Ellis Street in San Francisco
+when a cyclist fell while passing between the Waymo AV and another vehicle. The Waymo AV test driver was traveling approximately 15
+MPH and then gradually slowed and came to a stop for a passenger vehicle in its lane making a right turn onto Ellis Street. A cyclist
+following the Waymo AV at approximately 19 MPH then attempted to pass the Waymo AV on the left side and travel between the Waymo
+AV’s driver’s side and a faster-moving passenger vehicle in the left adjacent lane. As the cyclist attempted to overtake the Waymo AV and
+was in turn being overtaken by the adjacent passenger vehicle, the cyclist fell between the two vehicles. As the bicycle was falling, the
+bicycle’s front tire appears to have made contact with the rear driver’s side wheel of the Waymo AV, and the cyclist appears to have made
+contact with the side of the other passenger vehicle in the left adjacent lane. The Waymo AV sustained no damage. The passenger vehicle
+did not stop and left the scene. The cyclist was transported from the scene and reportedly treated for potential head injuries.

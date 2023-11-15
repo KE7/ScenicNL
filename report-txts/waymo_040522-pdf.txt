@@ -1,0 +1,6 @@
+On April 5, 2022 at 7:55 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a passenger car on Quintara Street at 20th Avenue.
+
+The Waymo AV came to a stop at a stop sign on Quintara Street at 20th Avenue, and as it was about to proceed, a passenger vehicle behind
+the Waymo AV then made contact with the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged
+in autonomous mode, and a test driver was present (in the driver’s seating position). Both vehicles sustained minor damage.

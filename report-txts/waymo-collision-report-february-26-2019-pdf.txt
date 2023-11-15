@@ -1,0 +1,8 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode at the intersection of Miramonte Avenue and Covington
+Road in Los Altos when it was involved in a collision. The Waymo AV was traveling northbound on Miramonte Avenue, when it reached a
+four-way stop sign intersection. The Waymo AV stopped to yield to another vehicle at the intersection, at which time a passenger vehicle
+rear-ended the Waymo AV at approximately 39 MPH. At the time of the collision the Waymo AV had been stopped for approximately 1.5
+seconds. The Waymo AV sustained major damage to its rear bumper, rear hatch, and rear quarter panels, and the passenger vehicle
+
+sustained major damage to its front bumper, hood, and front quarter panels. First responders attended to the scene, but neither party reported
+injuries.

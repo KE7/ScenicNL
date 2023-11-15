@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in manual mode westbound on Euclid Avenue in San Francisco when it was
+involved in a collision. The test driver failed to properly navigate a roundabout median at Collins Street and made contact with it at
+
+approximately 28 MPH. The Waymo AV sustained moderate damage to its front bumper and undercarriage, and the median sustained minor
+damage. No injuries were reported at the scene.

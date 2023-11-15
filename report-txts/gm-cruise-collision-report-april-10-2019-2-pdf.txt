@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was approaching the intersection prior to making a left turn
+from southbound Lyon Street onto eastbound California Street when the Cruise AV yielded to an overtaking vehicle on its left proceeding
+straight on southbound Lyon. Once the overtaking vehicle completed its pass, the Cruise AV attempted to continue its left turn when
+
+another vehicle directly behind the Cruise AV, attempting to turn right on California, made contact with the Cruise AV’s right rear bumper,
+damaging the bumper. There were no injuries and police were not called.

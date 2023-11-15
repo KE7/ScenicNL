@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was traveling westbound on Balboa Street. As the Cruise AV
+was in the intersection with 24th Avenue, a silver Toyota Tundra traveling northbound on 24th Avenue failed to yield and continued to
+enter the intersection. The AVTO disengaged from autonomous mode; nevertheless the Toyota made contact with the Cruise AV's left rear
+panel and damaged the rear left bumper. There were no injuries and police were not called.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling eastbound on Sacramento Street
+between Lyon Street and Baker Street. The Cruise AV approached a motorized articulating boom lift (““ABL”), which was stopped in the
+Cruise AV’s lane of travel. As the Cruise AV began to maneuver around and to the left of the ABL, the Cruise AV made contact with the
+
+arm of the ABL, which was elevated above the roadway. This caused damage to the Cruise AV’s roof Lidar assembly. There were no
+reported injuries.

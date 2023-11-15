@@ -6,8 +6,11 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
+        "bs4",
         "scenic==3.0.0b2",
         "openai>=0.28,<=0.28.1",
+        "pdf2image",
+        "pyocr",
         "SQLAlchemy",
         "tenacity",
     ],

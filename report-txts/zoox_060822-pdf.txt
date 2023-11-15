@@ -1,0 +1,3 @@
+Zoox received an allegation regarding contact between a bicyclist and a Zoox vehicle at the intersection of Harrison and 13th Street in San
+Francisco. After a thorough search of available sensor data and other internal sources, Zoox was not able to identify any such incident, nor
+any additional related information including whether a Zoox vehicle was involved or in autonomy.

@@ -1,0 +1,7 @@
+A Zoox vehicle in autonomy had made a right turn from Oakdell Rd. onto Santa Cruz Ave. in Menlo Park, CA and was preparing to make
+an immediate, unprotected left turn onto Sharon Road. The Zoox vehicle was slowing and moving at approximately 2 mph with its brake
+lamps and left turn indicator illuminated, yielding to an oncoming vehicle with the right of way. A following vehicle - traveling at
+approximately 24 mph - then struck the Zoox vehicle's right rear bumper, and that vehicle's driver airbag appeared to have deployed on
+impact. The Zoox operator disengaged autonomy, proceeded with the left turn, and pulled over. The following vehicle continued its path of
+travel, veered out of the lane, and collided with a tree on the left side of the road. The Menlo Park Police Department was called to the
+scene. Two Zoox operators sustained minor injuries and it is unknown if the driver of the other vehicle sustained injuries.

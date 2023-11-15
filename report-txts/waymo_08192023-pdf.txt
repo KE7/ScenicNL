@@ -1,0 +1,7 @@
+On August 19, 2023 at 4:45 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger car on 13th Street at Mission Street.
+
+The Waymo AV entered the slip lane which connects westbound 13th Street to northbound Mission Street and came to a stop to yield to
+cross-traffic on Mission Street. As the Waymo AV was stopped, the front of the passenger car which was traveling behind the Waymo AV
+made contact with the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode,
+and a test driver was present (in the driver’s seating position). The Waymo AV sustained damage.

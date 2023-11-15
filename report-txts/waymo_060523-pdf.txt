@@ -1,0 +1,7 @@
+On June 5, 2023 at 12:53 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a van in a parking lot at 3911 3rd Street.
+
+The Waymo AV came to a stop while yielding to a pickup truck which was reversing into a perpendicular parking space in front of the
+Waymo AV. While the Waymo AV was stopped, a van which was in a parking space immediately to the right of the Waymo AV began
+reversing out of the parking space. The rear of the van made contact with the right side of the Waymo AV. The Waymo AV sustained
+damage. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode.

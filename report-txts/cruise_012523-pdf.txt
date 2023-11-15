@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in manual mode, was traveling northbound on 13th Street in the rightmost lane
+between Folsom Street and South Van Ness Avenue. At the same time, a Model 3 Tesla traveling in the adjacent center lane alongside the
+Cruise AV attempted to change lanes in front of the Cruise AV over a solid white line into the rightmost lane in which the Cruise AV was
+traveling. During this maneuver, the Model 3 Tesla made contact with the Cruise AV’s driver side rear wheel and wheel well, and driver
+
+side rear passenger door, damaging the Tesla’s front passenger side wheel well . The parties exchanged information and there were no
+reported injuries.

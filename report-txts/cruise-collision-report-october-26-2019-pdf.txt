@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southeast bound on The Embarcadero near the
+intersection with Battery Street when the Cruise AV yielded to another vehicle in the left adjacent lane that encroached into the Cruise AV’s
+lane. The driver of the Cruise AV disengaged from autonomous mode and, shortly thereafter, a second vehicle behind the Cruise AV made
+contact with the rear bumper of the Cruise AV, damaging the Cruise AV’s right rear bumper, fascia, signal lamp, and radar assembly. There
+
+were no injuries reported at the scene by either party and police were not called. Both of the Cruise AV test operators later mentioned neck
+and back injuries.

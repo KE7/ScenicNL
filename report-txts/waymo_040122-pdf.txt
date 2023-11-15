@@ -1,0 +1,9 @@
+On April 1, 2022 at 2:27 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a passenger vehicle on 19th Avenue at Lincoln Way.
+
+The Waymo AV was in autonomous mode and proceeding southbound on 19th Avenue in the rightmost lane, with a passenger vehicle
+traveling parallel in the left adjacent lane. As the two vehicles approached Lincoln Way, the passenger vehicle cut into the Waymo’s lane
+and braked before turning right on Lincoln Way. As the passenger vehicle executed the right turn, the Waymo AV test driver transitioned to
+manual mode, applied the brakes, but made contact with the passenger side rear corner of the passenger vehicle. At the time of the impact,
+the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. The other party
+immediately left the scene of the event. The Waymo AV sustained minor damage.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in manual mode, was traveling northbound in the rightmost lane on Van Ness
+Avenue between Eddy Street and Ellis Street. The Cruise test driver began to maneuver around a double-parked vehicle by merging left into
+the center lane. Shortly thereafter, a 2013 Nissan Juke made contact with the Cruise AV's driver side rear passenger door and front driver
+
+side fender, damaging the driver side rear passenger door, front driver side fender, front driver side radar equipment and front driver side
+bumper. There were no reported injuries at the scene by either party.
