@@ -87,6 +87,11 @@ def main():
     show_default=True,
     help="Number of files to include for string matching component. Zero runs on all files."
 )
+@click.option(
+    "--verbose",
+    is_flag=True,
+    help="Boolean condition to display or omit verbose output."
+)
 
 def main(
     query_path: Path,
@@ -97,6 +102,7 @@ def main(
     cache_path: Path,
     ignore_cache: bool,
     count: int,
+    verbose: bool,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
@@ -112,7 +118,7 @@ def main(
             full_path = os.path.join(query_path, filename)
             if filename.endswith('.pdf'):
                 parsed_text = PDFParser.pdf_from_path(full_path)
-                print(parsed_text)
+                if verbose: print(parsed_text)
                 query_list.append(parsed_text)
                 dest_path = os.path.join(text_path, filename[:-4] + '.txt')
                 with open(dest_path, 'w') as file:
@@ -120,13 +126,13 @@ def main(
             elif filename.endswith('.txt'):
                 with open(full_path, 'r') as file:
                     parsed_text = file.read()
-                    print(parsed_text)
+                    if verbose: print(parsed_text)
                     query_list.append(parsed_text)
     else:
         with open(query_path) as file:
             for line in file:
                 query_list.append(line.strip())
-                print(line.strip())
+    if not verbose: print('Loaded all queries')
 
     example_list = []
 
@@ -136,6 +142,7 @@ def main(
             if os.path.isfile(file_path):
                 with open(file_path, 'r') as file:
                     example_list.append(file.read())
+    if not verbose: print('Loaded all examples')
 
     model_input_list = []
     for query in query_list:
