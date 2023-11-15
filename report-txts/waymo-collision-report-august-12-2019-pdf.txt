@@ -1,0 +1,7 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was in autonomous mode on northbound S. Rengstorff Avenue at Crisanto Avenue in
+Mountain View when it was rear-ended. After starting to proceed following a red-to-green traffic light change, the Waymo AV yielded to a
+bicyclist who merged from the bike lane into the Waymo AV’s travel lane, and a passenger vehicle then made contact with the rear bumper
+of the Waymo AV. The passenger vehicle was traveling at approximately 8 MPH, and the Waymo AV was traveling at approximately 3
+
+MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger vehicle sustained minor damage to its front bumper.
+There were no injuries reported at the scene.

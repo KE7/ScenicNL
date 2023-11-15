@@ -1,0 +1,8 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling eastbound in the rightmost lane on
+16th Street between Mission Street and Wiese Street. Ahead of the Cruise AV, a delivery truck was double-parked in the rightmost lane of
+eastbound 16th Street. The Cruise AV began to maneuver around the double-parked vehicle by changing lanes. At the same time, a 2010
+Honda Civic traveling behind the Cruise AV in the rightmost lane also began to maneuver and increase speed into the leftmost lane. Shortly
+thereafter, contact was made with the Cruise AV's side door, damaging the front driver side door and radar assembly. There were no
+
+reported injuries at the scene by either party and police were not called. The driver of the Honda Civic later claimed injuries related to the
+event.

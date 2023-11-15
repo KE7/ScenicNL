@@ -1,0 +1,7 @@
+On December 29, 2022 at 3:15 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on 3rd Street and Mariposa Street.
+
+The Waymo AV was stopped facing north on 3rd Street for a red light in the right lane of the three-lane street while in autonomous mode. A
+passenger vehicle approached from behind and stopped behind the Waymo AV before eventually proceeding forward and making contact
+with the rear of the Waymo AV while the AV was still stopped at the red light. At the time of the impact, the Waymo AV’s Level 4 ADS
+was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo sustained damage.

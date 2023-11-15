@@ -1,0 +1,7 @@
+On December 3, 2021 at 12:23 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a passenger vehicle at 16th Street at Market and Noe Street.
+
+As the Waymo AV approached the intersection of 16th Street and Market Street, it stopped behind traffic at a red light. After the Waymo
+AV was fully stopped, a passenger vehicle reversed out of a parking spot perpendicular to the Waymo AV and made contact with the
+passenger side rear corner of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode,
+and a test driver was present in the driver’s seating position. Both vehicles sustained minor damage to their rear bumpers.

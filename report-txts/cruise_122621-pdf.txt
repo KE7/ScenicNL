@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling eastbound on Fulton Street in the
+leftmost lane between 14th Avenue and Park Presidio Boulevard. A Toyota Sienna traveling southbound on 14th Avenue made an
+unprotected left turn to merge onto eastbound Fulton Street. The Cruise AV braked prior to the Cruise AV operator disengaging the Cruise
+AV from autonomous mode. The Cruise AV operator continued to brake but, shortly thereafter, the Toyota Sienna made contact with the
+Cruise AV, damaging the front left fender of the Cruise AV. Police were not called to the scene and no injuries were reported.

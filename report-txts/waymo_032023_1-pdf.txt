@@ -1,0 +1,8 @@
+On March 20, 2023 at 10:43 AM PST a Waymo Autonomous Vehicle (““Waymo AV”) operating in Los Angeles, California was in a
+collision involving an SUV on Venice Boulevard at La Cienega.
+
+The Waymo AV was stopped in the center lane of a three-lane road behind a passenger vehicle for a red light facing southwest on Venice
+Boulevard at La Cienega in autonomous mode. The light turned green while cross-traffic remained backed up in the intersection. The
+Waymo AV nudged forward and slowed to a stop, yielding for the blocking cross traffic. A passenger vehicle that had been stopped behind
+the Waymo AV proceeded forward and made contact with the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4
+ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained damage.

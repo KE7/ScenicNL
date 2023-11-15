@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in manual mode on the interchange from eastbound Alma Street about to
+merge onto southbound Oregon Expressway in Palo Alto when it was rear-ended. The Waymo AV was yielding to cross-traffic when a
+passenger vehicle made contact with the Waymo AV’s rear bumper at approximately 1 MPH. The Waymo AV sustained minor damage to
+the rear bumper, and the passenger vehicle sustained no damage. There were no injuries reported at the scene.

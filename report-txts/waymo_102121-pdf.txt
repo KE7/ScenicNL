@@ -1,0 +1,8 @@
+On October 21, 2021 at 1:55 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving a passenger vehicle at Larkin Street and O'Farrell Street.
+
+While in manual mode, the Waymo AV was slowly approaching stopped traffic ahead when a vehicle in the right adjacent lane started
+reversing into a parallel parking space. In the process, the front left bumper of the passenger vehicle scraped the right side panels and
+
+bumper of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the
+Waymo AV in manual mode. Both vehicles sustained minor damage.

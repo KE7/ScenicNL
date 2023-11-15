@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in supervised autonomous mode, was traveling southbound on Selby Street between
+Palou Avenue and Oakdale Avenue. The Cruise AV came to a stop behind a semi-trailer truck that was slowly reversing diagonally onto
+Selby Street from the intersection with Palou Avenue. As the semi-trailer truck began encroaching into the Cruise AV’s lane of travel, the
+Cruise AV operator disengaged from autonomous into manual mode and began reversing the Cruise AV, causing the Cruise AV to back
+into a different semi-trailer truck parked behind the Cruise AV. This caused damage to the Cruise AV’s rear passenger side wheel molding.
+The Cruise AV operator left information for the other party and there were no reported injuries.

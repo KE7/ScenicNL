@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling northbound on Divisadero Street through the
+intersection with Fell Street when the Cruise AV slowed down. The driver of the Cruise AV disengaged from autonomous mode and,
+
+shortly thereafter, another vehicle made contact with the Cruise AV’s rear bumper, damaging the rear bumper and fascia assembly. There
+were no injuries and police were not called.

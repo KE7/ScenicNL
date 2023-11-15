@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode in the slip lane from westbound Nita Avenue to
+northbound San Antonio Road in Palo Alto when it was rear-ended. The Waymo AV was yielding to approaching traffic when a
+commercial box truck made contact with the Waymo AV’s rear bumper at approximately 3 MPH. The Waymo AV sustained minor damage
+
+to its rear bumper, and the commercial box truck left without exchanging information. Waymo contacted the Palo Alto Police Department
+and a police report was filed. No injuries were reported at the scene.

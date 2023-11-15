@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in autonomous mode at the intersection of Brannan Street and Division
+Street in San Francisco when it was involved in a collision. The Waymo AV was stopped in traffic for a red traffic light on southbound
+Brannan Street at Division Street when a passenger vehicle behind the Waymo AV made contact with the Waymo AV’s rear bumper at
+approximately less than 1 MPH. The Waymo AV was stationary. The Waymo AV sustained minor damage to its rear bumper, and the
+passenger vehicle left the scene before exchanging information. No injuries were reported at the scene.

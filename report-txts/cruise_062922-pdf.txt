@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling eastbound on Clement Street
+between 10th Avenue and 9th Avenue. Following the intersection of 10th Avenue mid-block, while engaged in autonomous mode, a
+vehicle in an angled parking space on the right backed out into the same lane as the oncoming Cruise AV. The AV operator disengaged
+from autonomous into manual mode, and pulled to the left to avoid the vehicle backing up. At this time, contact by a cyclist was made at
+the rear driver side bumper of the Cruise AV. There were no reported injuries or damages at the scene by either party and police were
+not called. The following day on June 30, 2022, the cyclist claimed damages and injuries related to the event.

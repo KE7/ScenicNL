@@ -1,0 +1,6 @@
+On August 13, 2021 at 8:04 AM PDT, a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving a van at Oakdale Avenue and Toland Street. While in manual mode and traveling northwest on Oakdale Avenue, the Waymo AV
+was approaching slower lead traffic at the stop sign intersection at Toland Street. As the Waymo AV’s operator (in the driver’s seating
+
+position) slowed the Waymo AV, a van made contact with the rear of the Waymo AV. The Waymo AV sustained minor damage to the
+underside of its rear bumper; the van did not appear to sustain damage.

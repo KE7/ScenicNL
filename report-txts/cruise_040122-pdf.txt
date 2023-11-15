@@ -1,0 +1,9 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in driverless autonomous mode, was traveling eastbound on Bush Street toward the
+intersection with Larkin Street. The Cruise AV was traveling in the leftmost lane of three lanes of traffic. As the Cruise AV approached the
+intersection on a green light, a red SUV traveling in the same direction eastbound on Bush Street remained stopped in the middle lane at the
+intersection with Larkin Street. As the Cruise AV began to enter the intersection, the red SUV made a prohibited left turn onto Larkin Street
+from the middle lane on Bush Street, across both the left lane in which the Cruise AV was traveling and a lefthand turn lane. The Cruise AV
+braked to avoid the SUV turning into its lane and, shortly thereafter, the red SUV made contact with the Cruise AV, damaging the passenger
+
+side fender and front facia of the Cruise AV. The driver of the red SUV left the scene without exchanging information. There were no
+injuries and Cruise filed a police report.

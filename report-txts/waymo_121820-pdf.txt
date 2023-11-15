@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling northbound on Sanchez Street in San Francisco in autonomous mode when it
+entered the oncoming lane in order to proceed around a garbage truck and dumpster. As the Waymo AV maneuvered around the garbage
+truck and dumpster, the Waymo AV test driver disengaged autonomous mode and took control of the Waymo AV. As the test driver was
+attempting to re-enter the northbound lane in manual mode, the Waymo AV’s front driver’s side tire drove over the curb of a traffic island
+median and the Waymo AV sustained minor damage to its front bumper. No injuries were reported.

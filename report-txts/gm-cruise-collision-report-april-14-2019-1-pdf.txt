@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”) being driven in conventional mode was involved in a collision while traveling on northbound
+36th Avenue between Balboa and Anza Streets. While proceeding straight on 36th, the driver of the Cruise AV made contact with two
+unoccupied vehicles parked (“parked vehicle 1” and “parked vehicle 2”) on southbound 36th Avenue, damaging the front and rear driver
+side doors and side mirror of parked vehicle | and the front left bumper and wheel well of parked vehicle 2. The collision also resulted in
+damage to the Cruise AV’s front left radar, bumper, wheel well, and wheel axle. There were no injuries.

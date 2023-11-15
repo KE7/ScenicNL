@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was traveling Southwest on Minna Street between Sth Street
+and Mary Street. A white Mazda pulled out from a construction area without yielding, onto Minna Street. Seeing that the Mazda was not
+going to yield to oncoming traffic, the AVTO disengaged from autonomous mode and unsuccessfully attempted to avoid collision. The
+
+Mazda made contact with the Cruise AV causing damage to the front driver side bumper and fender of the Cruise AV. There were no
+injuries and the police were not called.

@@ -1,0 +1,9 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in manual mode at the intersection of McAllister Street and Larkin Street in
+San Francisco when it was involved in a collision. The Waymo AV was initially traveling eastbound on McAllister Street in autonomous
+mode, approaching the intersection at Larkin Street. When the Waymo AV reached the near-side crosswalk in the dedicated left turn lane, it
+came to a complete stop at the red traffic light. When the traffic light turned green, the Waymo AV moved forward slightly, partially
+entering the crosswalk, to begin staging for the turn, yielding to oncoming traffic and other road users. While waiting for an adequate
+clearance in traffic, the traffic light turned yellow. The Waymo AV remained stopped, declining to proceed into the intersection and make
+the left turn. While the AV was still stopped, the test driver took over manual control and proceeded to make the left turn. About 4 seconds
+later, the manually driven Waymo AV made contact with an individual riding a motorized scooter who had entered the crosswalk from the
+sidewalk at about 10 MPH against both vehicle and pedestrian traffic signals. The motorized scooter was traveling about 6 MPH and the

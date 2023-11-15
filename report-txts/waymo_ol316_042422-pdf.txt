@@ -1,0 +1,9 @@
+On April 24, 2022 at 4:36 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving an SUV on Lincoln Way at 17th Avenue.
+
+The Waymo AV was in autonomous mode and traveling on westbound Lincoln Way, when it slowed for the vehicle directly in front of the
+Waymo AV, which stopped shortly after passing 17th Avenue. Shortly after the Waymo AV came to a stop, the SUV behind the Waymo
+AV was rear-ended by a pickup truck, and the SUV then made contact with the rear of the Waymo AV. At the time of the impact, the
+
+Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). Both vehicles
+sustained minor damage.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling eastbound on Sacramento Street
+between Van Ness Avenue and Polk Street. The Cruise AV approached a semi-trailer truck that was stopped in the left lane of traffic. The
+Cruise AV stopped before maneuvering into the bus and taxi lane to pass the semi-trailer truck. As the Cruise AV was slowly maneuvering
+around the semi-trailer truck and merging back into the left lane of traffic, a Honda Accord traveling behind the Cruise AV attempted to
+pass the Cruise AV and made contact with the Cruise AV, damaging the rear passenger side bumper of the Cruise AV. The driver of the
+Honda Accord left the scene without exchanging information. There were no reported injuries.

@@ -1,0 +1,9 @@
+On April 11, 2022 at 10:36 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a SUV on Townsend Street and Embarcadero.
+
+While traveling southwest on Townsend Street in manual mode, the Waymo AV test driver approached a double-parked vehicle blocking
+traffic. The Waymo AV test driver pulled behind the double-parked vehicle. At this time, a SUV following closely behind the Waymo AV
+passed the Waymo AV on the left side, making contact with the rear left sensor of the Waymo AV. The SUV left the scene. At the time of
+
+the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. The Waymo
+AV sustained minor damage.

@@ -1,0 +1,9 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling northbound on 3rd Street in San Francisco in manual mode when it was
+rear-ended. The Waymo AV was traveling in autonomous mode at approximately 30 MPH in the leftmost lane as it approached the
+intersection at 24th Street. In this location there are traffic pylons on the left edge of the leftmost lane that separate this lane from the
+municipal tram line that operates in the median of 3rd Street. As the Waymo AV approached the intersection, a San Francisco MUNI city
+bus traveling at approximately 40 MPH in the right adjacent lane began to overtake the Waymo AV from the right, while moving toward the
+Waymo’s lane of travel. Due to the encroaching city bus and the pylons on the left edge of the Waymo AV’s lane, the Waymo AV began to
+brake. The Waymo AV test driver disengaged autonomous mode and took control of the Waymo AV. Approximately 1 second later, the
+passenger vehicle behind the Waymo AV made contact with the Waymo AV’s rear bumper at approximately 27 MPH. The Waymo AV was
+traveling approximately 4 MPH. The Waymo AV sustained significant damage to its rear bumper, and the passenger vehicle sustained

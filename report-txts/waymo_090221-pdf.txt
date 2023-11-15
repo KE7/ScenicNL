@@ -1,0 +1,6 @@
+On September 2, 2021 at 1:56 AM PDT, a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving an unoccupied parked passenger vehicle at the north end of 8th Avenue (a dead-end road). While performing a multipoint turn in
+autonomous mode, the Waymo AV was reversing at approximately 2 MPH when it made contact with the rear tail light of an unoccupied
+
+parked passenger vehicle. The contact caused a small break in the tail light cover of the parked vehicle and minor damage to the rear
+bumper of the Waymo AV.

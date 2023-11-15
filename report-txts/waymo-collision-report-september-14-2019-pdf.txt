@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode in a grocery store parking lot in Los Altos when a
+passenger vehicle reversed into it. Three passengers were exiting the Waymo AV when the passenger vehicle in the right adjacent parking
+spot began to reverse out of the parking spot and made contact with the Waymo AV’s passenger side rear quarter panel at approximately 1
+
+MPH. The Waymo AV sustained minor damage to its passenger side sliding rear door and rear quarter panel, and the passenger vehicle
+sustained minor damage to its rear bumper. No injuries were reported.

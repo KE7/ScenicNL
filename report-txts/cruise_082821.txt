@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was traveling southbound on Steiner Street between
+McAllister Street and Fulton Street. The Cruise AV was traveling 24.4 mph upon entering the intersection with Fulton Street on a green
+light. As the Cruise AV continued through the intersection, a bicyclist traveling eastbound on Fulton Street failed to stop for their red light
+and entered the intersection. The Cruise AV was disengaged from autonomous mode and the Cruise AV operator braked to a speed of 8.7
+mph and, shortly thereafter, the bicyclist made contact with the Cruise AV, damaging the front of the Cruise AV and the bicycle. The cyclist
+verbally reported they were okay. However, the Cruise AV Operator noticed minor injuries to the cyclict. Police and Emergency Medical
+Services were called, but the cyclist left the scene before the police or EMS arrived.

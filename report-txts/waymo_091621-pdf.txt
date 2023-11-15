@@ -1,0 +1,6 @@
+On September 16, 2021 at 5:14 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle at Palou Avenue and Selby Avenue. While making a left turn from Palou Avenue onto Selby
+Avenue in manual mode, the Waymo AV was struck by a passenger vehicle attempting to pass the Waymo AV on the left side using the
+
+oncoming traffic lane. The Waymo AV sustained minor damage to the left front fender. The other vehicle left the scene without exchanging
+information.

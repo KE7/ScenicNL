@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) test driver was parallel parking a Waymo AV in manual mode on 24th Street when a
+
+roof-mounted sensor on the Waymo AV made contact with a low-hanging tree branch. The Waymo AV’s sensor sustained minor damage.
+No injuries were reported.

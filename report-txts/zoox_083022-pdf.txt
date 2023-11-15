@@ -1,0 +1,3 @@
+A Zoox vehicle in autonomy was proceeding straight on Kearney Street in San Francisco, CA, in stop-and-go traffic. The Zoox vehicle
+came to a stop for a vehicle ahead when Vehicle Two made light contact with the Zoox vehicle's rear bumper from behind. There were no
+injuries and the police were not called.

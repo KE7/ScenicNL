@@ -1,0 +1,9 @@
+A Pony.AI autonomous vehicle ("Pony AV") in autonomous mode was traveling southbound on Pine Street heading towards Cameron Hills
+Drive. A passenger vehicle traveling southbound behind the Pony AV crossed the traffic line and entered the northbound lane of Pine Street
+in an attempt to pass the Pony AV. The Pony AV's speed remained consistent. After passing the Pony AV by about a quarter car length,
+the passenger vehicle abruptly turned back into the southbound lane of Pine Street such that it was in very close proximity to the front of the
+Pony AV. The passenger vehicle then suddenly decelerated. The Pony AV's safety driver disengaged autonomous mode and manually
+applied the brake. As a result of the passenger vehicle's sudden deceleration, the Pony AV's front-left bumper made contact with the back-
+right bumper of the passenger vehicle causing minor scratches to both vehicles. The safety driver of the Pony AV and the driver of the
+
+naccenoer vehicle etanned tn eyvchange infarmatinn Noqa ininriec were rennrted and the nolice were not called

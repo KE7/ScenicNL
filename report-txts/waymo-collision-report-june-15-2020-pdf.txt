@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode on northbound Alma Street at Alma Village Circle in
+Palo Alto when it was rear-ended. The Waymo AV was stopped in traffic for a red light when a passenger vehicle made contact with the
+Waymo AV’s rear bumper at approximately 2 MPH. The Waymo AV sustained minor damage to its rear bumper and hatch, and the
+passenger vehicle sustained minor damage to its front bumper. No injuries were reported.

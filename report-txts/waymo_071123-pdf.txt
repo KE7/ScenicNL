@@ -1,0 +1,8 @@
+On July 11, 2023 at 10:13 AM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a passenger vehicle on Martin Avenue at Mullen Avenue.
+
+While completing a right turn from Martin Avenue onto Mullen Avenue in autonomous mode, the Waymo AV slowed to a stop while
+entering a narrow roadway. As the Waymo AV started to slowly proceed forward, the test driver transitioned the vehicle to manual mode
+
+and proceeded forward, making contact with a parked passenger vehicle. At the time of the impact, the Waymo AV’s Level 4 ADS was not
+engaged and a test driver was operating the Waymo AV in manual mode. Both vehicles sustained damage.

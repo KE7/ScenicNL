@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was traveling northbound on Sth Street and yielding to
+oncoming traffic before making a left turn onto westbound Howard Street. The Cruise AV was yielding to an oncoming electric scooterist
+when the light turned from green to yellow. The driver of the Cruise AV disengaged from autonomous mode to make the left turn and,
+shortly thereafter, the electric scooterist made contact with the right side of the Cruise AV, damaging the Cruise AV's front and rear
+passenger doors. The electric scooterist reported soreness and bruising and the San Francisco police were called. It is unknown at this time
+whether an investigation is being conducted by law enforcement.

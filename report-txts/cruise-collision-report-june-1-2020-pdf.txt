@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was coming to a complete stop in response to stopped traffic
+on southwest bound Mission Street near the intersection with 10th Street when another vehicle approaching from the rear made contact with
+the Cruise AV’s rear bumper, damaging the rear right fascia light bracket. The driver of the other vehicle left the scene without exchanging
+information. Both of the Cruise AV test operators mentioned back pain at the scene but police were not called.

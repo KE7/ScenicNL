@@ -1,0 +1,7 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling eastbound in autonomous mode on Oakdale Avenue approaching Industrial
+Street in San Francisco was involved in a collision. The Waymo AV was coming to a stop at a stop sign intersection on Oakdale Avenue at
+Industrial Street when a passenger vehicle behind the Waymo AV made contact with the Waymo AV’s rear bumper at approximately 20
+MPH. The Waymo AV was traveling approximately 1 MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger
+
+vehicle sustained minor damage to its front bumper. No injuries were reported at the scene; the Waymo AV test driver sought medical
+attention from urgent care the following day.

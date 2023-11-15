@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was in autonomous mode and beginning to proceed at a green traffic light to turn left from
+northbound Castro Street to northbound Central Expressway in Mountain View when it was rear-ended at approximately 6 MPH by a
+
+passenger vehicle. The Waymo AV sustained minor damage to the rear bumper, and the passenger vehicle left the scene without exchanging
+information. There were no injuries reported at the scene.

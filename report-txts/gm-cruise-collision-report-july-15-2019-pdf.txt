@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling eastbound on 14th Street at the intersection with
+Valencia Street when another vehicle began to change into the Cruise AV’s lane. The driver of the Cruise AV disengaged from autonomous
+
+mode and, shortly thereafter, the other vehicle made contact with the right front corner of the Cruise AV, damaging the Cruise AV’s right
+front fender. There were no injuries and police were not called.

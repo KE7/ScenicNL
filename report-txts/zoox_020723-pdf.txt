@@ -1,0 +1,3 @@
+A Zoox vehicle in autonomous mode was making a right turn to travel southwest onto 2nd Street from Folsom Street from lane | when
+Vehicle 2 crossed from lane 3 into the Zoox vehicle's lane and made contact with the Zoox vehicle's front sensors before making the right
+turn. Vehicle 2 did not stop before leaving the scene. No information was exchanged. There were no injuries and the police were not called.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling northbound on Noe Street at the intersection
+with 14th Street when the Cruise AV yielded to a pedestrian in the north crosswalk. The driver of the Cruise AV disengaged from
+autonomous mode, and shortly thereafter, another vehicle attempting a left turn from southbound Noe onto eastbound 14th made contact
+
+with the left rear corner of the Cruise AV, damaging the Cruise AV’s left rear fascia and wheel well. There were no injuries reported at the
+scene by either party and police were not called.

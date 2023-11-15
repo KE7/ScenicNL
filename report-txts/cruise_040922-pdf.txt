@@ -1,0 +1,8 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was stopped at a red light on northbound Van Ness
+Avenue at the intersection with Sacramento Street. The Cruise AV entered the intersection on a green light and continued straight through
+the intersection before braking and coming to a complete stop near the end of the intersection. At the same time, a Toyota Sedan on
+westbound Sacramento Street began was making an unprotected right turn on a red light onto northbound Van Ness Avenue behind the
+Cruise AV. Shortly thereafter, the Toyota Sedan rear-ended the Cruise AV and made contact with the Cruise AV's rear bumper, damaging
+
+the rear right bumper. The driver of the other vehicle left the scene without exchanging information. There were no injuries and a police
+report was later filed.

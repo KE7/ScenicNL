@@ -1,0 +1,8 @@
+On July 22, 2023 at 11:11 AM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a passenger vehicle on 13th Street east of Folsom Street.
+
+The Waymo AV was facing east while stopped just left of the right turn lane on 13th Street, with stopped traffic to the right. After waiting
+to merge, the Waymo AV reversed slightly to reroute and while doing so, a sensor on the right front of the Waymo AV made contact with
+
+the left rear side of a vehicle in the right turn lane. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous
+mode. The other vehicle sustained damage.

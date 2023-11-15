@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was being driven in manual mode on northbound Midvale Avenue approaching La Grange
+Avenue in Los Angeles when the Waymo AV’s right side mirror made contact with the left side mirror of a parked vehicle. The Waymo
+AV’s test driver was attempting to move to the right to give space to an oncoming vehicle when it made contact with the parked vehicle’s
+
+left side mirror while traveling at approximately 16 MPH. The side mirror on the Waymo AV and side mirror on the parked vehicle both
+sustained minor damage. No injuries were reported at the scene.

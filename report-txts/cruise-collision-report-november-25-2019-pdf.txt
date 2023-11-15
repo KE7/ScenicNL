@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was making a right turn from eastbound California Street
+onto southbound Hyde Street when another vehicle made contact with the Cruise AV’s rear bumper, damaging the rear fascia and the rear
+center radars. There were no injuries reported at the scene by either party and police were not called. Days after the collision, the Cruise AV
+test operator sitting in the driver's seat reported injuries. [originally filed 12/4/2019, amended 12/16/2019]

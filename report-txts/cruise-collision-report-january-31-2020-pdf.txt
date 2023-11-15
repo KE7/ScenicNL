@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was making a left turn onto eastbound Duboce Avenue from
+southbound Castro Street when the Cruise AV yielded to an oncoming car. The driver of the Cruise AV disengaged from autonomous mode
+and, shortly thereafter, another vehicle made contact with the rear bumper of the Cruise AV. There were no injuries reported at the scene by
+either party and police were not called. Both of the Cruise AV test operators later mentioned neck and back pain.

@@ -1,0 +1,8 @@
+On September 15, 2023, a Pony.ai autonomous vehicle (AV) collided with road debris while operating in supervised autonomous
+("Drivered") mode northbound on the 880 freeway, preparing to enter the Dixon Landing exit.
+
+Immediately prior to the incident, the safety driver noticed a flat item was in the center part of the lane. The driver disengaged from
+autonomous mode and attempted to dodge the debris. However, the debris struck the rear bumper slightly damaging it.
+
+Following the collision, the safety operator promptly drove the AV to Pony.ai's Fremont office. There were no injuries reported, and the
+police were not called.

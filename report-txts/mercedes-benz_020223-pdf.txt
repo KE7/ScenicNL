@@ -1,0 +1,8 @@
+The subject Mercedes-Benz DRIVE PILOT test vehicle was traveling between 15 — 20 mph in the #2 northbound lane on the 605 Freeway
+in California in stop and go traffic with the L3 ADS activated by the driver. The vehicle’s ADS determined that a truck traveling in the
+adjacent lane had a trajectory towards the Drive Pilot’s lane, and so the Mercedes-Benz test vehicle autonomously applied the brakes to
+avoid a collision. After applying the brakes and bringing itself to a standstill, the Mercedes-Benz was then struck in the rear bumper by a
+trailing semi-truck that did not stop in time. No injuries were reported, no airbags deployed in either vehicle, and both vehicles were able to
+be driven from the scene of the incident. The Mercedes-Benz vehicle experienced minor damage to the rear bumper, and no damage was
+observed on the semi-truck at the scene. The CA Traffic Collision Report for the subject incident noted a violation of California Vehicle
+Code 22350 (unsafe speed for traffic conditions) by the semi-truck in the #2 lane that struck the rear bumper of the Mercedes-Benz.

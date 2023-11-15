@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in driverless autonomous mode, was traveling in the rightmost lane on westbound
+Pine Street between Polk Street and Larkin Street. A white Lexus traveling in the middle lane of westbound Pine Street alongside the Cruise
+AV attempted to change into the rightmost lane in which the Cruise AV was traveling. Shortly thereafter, the white Lexus made contact
+with the left rear door of the Cruise AV, damaging the Cruise AV’s left rear door. The driver of the other vehicle left the scene without
+exchanging information. There were no injuries and a police report was later filed.

@@ -1,0 +1,7 @@
+On May 21, 2022 at 10:03 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving an SUV on Coleridge Street at Coso Avenue.
+
+The Waymo AV was parked on the right side of the road, facing northbound Coleridge Street. An SUV passed the Waymo AV in the traffic
+lane to the left of the Waymo AV and began shifting to the right as it approached Coso Avenue. The right side of the SUV made contact
+with the front left sensor of the stationary Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test
+driver was operating the Waymo AV in manual mode. Both vehicles sustained minor damage.

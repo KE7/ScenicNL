@@ -1,0 +1,10 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling northbound on Bartlett Street and turning left onto westbound 26th Street in
+San Francisco when it was involved in a collision. The Waymo AV had come to a complete stop at the 4-way stop sign intersection at
+Bartlett Street and 26th Street before proceeding to make a left turn in autonomous mode. As the Waymo AV was completing the left turn, a
+passenger vehicle traveling eastbound on 26th Street and turning left onto northbound Bartlett Street proceeded into the intersection without
+fully stopping at the stop sign. The Waymo AV began to brake for the passenger vehicle and the Waymo AV test driver disengaged
+autonomous mode and manually stopped the Waymo AV just prior to the passenger vehicle making contact with the driver’s side of the
+Waymo AV. The passenger vehicle was traveling approximately 5 MPH at the time of contact, and the Waymo AV was traveling
+
+approximately 0 MPH. The Waymo AV sustained minor damage to its driver’s side front wheel well and driver door, and the passenger
+vehicle sustained minor damage to its front bumper. No injuries were reported.

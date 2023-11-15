@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in manual mode when it was involved in a collision at the intersection of E.
+Charleston Road and San Antonio Road in Palo Alto. The Waymo AV was traveling eastbound on E. Charleston Road in manual mode
+when the test driver made a lane change from the middle lane to the adjacent right lane. As the test driver completed the lane change, the
+test driver braked before the intersection as the traffic light at San Antonio Road changed from yellow to red. A passenger vehicle then
+rear-ended the Waymo AV at approximately 15 MPH. The Waymo AV sustained minor damage to the passenger side of the rear bumper,
+and the passenger vehicle sustained minor damage to the driver side of the front bumper. No injuries were reported at the scene.

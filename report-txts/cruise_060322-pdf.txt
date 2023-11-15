@@ -1,0 +1,9 @@
+A Cruise autonomous vehicle ("Cruise AV") operating in driverless autonomous mode, was traveling eastbound on Geary Boulevard
+toward the intersection with Spruce Street. As it approached the intersection, the Cruise AV entered the left hand turn lane, turned the left
+turn signal on, and initiated a left turn on a green light onto Spruce Street. At the same time, a Toyota Prius traveling westbound in the
+rightmost bus and turn lane of Geary Boulevard approached the intersection in the right turn lane. The Toyota Prius was traveling
+approximately 40 mph in a 25 mph speed zone. The Cruise AV came to a stop before fully completing its turn onto Spruce Street due to the
+oncoming Toyota Prius, and the Toyota Prius entered the intersection traveling straight from the turn lane instead of turning. Shortly
+thereafter, the Toyota Prius made contact with the rear passenger side of the Cruise AV. The impact caused damage to the right rear door,
+panel, and wheel of the Cruise AV. Police and Emergency Medical Services were called to the scene, and a police report was filed. The
+Cruise AV was towed from the scene. Occupants of both vehicles received medical treatment for allegedly minor injuries.

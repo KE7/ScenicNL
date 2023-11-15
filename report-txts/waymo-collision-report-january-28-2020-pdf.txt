@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was being driven in manual mode and attempting to exit Santiago Villa Mobile Home Park
+in Mountain View by turning right from southbound Oro Way to westbound Space Park Way when it made contact with a stationary object.
+The Waymo AV’s test driver was making a sharp right turn and the Waymo AV’s rear passenger side door and wheel well scraped a wall at
+approximately 1 MPH. The Waymo AV sustained minor damage. No injuries were reported at the scene.

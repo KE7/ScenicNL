@@ -1,0 +1,8 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling southbound on Potrero Avenue
+between 15th Street and 16th Street. The Cruise AV approached the intersection with 16th Street as a Toyota Tundra traveling southbound
+on Potrero Avenue was making a right turn onto westbound 16th street. The Toyota Tundra was yielding for pedestrians and blocking the
+bike lane on southbound Potrero Avenue with Cyclist 1 and Cyclist 2 approaching. The Cruise AV braked for the two cyclists as Cyclist 3
+traveling behind the Cruise AV veered left to avoid another vehicle pulling out of a curbside parking spot. Cyclist 3 then made contact with
+
+the right rear bumper of the Cruise AV, falling off their bike. Cyclist 3 reported minor injuries related to the incident and police were not
+called.

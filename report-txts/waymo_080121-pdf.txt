@@ -1,0 +1,8 @@
+On August 1, 2021 at 4:48 PM PDT, a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was struck by a
+bicycle at Cabrillo Street and 23rd Avenue. The Waymo AV had stopped at a stop sign on Cabrillo Street and, when the intersection was
+clear, began to proceed westbound through the intersection with 23rd Avenue. At approximately the same time, a cyclist traveling
+northbound ran the stop sign on 23rd Avenue, began to turn right onto Cabrillo Street but immediately veered left to continue northbound
+across the crosswalk on Cabrillo Street, where it struck the rear driver’s side of the Waymo AV. The cyclist stayed upright and immediately
+rode away, continuing northbound on 23rd Avenue. The bicycle caused minor scratches and marks on the rear driver’s side bumper of the
+Waymo AV. The Waymo AV was operating with a driver (in the driver’s seating position), who transitioned the vehicle from autonomous
+to manual mode approximately | second before the impact occurred. At the time of impact, the Waymo AV was in manual mode.

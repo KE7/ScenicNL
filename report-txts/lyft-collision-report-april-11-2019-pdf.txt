@@ -1,0 +1,8 @@
+On April 11,2019 at approximately 11:31 am, a Lyft Autonomous Vehicle operating in manual mode was involved in an incident with a
+moving third party vehicle. The incident occurred after making a right turn from Natoma Street and 6th Street in San Francisco, CA. Lyft
+was proceeding straight in the right lane when the third party vehicle aggressively swerved into the right lane, cutting broadside in front of
+the Lyft AV, and came to a complete stop, causing unavoidable impact from the Lyft AV at approximately 1 mph. The Lyft AV sustained
+damage to the front left bumper, fender, and left lidar sensor. The third party vehicle sustained damage to the right rear quarter panel and
+
+rear passenger door. Lyft AV operators called 911 due to hostile behavior of the third party driver and emergency vehicles responded to the
+scene. No injuries were reported by the first responders or the team in the Lyft AV.
