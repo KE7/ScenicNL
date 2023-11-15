@@ -1,7 +1,8 @@
 import lmql
+import numpy as np
 
 @lmql.query()
-def generate_text_description(text_description, scenic_program):
+def generate_scenic_code(scenic_program, scenic_template, text_description, towns, vehicles):
     '''lmql
     "This is an example of a Scenic program: {scenic_program}\n"
     
@@ -12,7 +13,7 @@ def generate_text_description(text_description, scenic_program):
     "We will fill out each section marked with TODO.\n"
     
     "The first part of the new Scenic Program is a text description of the scenario."
-    "This will complete the TEXT_DESCRIPTION_TODO section in the given template."
+    #"This will complete the TEXT_DESCRIPTION_TODO section in the given template."
     "Please repeat the all of the text description in this part as a multi-line comment [TEXT_DESCRIPTION].\n" where type(TEXT_DESCRIPTION) == str and STOPS_BEFORE(TEXT_DESCRIPTION, "##")
     
     "The next section of the Scenic Program is setting the map and model."
@@ -25,7 +26,7 @@ def generate_text_description(text_description, scenic_program):
     
     "The next section of our template is OTHER CONSTANTS."
     "Include any other variables that you may need for the rest of the scenic program especially those "
-    "that may describe behaviors: [OTHER_VARIABLES].\n" where STOPS_BEFORE(OTHER_VARIABLES, "\n\n")
+    "that may describe behaviors: [OTHER_CONSTANTS].\n" where STOPS_BEFORE(OTHER_CONSTANTS, "\n")
     
     "The next section of the template is DEFINING BEHAVIORS."
     "Define the behavior of the ego vehicle and any other vehicles according to the description."
@@ -41,15 +42,37 @@ def generate_text_description(text_description, scenic_program):
     
     
     return {
-        "TEXT_DESCRIPTION": TEXT_DESCRIPTION,
-        "CARLA_MAP_NAME" : CARLA_MAP_NAME,
-        "EGO_VEHICLE_BLUEPRINT_ID" : EGO_VEHICLE_BLUEPRINT_ID,
-        "EGO_VEHICLE_SPEED" : EGO_VEHICLE_SPEED,
-        "OTHER_VARIABLES" : OTHER_VARIABLES,
-        "VEHICLE_BEHAVIORS" : VEHICLE_BEHAVIORS,
-        "SPATIAL_RELATIONS" : SPATIAL_RELATIONS,
-        "POSTCONDITIONS" : POSTCONDITIONS
+        "TEXT_DESCRIPTION_TODO": TEXT_DESCRIPTION,
+        "CARLA_MAP_NAME_TODO" : CARLA_MAP_NAME,
+        "EGO_VEHICLE_BLUEPRINT_ID_TODO" : EGO_VEHICLE_BLUEPRINT_ID,
+        "EGO_VEHICLE_SPEED_TODO" : EGO_VEHICLE_SPEED,
+        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
+        "VEHICLE_BEHAVIORS_TODO" : VEHICLE_BEHAVIORS,
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+        "POSTCONDITIONS_TODO" : POSTCONDITIONS
     }
     
     
     '''
+
+
+def construct_scenic_program(scenic_example, nat_lang_scene_des):
+    """
+    constructs a scenic program using the template in lmql_template.scenic 
+    """
+
+    #Load known variable sets from blueprints
+    towns = list(np.load('src/constraints/blueprints/towns.npy'))
+    vehicles = list(np.load('src/constraints/blueprints/vehicles.npy')) #TODO: where are we running this from? maybe not hardcode path
+
+    #Load output template
+    scenic_template_path = f"src/constraints/lmql_template.scenic"
+    scenic_template = open(scenic_template_path, 'r').read()
+
+    #query lmql to get fill in blanks
+    lmql_outputs = generate_scenic_code(scenic_example, scenic_template, nat_lang_scene_des, towns, vehicles)
+
+    #complete the template using the lmql_outputs
+    final_scenic = scenic_template.format_map(lmql_outputs)
+
+    return final_scenic
