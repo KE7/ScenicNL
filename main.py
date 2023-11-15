@@ -8,6 +8,12 @@ from src.common import ModelInput, LLMPromptType
 from src.utils.pdf_parse import PDFParser
 import sys
 
+prompt_types = {
+    'OPENAI_PREDICT_ZERO_SHOT': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_ZERO_SHOT],
+    'OPENAI_PREDICT_SCENIC_TUTORIAL': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_SCENIC_TUTORIAL],
+    'OPENAI_PREDICT_FEW_SHOT': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_FEW_SHOT],
+    'OPENAI_PREDICT_PYTHON_API': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_PYTHON_API],
+}
 
 @click.group()
 def main():
@@ -22,6 +28,13 @@ def main():
         exists=True,
     ),
 )
+@click.argument(
+    'prompt_type',
+    type=click.Choice(
+        prompt_types.keys(), 
+        case_sensitive=False
+    )
+)
 @click.option(
     "--output-path",
     type=click.Path(
@@ -31,6 +44,16 @@ def main():
     default="outputs",
     show_default=True,
     help="Path to output directory for results.",
+)
+@click.option(
+    "--text-path",
+    type=click.Path(
+        file_okay=False,
+        dir_okay=True,
+    ),
+    default="report-txts",
+    show_default=True,
+    help="Path to text directory for report text.",
 )
 @click.option(
     "--example-path",
@@ -62,12 +85,14 @@ def main():
     type=click.INT,
     default=20,
     show_default=True,
-    help="Number of files to include for string matching component."
+    help="Number of files to include for string matching component. Zero runs on all files."
 )
 
 def main(
     query_path: Path,
+    prompt_type: str,
     output_path: Path,
+    text_path: Path,
     example_path: Path,
     cache_path: Path,
     ignore_cache: bool,
@@ -76,22 +101,32 @@ def main(
     """
     Generate simulator scenes from natural language descriptions.
     """
+    adapter, prompt_type = prompt_types[prompt_type]
     query_list = []
+    if not os.path.isdir(text_path):
+        os.mkdir(text_path)
     if os.path.isdir(query_path):
-        for filename in os.listdir(query_path):
+        file_list = os.listdir(query_path)
+        file_list = file_list[:count] if count else file_list
+        for filename in file_list:
+            full_path = os.path.join(query_path, filename)
             if filename.endswith('.pdf'):
-                full_path = os.path.join(query_path, filename)
                 parsed_text = PDFParser.pdf_from_path(full_path)
                 print(parsed_text)
                 query_list.append(parsed_text)
+                dest_path = os.path.join(text_path, filename[:-4] + '.txt')
+                with open(dest_path, 'w') as file:
+                    file.write(parsed_text)
+            elif filename.endswith('.txt'):
+                with open(full_path, 'r') as file:
+                    parsed_text = file.read()
+                    print(parsed_text)
+                    query_list.append(parsed_text)
     else:
         with open(query_path) as file:
             for line in file:
                 query_list.append(line.strip())
                 print(line.strip())
-
-    adapter = OpenAIAdapter(OpenAIModel.GPT_35_TURBO)
-    prompt_type = LLMPromptType.PREDICT_FEW_SHOT
 
     example_list = []
 
