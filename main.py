@@ -5,7 +5,7 @@ import scenic
 from src.adapters.model_adapter import ModelAdapter
 from src.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
 from src.common import ModelInput, LLMPromptType
-from src.pdf_parse import PDFParser
+from src.utils.pdf_parse import PDFParser
 import sys
 
 
@@ -57,14 +57,21 @@ def main():
     is_flag=True,
     help="Ignore cache and recompute predictions from scratch. THIS IS VERY EXPENSIVE.",
 )
-
+@click.option(
+    "--count",
+    type=click.INT,
+    default=20,
+    show_default=True,
+    help="Number of files to include for string matching component."
+)
 
 def main(
     query_path: Path,
     output_path: Path,
     example_path: Path,
     cache_path: Path,
-    ignore_cache: bool
+    ignore_cache: bool,
+    count: int,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
