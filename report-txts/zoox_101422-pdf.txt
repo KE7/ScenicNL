@@ -1,0 +1,5 @@
+A Zoox vehicle was proceeding straight in autonomy through an intersection with a green light and right of way when vehicle 2 attempted
+an illegal left turn across lanes of traffic into Zoox’s right of way. The safety driver disengaged and applied max braking effort which
+
+allowed Zoox to mitigate but not completely prevent the unavoidable collision. The Zoox vehicle struck the right front corner of vehicle 2.
+No injuries were reported and the police were not called to the scene.

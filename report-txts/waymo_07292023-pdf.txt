@@ -1,0 +1,9 @@
+On July 29, 2023 at 2:57 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in Santa Monica, California was in a collision
+involving a cyclist on Colorado Avenue near Ocean Avenue.
+
+The Waymo AV was stopped in traffic on southwestbound Colorado Avenue when a cyclist that had been traveling behind the Waymo AV
+passed the Waymo AV on the right. As the cyclist passed the Waymo AV, the cyclist made contact with the front passenger side sensor of
+the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present
+
+(in the driver’s seating position). The Waymo AV sustained damage and the cyclist did not stop, leaving the scene without exchanging
+information.

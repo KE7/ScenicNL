@@ -1,0 +1,7 @@
+On January 28, 2022 at 6:30 AM PST a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Franklin Street at Golden Gate Avenue.
+
+The Waymo AV was stopped at a red light on northbound Franklin Street at Golden Gate Avenue. After the traffic light turned green and
+the Waymo AV had begun to accelerate, the passenger vehicle behind the Waymo AV struck the rear of the Waymo AV. At the time of the
+impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position).
+The Waymo AV sustained minor damage, and the trailing passenger vehicle sustained minor damage.

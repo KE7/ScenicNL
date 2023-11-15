@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV’), operating in autonomous mode, was traveling westbound on Fell Street between Webster and
+Fillmore Streets when the Cruise AV began to yield to traffic in the left adjacent lane. The driver of the Cruise disengaged from autonomous
+mode, and shortly thereafter, another vehicle changing into the same lane made contact with the right rear corner of the Cruise AV,
+damaging the Cruise AV’s rear hatch and window and right rear body and fascia. There were no injuries and police were not called.

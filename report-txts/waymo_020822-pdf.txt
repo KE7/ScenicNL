@@ -1,0 +1,8 @@
+On February 8, 2022 at 8:56 AM PST, a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Harrison Street at 9th Street.
+
+The Waymo AV was traveling southbound on Harrison Street in manual mode, and began slowing for a red light as it approached the
+intersection of 9th Street. The Waymo AV was in the second lane from the left on a one-way street. A passenger in a taxi cab that was
+stopped in the lane to the left of the Waymo AV opened the rear passenger door as the Waymo AV was coming to a stop. The edge of the
+taxi cab’s door made contact with the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test
+driver was operating the Waymo AV in manual mode. The other vehicle sustained minor damage.

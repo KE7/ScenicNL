@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling westbound on 17th Street at the intersection
+with Potrero St., when the Cruise AV was struck by a 2007 Subaru Outback that crossed the centerline while driving eastbound on 17th
+Street. Immediately before the incident, the driver of the Cruise AV, seeing the oncoming vehicle crossing the centerline, disengaged from
+autonomous mode and brought the Cruise AV to a stop. The oncoming car made contact with the front driver side quarter panel of the
+
+Cruise AV, causing damage. There were no injuries, but the police were called. The driver of the 2007 Subaru Outback left the scene before
+the police arrived.

@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle (Cruise AV), operating in supervised autonomous mode, was traveling westbound on Ocean Avenue between
+Lee Avenue and Harold Avenue. The Cruise AV was traveling 18.8 mph upon coming to the intersection with Lee Avenue on a green light.
+As the Cruise AV entered the intersection, a 2014 Audi made a prohibited left turn from the rightmost westbound lane on Ocean Ave. The
+Cruise AV hard braked prior to the Cruise AV operator disengaging the Cruise AV from autonomous mode. The Cruise AV operator
+continued to hard brake while steering away from the approaching vehicle but, shortly thereafter, the 2014 Audi made contact with the
+Cruise AV, damaging the front right of the Cruise AV and the front left bumper of the 2014 Audi. The Cruise AV was traveling 11.4 mph at
+the time of contact. Police were not called to the scene and no injuries were reported.

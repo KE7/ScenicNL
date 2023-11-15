@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling southbound on Point Lobos
+Avenue between 48th Avenue and Balboa Street. The Cruise AV was traveling downhill when a cyclist approached the Cruise AV from
+behind. The Cruise AV began to brake, and shortly thereafter, the cyclist made contact with the rear window of the Cruise AV. The cyclist
+fell to the ground and sustained injuries. Police and Emergency Medical Services (EMS) were called. The cyclist was transferred from
+
+the scene via EMS. The impact caused damage to the rear passenger side of the bumper, rear hatch, and rear window of the Cruise AV.

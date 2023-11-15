@@ -1,0 +1,7 @@
+On May 6, 2023 at 8:48 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a passenger vehicle on Post Street at Webster Street.
+
+While traveling west on Post Street, the Waymo AV was executing a pullover maneuver in autonomous mode and made contact with the
+
+left rear bumper of a parked vehicle. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode. Both
+vehicles sustained damage.

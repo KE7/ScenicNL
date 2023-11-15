@@ -1,0 +1,7 @@
+On April 8, 2022 at 12:31 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a SUV on Pine Street at Polk Street.
+
+The Waymo AV was traveling west on Pine Street in manual mode behind stopped traffic. While attempting a lane change from the far left
+lane into the center lane of Pine Street, the Waymo AV test driver partially entered the lane and made contact with a SUV entering the
+center lane from the far right lane. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was
+operating the Waymo AV in manual mode. Both vehicles sustained moderate damage.

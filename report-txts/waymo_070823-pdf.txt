@@ -1,0 +1,9 @@
+On July 8, 2023 at 3:08 PM PT a Waymo Autonomous Vehicle (““Waymo AV”) operating in Los Angeles, California was in a collision
+involving a cyclist on S. Alameda Street at 6th Street.
+
+The Waymo AV was traveling southbound on S. Alameda Street and preparing to make a right turn onto westbound 6th Street. As the
+Waymo AV was yielding to cross-traffic and preparing to make a right turn, a cyclist was traveling eastbound on 6th Street and heading the
+wrong way in the bike lane. The cyclist then turned left, northbound, onto S. Alameda Street, continuing to travel the wrong direction in the
+bike lane. As the Waymo AV slowly proceeded forward, the cyclist passed the Waymo AV and made contact with the rear passenger side
+sensor of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver
+was present (in the driver’s seating position). The Waymo AV sustained damage and the cyclist did not stop, leaving the scene without

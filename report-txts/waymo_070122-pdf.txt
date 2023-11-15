@@ -1,0 +1,8 @@
+On July 1, 2022 at 10:08 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a van in a parking lot near Bayshore Boulevard at Flower Street.
+
+The Waymo AV came to a stop while yielding for an oncoming van in a narrow passageway in a parking lot. While attempting to pass the
+Waymo AV, the van made contact with the sensor housing on the left rear of the Waymo AV. At the time of the impact, the Waymo AV’s
+
+Level 4 ADS was stationary and engaged in autonomous mode, and a test driver was present (in the driver’s seating position). Both vehicles
+sustained minor damage.

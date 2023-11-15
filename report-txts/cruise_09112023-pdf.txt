@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle ("AV"), operating in driverless autonomous mode, was at a complete stop in response to a red light on
+eastbound Bush Street in the second leftmost lane at the intersection with Sansome Street. As the AV attempted to maneuver into the left
+turn lane, the AV slowed to a complete stop. A delivery truck traveling behind and to the left of the AV proceeded forward and attempted to
+drive past the AV on the left. Shortly thereafter, the delivery truck made contact with the AV, damaging the AV’s front driver side bumper
+
+fascia and front driver side wheel opening molding. The driver of the delivery truck left the scene without exchanging information. There
+were no reported injuries.

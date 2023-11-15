@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was facing west and stopped for a red light at the intersection
+of Duboce and Guerrero Streets. Before the Cruise AV started to proceed for the green light, contact was made to the rear bumper of the
+
+Cruise AV by a BMW traveling behind the AV. The contact caused minimal damage to the rear bumper of the Cruise AV. There were no
+injuries and the police were not called.

@@ -1,0 +1,3 @@
+A Zoox vehicle in autonomous mode was making a left turn from Davis Street onto Vallejo Street and encountered a semi-truck flatbed
+parked in the intersection. The Zoox vehicle made contact with the rear right side of the truck at a very low speed. There was minor damage
+to the Zoox vehicle and no damage to the truck. There were no injuries and police were not called.

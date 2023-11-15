@@ -1,0 +1,4 @@
+Our Autonomous vehicle (car 1) was in conventional mode stopped at the traffic light on Embarcadero and Washington. A black color
+Dodge Challenger (car 2) attempted to bypass our car (car 1) from the rear and in doing so hit our car (car 1) right side rear bumper. At the
+time of collision our AV (Car 1) was stopped traveling 0 mph and the Dodge Challenger (car 2) was traveling less than 5 mph. The damage
+is minor and left a small scratch. After exchanging information both parties agreed to leave the scene

@@ -1,0 +1,9 @@
+On August 13, 2023 at 9:01 PM a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a passenger car on Howard Street at Fourth Street.
+
+The Waymo AV was traveling southwestbound on Howard Street in the second lane from the left as it was approaching Fourth Street. As
+the Waymo AV was proceeding straight through the intersection, the passenger car in the right adjacent lane made a left turn from a
+straight-only lane onto southeastbound Fourth Street. The rear of the passenger car made contact with the front of the Waymo AV. At the
+
+time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. Both
+the Waymo AV and the passenger car sustained damage.

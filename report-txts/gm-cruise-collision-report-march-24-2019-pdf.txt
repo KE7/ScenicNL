@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in conventional mode, was making a left turn from southeast bound 11th Street onto
+northeast bound Folsom Street when the driver of the Cruise AV made contact with the rear driver side door of another vehicle that was
+proceeding through the green light on southwest bound 11th Street, damaging both the other vehicle’s rear driver side door and wheel well
+and the Cruise AV’s front left bumper and wheel well. There were no injuries and police were not called.

@@ -1,0 +1,8 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was at a complete stop in response to a stop sign on
+westbound Parnassus Avenue at the intersection with 4th Avenue. After the Cruise AV began to proceed straight through the intersection, a
+Toyota FJ Cruiser traveling southbound on 4th Avenue approached a stop sign in its direction of travel at the intersection with Parnassus
+Avenue. The Toyota FJ Cruiser did not stop for its stop sign and, shortly thereafter, the Toyota FJ Cruiser entered the intersection and made
+contact with the Cruise AV as the Cruise AV was passing through the intersection, damaging the rear passenger quarter panel of the Cruise
+
+AV. The driver of the Toyota FJ Cruiser left the scene without exchanging information. There were no injuries and a police report was later
+filed.

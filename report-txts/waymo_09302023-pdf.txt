@@ -1,0 +1,7 @@
+On September 20th, 2023 at 9:00 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger car on US-101 exit ramp 429B at the intersection with Bayshore Boulevard.
+
+The Waymo AV was proceeding south on exit ramp 429B in the leftmost lane and entered the slip lane to proceed north on Bayshore
+Boulevard. As the Waymo AV came to a stop for a red light at the intersection with Bayshore Boulevard, the front of the passenger car
+which was following behind the Waymo AV made contact with the rear of the Waymo AV. The Waymo AV sustained damage. At the time
+of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling eastbound on 24th Street between Noe and
+Sanchez Streets when the Cruise AV yielded to a jaywalking pedestrian and for clearance to maneuver around a double-parked vehicle
+immediately ahead of it. While the Cruise AV waited, another vehicle pulling out of a driveway and into the Cruise AV’s lane made contact
+
+with the left rear corner of the Cruise AV, damaging the Cruise AV’s left rear bumper, fender, and radar. There were no injuries and police
+were not called.

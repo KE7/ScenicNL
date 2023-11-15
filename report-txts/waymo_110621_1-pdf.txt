@@ -1,0 +1,8 @@
+On November 6, 2021 at 1:50 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a passenger vehicle at Waller Street at Alpine Terrace.
+
+The Waymo AV was traveling westbound on Waller Street when it yielded to an oncoming passenger vehicle. As the passenger vehicle
+passed the stopped Waymo AV, its driver side rearview mirror made contact with a Waymo AV sensor. At the time of the impact, the
+
+Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). Both vehicles
+sustained minor damage.

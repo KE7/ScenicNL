@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling northbound on Van Ness Avenue
+between California Street and Sacramento Street. As the Cruise AV was passing through the intersection with Sacramento Street on a green
+light, a bag lying on the roadway blew in front of the Cruise AV. The Cruise AV braked for the object, and a white pickup truck traveling
+behind the Cruise AV rear-ended the Cruise AV, damaging the rear right bumper, rear right quarter panel, and rear windshield. The driver
+of the white pickup truck left the scene without exchanging information. There were no reported injuries and the Cruise AV was towed.

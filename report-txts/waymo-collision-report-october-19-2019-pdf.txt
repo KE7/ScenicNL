@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was parked in manual mode in a coffee shop parking lot in Palo Alto when a passenger
+vehicle reversed into it. The Waymo AV was unattended when a passenger vehicle made contact with the Waymo AV’s rear bumper at
+
+approximately 2 MPH. The Waymo AV sustained minor damage to the rear bumper, and the passenger vehicle left the scene without
+exchanging information.

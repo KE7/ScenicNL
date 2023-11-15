@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode was turning from Southbound on Folsom Street to Westbound
+on 15th Street. When the Cruise AV stopped to yield for an oncoming vehicle, a Chevrolet Silverado that was traveling behind made contact
+
+with the rear bumper of the Cruise AV. This caused damage to the rear bumper of the Cruise AV. At the time of the incident, the driver of
+the Cruise AV reported a minor injury, but emergency services were not called.

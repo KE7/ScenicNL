@@ -1,3 +1,4 @@
+from adapters.api_adapter import Scenic3
 import abc
 from multiprocessing.pool import ThreadPool
 import time
@@ -52,6 +53,22 @@ class ModelAdapter(abc.ABC):
         """Perform a single prediction. Must be overriden by subclasses."""
         raise NotImplementedError
 
+    def _api_fallback(
+        self,
+        description: ModelInput
+    ) -> str:
+        """Generate code from API calls, with _line_helper generating backups in case of API failures."""
+        raise NotImplementedError 
+
+    def _line_helper(
+        self,
+        line: ModelInput
+    ) -> str:
+        """
+        Intent: use mini LLM calls to correct any malformed Scenic3_API calls (ones that fail `eval`).
+        Idea: even imperfect API calls contain all info needed to formulate Scenic expression.
+        """
+        raise NotImplementedError
 
     def _batch_processor(
         self, 
@@ -90,6 +107,9 @@ class ModelAdapter(abc.ABC):
                             max_length_tokens=max_tokens,
                             prompt_type=prompt_type,
                         )
+                        if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
+                            api_input = ModelInput(model_input.examples, prediction)
+                            prediction = self._api_fallback(api_input) # specific function calling handlers
                     except Exception as e:
                         stacktrace = traceback.format_exc()
                         prediction = APIError(
@@ -103,7 +123,6 @@ class ModelAdapter(abc.ABC):
             return responses
         
         return process_single
-
 
     def predict_batch(
         self,

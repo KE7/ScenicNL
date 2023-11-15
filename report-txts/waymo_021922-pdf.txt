@@ -1,0 +1,7 @@
+On February 19, 2022 at 7:45 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle at the northbound merge lane on the 100 block of Bayshore Boulevard.
+
+While attempting a merge onto northbound Bayshore Boulevard from southbound Bayshore Boulevard, the Waymo AV came to a stop to
+yield for approaching traffic on the right. While stopped, a vehicle approached from behind and made contact with the rear bumper of the
+Waymo AV. The other vehicle left the scene without exchanging information. At the time of the impact, the Waymo AV’s Level 4 ADS
+was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained minor damage.

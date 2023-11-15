@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV") operating in supervised autonomous mode was driving Westbound on Hayes Street between
+Lyon Street and Baker Street when a pedestrian ran in front of the AV. The Cruise AV stopped for the pedestrian and, moments later, the
+pedestrian began yelling and approaching the Cruise AV. The Cruise AV operator disengaged the Cruise AV from autonomous mode to
+leave the scene. The Cruise AV operator drove the vehicle forward and maneuvered away from the pedestrian, but the pedestrian
+continued to approach the Cruise AV and jumped onto the hood of the Cruise AV. The pedestrian fell in front of the Cruise AV and
+remained there until later fleeing the scene. The injury status of the pedestrian is unknown and a police report was filed.

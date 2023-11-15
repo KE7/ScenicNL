@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was making a right turn from 16th Street onto northbound
+Guerrero Street when another vehicle, entering traffic from a curbside parked position on westbound 16th Street, made contact with the
+right rear corner of the Cruise AV, damaging the Cruise AV’s rear right bumper, wheel well, and rear parking sensor. The driver of the
+other vehicle drove away without exchanging information. There were no injuries and police were not called.

@@ -1,3 +1,14 @@
+# Scenic installation
+Scenic/
+# outputs
+outputs/
+# any pdfs
+cache.db
+examples-carla
+report-pdfs/
+queries/
+query.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southwest bound on King Street between 2nd
+and 3rd Streets when the Cruise AV slowed down. Shortly thereafter, another vehicle, changing into the Cruise AV’s lane from the right
+adjacent lane, made contact with the right rear corner of the Cruise AV, damaging the Cruise AV’s right rear fascia and a radar mounting
+bracket. The driver of the other vehicle left the scene without exchanging information. There were no injuries and police were not called.

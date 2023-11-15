@@ -1,0 +1,7 @@
+On March 7, 2022 at 7:35 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving an SUV on Avila Street at Casa Way and Marina Boulevard.
+
+The Waymo AV was traveling northeast on Aliva Street in manual mode in a narrow passageway. The Waymo AV approached a stop sign
+and the test driver steered to the right around a parked vehicle with oncoming traffic approaching. The right rear sensor housing of the
+Waymo AV made contact with a parked SUV on the right side of the road. At the time of the impact, the Waymo AV’s Level 4 ADS was
+not engaged and a test driver was operating the Waymo AV in manual mode. The Waymo AV sustained minor damage.

@@ -1,0 +1,8 @@
+On August 25, 2022 at 6:05 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a van on 15th Street at Albion Street.
+
+The Waymo AV was traveling west on 15th street and came to a stop behind a double-parked vehicle in the right lane. Shortly after coming
+to a stop, a van approached from behind and made contact with the rear of the Waymo AV. The van then changed lanes and left the scene.
+
+At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s
+seating position). The Waymo AV sustained moderate damage.

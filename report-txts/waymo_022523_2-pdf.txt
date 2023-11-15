@@ -1,0 +1,8 @@
+On February 25th, 2023 at 9:45 AM/PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in
+a collision involving a heavy truck on Pacific Avenue at Sansome Street.
+
+The Waymo AV was making a right turn to travel west on Pacific Avenue. As the Waymo AV turned, the rear right tire of the Waymo AV
+made contact with the lowered loading lift of a heavy truck parked partially across the parking lot entrance. At the time of the impact, the
+
+Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. The Waymo AV sustained
+damage.

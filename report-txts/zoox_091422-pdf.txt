@@ -1,0 +1,5 @@
+A Zoox vehicle in manual mode was slowing with the right of way to begin its turn to enter the 580 West Freeway on-ramp from West
+Grant Line Road in Altamont, CA. Vehicle 2 exiting the 580 West Freeway off-ramp jumped the median and made contact with the front
+end of the Zoox vehicle, continuing off an embankment and ending in a rollover. The other driver refused to provide any information and
+was observed being treated by first responders. The California Highway Patrol provided an NCI number (9390) at the scene. Autonomy was
+not engaged at any point during the drive cycle proceeding the event.

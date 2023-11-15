@@ -1,0 +1,7 @@
+On December 2nd, 2020 at approximately 3:00pm, a Lyft Autonomous Vehicle (Lyft AV A102) operating in manual mode was stationary at
+a stoplight when it was grazed by a moving third party vehicle. The incident occured on the Embarcadero near the Ferry Building heading
+nothbound in San Francisco. The third party vehicle aggresively came around from behind of Lyft AV A102 and attempted to cut in front of
+AV A102. The third party made contact with the Lyft AV leaving visible minor damage to the exterior casing of the Lyft AV's front left lidar
+unit. The third party sustained no visible damage. The third party called 911, but law enforcement declined reporting to the scene since there
+
+were no injuries reported.

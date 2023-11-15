@@ -1,0 +1,8 @@
+On June 21, 2022 at 12:21 PM PST a Waymo Autonomous Vehicle ("Waymo AV") operating in San Francisco, CA made contact with a
+parking lot driveway on the 900 block of Brannan Street.
+
+The Waymo AV approached a parking lot. As the Waymo AV turned left and into the parking lot, the Waymo AV's undercarriage made
+contact with the driveway pavement (the AV did not contact any vehicle or road user). At the time of the contact, the Waymo AV's Level 4
+
+ADS was engaged in autonomous mode, and a test driver was present (in the driver's seating position). The Waymo AV sustained minor
+undercarriage damage.

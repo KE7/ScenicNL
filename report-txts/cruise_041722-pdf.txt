@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling southbound on Mission street toward
+the intersection with 29th Street. As it approached the intersection, the Cruise AV began to brake in response to a red light when a Honda
+Civic traveling behind the Cruise AV made contact with the rear bumper of the Cruise AV, damaging the Cruise AV’s rear fascia and rear
+
+right sensor. The driver of the other vehicle left the scene without exchanging information. There were no injuries and a police report was
+later filed.

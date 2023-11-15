@@ -1,0 +1,9 @@
+On August 16th, 2022 at 3:52 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a SUV on Martin Luther King Jr. Drive at 25th Avenue.
+
+The Waymo AV was traveling West on Martin Luther King Jr. Drive and stopped at the stop sign at the intersection with 25th Avenue. As
+the Waymo AV slowed to a stop, a SUV traveling in the opposite lane, East on Martin Luther King Jr. Drive, crossed the intersection with
+25th Avenue and came to a stop in the opposite lane, next to the Waymo AV. After stopping, the SUV began moving again and the front
+
+left corner of the SUV made contact with the left side of the Waymo AV. The SUV then left the scene. The Waymo AV sustained minor
+damage.

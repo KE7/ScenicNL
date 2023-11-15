@@ -1,0 +1,10 @@
+On January 1, 2021 at 2:04 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle at Marin Street and Kansas Street.
+
+While proceeding straight in autonomous mode on westbound Marin Street, a passenger vehicle turned right onto Marin Street from Kansas
+Street, crossing the center lane line and traveling in the oncoming traffic lane. The driver of the Waymo AV transitioned the system into
+manual mode and slowed, and moved to the right most edge of the lane. The oncoming passenger vehicle struck the left side of the Waymo
+AV and immediately proceeded to leave the scene of the collision. At the time of the impact, the Waymo AV’s Level 4 ADS was not
+
+engaged and a test driver was operating the Waymo AV in manual mode. The Waymo AV sustained moderate damage to the left front panel
+and both doors on the left side of the vehicle.

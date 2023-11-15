@@ -1,0 +1,6 @@
+On May 21, 2023 at 10:56 AM PT a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a collision
+involving a small dog on Toland Street at Toland Place.
+
+The Waymo AV was traveling southwest on Toland Street when a small dog ran into the street in front of the Waymo AV. The Waymo AV
+then made contact with the dog, which did not survive. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in
+autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained damage.

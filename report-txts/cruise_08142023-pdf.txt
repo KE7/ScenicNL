@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“AV”), operating in driverless autonomous mode, was traveling southbound on Albion Street between 16th
+Street and Camp Street. At the same time, a Ford pickup truck was traveling northbound on Albion Street partially in the AV’s lane of
+travel. The AV stopped due to limited space to proceed forward due to the encroaching Ford pickup truck, and, shortly thereafter, the Ford
+pickup truck made contact with the AV, damaging the AV’s rear driver side bumper fascia, rear driver side quarter panel and rear driver
+side wheel molding. The driver of the Ford pickup truck left the scene without exchanging information. There were no reported injuries.

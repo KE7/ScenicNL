@@ -1,0 +1,8 @@
+A Pony.ai autonomous vehicle ("Pony AV") in autonomous mode was stopped at a red light at the intersection of Dixon Landing Road and
+California Circle. While stopped at the red light, the Pony AV's safety driver noticed that the reverse lights of the vehicle directly in front of
+the Pony AV ("Vehicle 2") were on. The Pony AV's safety driver disengaged autonomous mode, observed that there were no vehicles
+directly behind it, and reversed 20-30 feet as a precaution. When the traffic light turned green, Vehicle 2 accelerated while still in reverse
+toward the Pony AV. Vehicle 2 came to a complete stop about 4 feet from the Pony AV's front bumper. After about 2 seconds, however,
+Vehicle 2 continued to reverse in the direction of the Pony AV, resulting in contact between the two vehicles. The contact caused minor
+scratches to both vehicles. The Pony AV's safety driver and the driver of Vehicle 2 pulled over at a nearby parking lot and exchanged
+information. There were no injuries reported and the police were not called.

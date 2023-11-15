@@ -1,0 +1,6 @@
+On December 11, 2021 at 2:28 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving a concrete post in the parking lot at 1900 Noriega Street.
+
+At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode.
+The operator of the vehicle was attempting to reverse into a parking spot when the right rear sensor casing of the vehicle struck a concrete
+post adjacent to the parking spot. The Waymo AV sustained minor damage to the right rear sensor housing.

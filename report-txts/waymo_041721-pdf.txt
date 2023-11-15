@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling southbound on Harrison Street approaching Hawthorne Street in San Francisco
+was involved in a collision. While in manual mode, the Waymo AV’s test driver was braking for a red light at Hawthorne Street when a
+passenger vehicle behind the Waymo AV made contact with the Waymo AV’s rear bumper at approximately 12 MPH. The Waymo AV was
+
+traveling approximately 2 MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger vehicle sustained minor
+damage to its front bumper. No injuries were reported at the scene.

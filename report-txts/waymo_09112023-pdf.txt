@@ -1,0 +1,6 @@
+On September 11, 2023 at 8:34 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving an SUV on Sansome Street near Vallejo Street.
+
+While the Waymo AV was pulled over in the right lane on northbound Sansome Street, an SUV that was passing the parked Waymo AV
+made contact with the rear driver’s side of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and
+a test driver was operating the Waymo AV in manual mode. Both vehicles sustained damage.

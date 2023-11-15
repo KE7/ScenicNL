@@ -1,0 +1,9 @@
+On February 2, 2022 at 8:44 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a SUV on Clipper Street and Noe Street.
+
+The Waymo AV was stopped at a stop sign facing west on Clipper Street in autonomous mode while yielding to pedestrians in the
+crosswalk. After the pedestrians had crossed, the Waymo started to edge forward when an SUV to the Waymo AV’s rear passed the Waymo
+AV by driving in the oncoming traffic lane and made contact with the left rear sensor housing of the Waymo AV. At the time of the impact,
+
+the Waymo AV’s Level 4 ADS was engaged in autonomous mode and a test driver was present (in the driver’s seating position). The
+Waymo AV sustained minor damage.

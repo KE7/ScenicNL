@@ -1,0 +1,9 @@
+On January 22, 2022 at 2:11 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a motorcycle on Folsom Street at 23rd Street.
+
+The Waymo AV was in autonomous mode on southbound Folsom Street in the intersection with 23rd Street, when the Waymo AV began to
+slow for a motorcyclist traveling on northbound Folsom Street signaling to make an unprotected left turn onto 23rd Street. The test driver
+(in the driver’s seating position) transitioned to manual mode and continued to slow the Waymo AV. The motorcyclist attempted to turn
+behind the Waymo AV and made contact with the left rear corner of the Waymo AV. The motorcyclist remained upright and rode away
+without stopping to provide any information. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver
+was operating the Waymo AV in manual mode. The Waymo AV sustained damage to the driver’s side of the rear bumper.

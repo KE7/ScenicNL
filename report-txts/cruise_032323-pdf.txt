@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling on westbound Haight Street between
+Ashbury Street and Masonic Avenue. At the same time, a San Francisco Municipal Railway (“MUNI”) Bus stopped ahead of the Cruise
+AV. Shortly thereafter, the Cruise AV made contact with the rear bumper of the MUNI Bus, damaging the front fascia and front fender of
+the Cruise AV. The parties exchanged information. There were no reported injuries and the Cruise AV was towed from the scene.

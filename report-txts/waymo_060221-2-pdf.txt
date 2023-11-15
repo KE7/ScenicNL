@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling northbound on Buchanan Street toward Green Street in San Francisco was
+involved in a collision. While in manual mode and parked parallel to the curb on Buchanan Street, the Waymo AV test driver accelerated
+from the stationary position and made contact with an unoccupied parked passenger vehicle in front of it. The Waymo AV sustained
+
+moderate damage to its front bumper and grille, and the unoccupied parked passenger vehicle’s sustained moderate damage to rear bumper
+and trunk. No injuries were reported at the scene.

@@ -1,0 +1,7 @@
+The subject Mercedes-Benz vehicle was driving in stop and go traffic on the 405 south freeway in Gardena, California with the L3 ADS
+activated. The test route selected by the driver in the vehicle's navigation system indicated an upcoming exit, so the driver began to prepare
+for a lane change towards the highway exit by deactivating the L3 ADS and activating the turn signal. Once the vehicle was in conventional
+driving mode, the driver looked for a gap in the adjacent lane to merge towards the exit lane, applied the brakes, and slowed the vehicle
+down. The SUV following the Mercedes-Benz vehicle did not respond in time to the vehicle's braking and contacted the rear of the
+Mercedes-Benz approximately 10 seconds after the L3 ADS was deactivated. The Mercedes-Benz vehicle experienced minor damage to the
+rear bumper. No injuries were reported, no airbags deployed in either vehicle, and both vehicles were driven from the scene of the incident.
