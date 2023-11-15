@@ -6,6 +6,7 @@ import pyocr.builders
 import re
 
 class PDFParser():
+    @staticmethod
     def pdf_from_path(
         pdf_path: str
     ) -> str:
@@ -27,6 +28,7 @@ class PDFParser():
         output_text = PDFParser.clean_output(pdf_text)
         return output_text
 
+    @staticmethod
     def clean_output(
         text:str, 
         keep_newlines=False

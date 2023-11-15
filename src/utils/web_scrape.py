@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 
 class WebScraper():
+    @staticmethod
     def fetch_pdfs(output:bool=True) -> None:
         curr_path = os.path.curdir
 
@@ -25,8 +26,9 @@ class WebScraper():
 
             if link['href'][-1] == slash:
                 link['href'] = link['href'][:-1]
-            file_end = link['href'].split(slash)[-1] + '.pdf'
-            print('Downloading... {}'.format(location / file_end))
+            file_end = str(link['href']).split(slash)[-1] + '.pdf'
+            if output:
+                print('Downloading... {}'.format(location / file_end))
 
             filename = Path(location) / file_end
             if not os.path.exists(filename):

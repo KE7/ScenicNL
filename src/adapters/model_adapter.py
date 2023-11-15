@@ -1,4 +1,4 @@
-from .api_adapter import Scenic3
+from adapters.api_adapter import Scenic3
 import abc
 from multiprocessing.pool import ThreadPool
 import time
