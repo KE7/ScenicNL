@@ -2,38 +2,49 @@ import click
 import os
 from pathlib import Path
 import scenic
+from scenicNL.adapters.anthropic_adapter import AnthropicAdapter, AnthropicModel
 from scenicNL.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
-from scenicNL.common import ModelInput, LLMPromptType
+from scenicNL.common import ModelInput, LLMPromptType, MAX_TOKEN_LENGTH
 from scenicNL.utils.pdf_parse import PDFParser
 import sys
 
-prompt_types = {
-    'OPENAI_PREDICT_ZERO_SHOT': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_ZERO_SHOT],
-    'OPENAI_PREDICT_SCENIC_TUTORIAL': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_SCENIC_TUTORIAL],
-    'OPENAI_PREDICT_FEW_SHOT': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_FEW_SHOT],
-    'OPENAI_PREDICT_PYTHON_API': [OpenAIAdapter(OpenAIModel.GPT_35_TURBO), LLMPromptType.PREDICT_PYTHON_API],
-}
 
 @click.group()
 def main():
     pass
 
 @main.command()  # This decorator turns the function into a command.
-@click.argument(
-    "query_path",
+@click.option(
+    "--query_path",
     type=click.Path(
         file_okay=True,
         dir_okay=True,
         exists=True,
     ),
 )
-@click.argument(
-    'prompt_type',
+
+@click.option(
+    '-m', '--model',
     type=click.Choice(
-        prompt_types.keys(), 
+        [m.value for m in OpenAIModel] + [m.value for m in AnthropicModel],
         case_sensitive=False
-    )
+    ),
+    default=OpenAIModel.GPT_35_TURBO,
+    show_default=True,
+    help="Model to use for generation.",
 )
+
+@click.option(
+    '--llm_prompt_type',
+    type=click.Choice(
+        [p.value for p in LLMPromptType],
+        case_sensitive=False
+    ),
+    default=LLMPromptType.PREDICT_FEW_SHOT,
+    show_default=True,
+    help="Type of prompting strategy to use.",
+)
+
 @click.option(
     "--output-path",
     type=click.Path(
@@ -44,6 +55,7 @@ def main():
     show_default=True,
     help="Path to output directory for results.",
 )
+
 @click.option(
     "--text-path",
     type=click.Path(
@@ -54,6 +66,7 @@ def main():
     show_default=True,
     help="Path to text directory for report text.",
 )
+
 @click.option(
     "--example-path",
     type=click.Path(
@@ -64,6 +77,7 @@ def main():
     show_default=True,
     help="Path to examples for few-shot training.",
 )
+
 @click.option(
     "--cache-path",
     type=click.Path(
@@ -74,6 +88,7 @@ def main():
     show_default=True,
     help="Path to SQLite3 database for caching.",
 )
+
 @click.option(
     "--ignore-cache",
     is_flag=True,
@@ -86,15 +101,23 @@ def main():
     show_default=True,
     help="Number of files to include for string matching component. Zero runs on all files."
 )
+
 @click.option(
     "--verbose",
     is_flag=True,
     help="Boolean condition to display or omit verbose output."
 )
 
+@click.option(
+    "should_cache_retry_errors",
+    type=click.BOOL,
+    default=False,
+    show_default=True,
+    help="Boolean condition to cache or not cache errors."
+)
+
 def main(
     query_path: Path,
-    prompt_type: str,
     output_path: Path,
     text_path: Path,
     example_path: Path,
@@ -102,11 +125,21 @@ def main(
     ignore_cache: bool,
     count: int,
     verbose: bool,
+    model: str,
+    llm_prompt_type: str,
+    should_cache_retry_errors: bool,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
     """
-    adapter, prompt_type = prompt_types[prompt_type]
+    # adapter, prompt_type = prompt_types[prompt_type]
+    prompt_type = LLMPromptType(llm_prompt_type)
+    if model in set(m.value for m in AnthropicModel):
+        adapter = AnthropicAdapter(AnthropicModel(model))
+    elif model in set(m.value for m in OpenAIModel):
+        adapter = OpenAIAdapter(OpenAIModel(model))
+    else:
+        raise ValueError(f'Invalid model {model}')
     query_list = []
     if not os.path.isdir(text_path):
         os.mkdir(text_path)
@@ -156,7 +189,8 @@ def main(
     for index, outputs in enumerate(adapter.predict_batch(
             model_inputs=model_input_list, 
             cache_path=cache_path, num_predictions=1, 
-            temperature=0, max_tokens=600, prompt_type=prompt_type)):
+            temperature=0, max_tokens=MAX_TOKEN_LENGTH, prompt_type=prompt_type,
+            ignore_cache=ignore_cache, should_cache_retry_errors=should_cache_retry_errors)):
         for attempt, output in enumerate(outputs):
             print(f'{output}\n\n')
             fname = os.path.join(scenic_path, f'{index}-{attempt}.scenic')

@@ -79,6 +79,7 @@ class ModelAdapter(abc.ABC):
         should_cache_retry_errors: bool,
         cache: Cache,
         prompt_type: LLMPromptType,
+        ignore_cache: bool,
     ) -> Callable[[ModelInput], list[str | APIError]]:
         """
         Return a function that takes a list of model inputs and returns a
@@ -92,9 +93,12 @@ class ModelAdapter(abc.ABC):
                 max_tokens=max_tokens,
                 prompt_type=prompt_type,
             )
-            responses: list[str | APIError] = cache.get(cache_key)[:num_predictions]
-            if should_cache_retry_errors:
-                responses = [r for r in responses if not isinstance(r, APIError)]
+            if not ignore_cache:
+                responses: list[str | APIError] = cache.get(cache_key)[:num_predictions]
+                if should_cache_retry_errors:
+                    responses = [r for r in responses if not isinstance(r, APIError)]
+            else:
+                responses = []
             # error checking in case we fell short of the number of predictions
             if len(responses) < num_predictions:
                 num_missing = num_predictions - len(responses)
@@ -108,7 +112,7 @@ class ModelAdapter(abc.ABC):
                             prompt_type=prompt_type,
                         )
                         if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
-                            api_input = ModelInput(model_input.examples, prediction)
+                            api_input = ModelInput(model_input.task_description, model_input.examples, prediction)
                             prediction = self._api_fallback(api_input) # specific function calling handlers
                     except Exception as e:
                         stacktrace = traceback.format_exc()
@@ -119,7 +123,8 @@ class ModelAdapter(abc.ABC):
                         warnings.warn(f"Error while predicting for input {model_input.nat_lang_scene_des}" + 
                             f"Error: {e}\nStacktrace: {stacktrace}")
                     responses.append(prediction)
-                cache.set(cache_key, responses)
+                if not ignore_cache:
+                    cache.set(cache_key, responses)
             return responses
         
         return process_single
@@ -136,6 +141,7 @@ class ModelAdapter(abc.ABC):
         should_cache_retry_errors: bool = True,
         verbose: bool = False,
         num_workers: int = 10,
+        ignore_cache: bool = False,
     ) -> Iterable[list[str | APIError]]:
         """
         Given a stream of model inputs, return a stream of predictions. This
@@ -156,6 +162,7 @@ class ModelAdapter(abc.ABC):
                 should_cache_retry_errors=should_cache_retry_errors,
                 cache=cache,
                 prompt_type=prompt_type,
+                ignore_cache=ignore_cache,
             )
 
             with ThreadPool(num_workers) as pool:
