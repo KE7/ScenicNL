@@ -217,7 +217,10 @@ class OpenAIAdapter(ModelAdapter):
             try:
                 eval(line)
             except:
-                new_input = ModelInput(examples=model_input.examples, nat_lang_scene_des=line)
+                new_input = ModelInput(
+                    task_description=model_input.task_description, 
+                    examples=model_input.examples, 
+                    nat_lang_scene_des=line)
                 result = self._line_helper(new_input)
                 scenic3.add_code(result.split('\n'))
         return scenic3.get_code()

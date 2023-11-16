@@ -22,6 +22,7 @@ class ModelInput:
     (ex. GPT using roles and Llama using INST and SYS tokens), we abstract the data here
     and let each implementing model worry about how to input the data.
     """
+    task_description: str
     examples: list[str]
     nat_lang_scene_des: str
 

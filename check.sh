@@ -6,13 +6,13 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 SOURCES=(src/)
-declare -A tool_status
+declare -a tool_status
 
 set -uo pipefail
 
 # Define a function for printing a border
 print_border() {
-    echo -e "\n====================================\n"
+  echo -e "\n====================================\n"
 }
 
 print_border
