@@ -16,7 +16,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "gen_scenes=main.__main__:_launch",
+            "gen_scenic=scenicNL.main:_launch",
         ],
     },
     extras_require={
@@ -27,7 +27,6 @@ setup(
             "mock",
             "pytest-mock",
             "beautifulsoup4",
-            "openai",
             "pytype",
         ],
     },

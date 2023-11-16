@@ -1,5 +1,5 @@
-from adapters.api_adapter import Scenic3
-from adapters.model_adapter import ModelAdapter
+from scenicNL.adapters.api_adapter import Scenic3
+from scenicNL.adapters.model_adapter import ModelAdapter
 
 import json
 from typing import Dict
@@ -9,7 +9,7 @@ import os
 
 import openai
 
-from common import LLMPromptType, ModelInput
+from scenicNL.common import LLMPromptType, ModelInput
 
 
 class OpenAIModel(Enum):
@@ -24,6 +24,7 @@ class OpenAIAdapter(ModelAdapter):
     def __init__(self, model: OpenAIModel):
         super().__init__()
         openai.api_key = os.environ["OPENAI_API_KEY"]
+        openai.organization = os.environ["OPENAI_ORGANIZATION"]
         self.model = model
         self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'adapters', 'prompts')
 
