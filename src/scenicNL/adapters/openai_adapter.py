@@ -23,10 +23,9 @@ class OpenAIAdapter(ModelAdapter):
     """
     def __init__(self, model: OpenAIModel):
         super().__init__()
-        openai.api_key = os.getenv["OPENAI_API_KEY"]
-        os.getenv("OPENAI_ORGANIZATION")
-        if os.getenv["OPENAI_ORGANIZATION"] and len(os.getenv["OPENAI_ORGANIZATION"]) > 0:
-            openai.organization = os.getenv["OPENAI_ORGANIZATION"]
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        if os.environ["OPENAI_ORGANIZATION"] and len(os.environ["OPENAI_ORGANIZATION"]) > 0:
+            openai.organization = os.environ["OPENAI_ORGANIZATION"]
         self.model = model
         self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'adapters', 'prompts')
 
@@ -217,7 +216,9 @@ class OpenAIAdapter(ModelAdapter):
             try:
                 eval(line)
             except:
-                new_input = ModelInput(examples=model_input.examples, nat_lang_scene_des=line)
+                new_input = ModelInput(
+                    examples=model_input.examples, 
+                    nat_lang_scene_des=line)
                 result = self._line_helper(new_input)
                 scenic3.add_code(result.split('\n'))
         return scenic3.get_code()
