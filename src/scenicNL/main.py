@@ -2,10 +2,9 @@ import click
 import os
 from pathlib import Path
 import scenic
-from src.adapters.model_adapter import ModelAdapter
-from src.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
-from src.common import ModelInput, LLMPromptType
-from src.utils.pdf_parse import PDFParser
+from scenicNL.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
+from scenicNL.common import ModelInput, LLMPromptType
+from scenicNL.utils.pdf_parse import PDFParser
 import sys
 
 prompt_types = {

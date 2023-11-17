@@ -1,4 +1,4 @@
-from adapters.api_adapter import Scenic3
+from scenicNL.adapters.api_adapter import Scenic3
 import abc
 from multiprocessing.pool import ThreadPool
 import time
@@ -7,8 +7,8 @@ import warnings
 from pathlib import Path
 from typing import Callable, Iterable
 
-from cache import APIError, Cache
-from common import LLMPromptType, ModelInput
+from scenicNL.cache import APIError, Cache
+from scenicNL.common import LLMPromptType, ModelInput
 
 """
 A lot of the code in this file is inspired from Java and copied from TensorTrust AI.
