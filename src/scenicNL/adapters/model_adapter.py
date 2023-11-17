@@ -1,4 +1,3 @@
-from scenicNL.adapters.api_adapter import Scenic3
 import abc
 from multiprocessing.pool import ThreadPool
 import time
@@ -112,7 +111,7 @@ class ModelAdapter(abc.ABC):
                             prompt_type=prompt_type,
                         )
                         if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
-                            api_input = ModelInput(model_input.task_description, model_input.examples, prediction)
+                            api_input = ModelInput(model_input.examples, prediction)
                             prediction = self._api_fallback(api_input) # specific function calling handlers
                     except Exception as e:
                         stacktrace = traceback.format_exc()
