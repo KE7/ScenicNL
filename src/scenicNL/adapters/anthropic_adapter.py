@@ -3,8 +3,8 @@ import json
 
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
-from adapters.model_adapter import ModelAdapter
-from common import LLMPromptType, ModelInput
+from scenicNL.adapters.model_adapter import ModelAdapter
+from scenicNL.common import LLMPromptType, ModelInput
 
 
 class AnthropicModel(Enum):
@@ -43,7 +43,7 @@ class AnthropicAdapter(ModelAdapter):
         model_input: ModelInput
     ) -> str:
         return (
-            f"{HUMAN_PROMPT} {model_input.task_description}"
+            f"{HUMAN_PROMPT} Write a scenic program that describes the following scene. \n"
             f"Here are some example scenic programs. \n{model_input.examples[0]}\n{model_input.examples[1]}\n{model_input.examples[2]}\n"
             f"\n\n<user_input>{model_input.nat_lang_scene_des}</user_input>"
             f"\n\n{AI_PROMPT}"
