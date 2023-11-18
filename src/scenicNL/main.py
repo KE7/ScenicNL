@@ -29,7 +29,7 @@ def main():
         [m.value for m in OpenAIModel] + [m.value for m in AnthropicModel],
         case_sensitive=False
     ),
-    default=OpenAIModel.GPT_35_TURBO,
+    default=OpenAIModel.GPT_35_TURBO.value,
     show_default=True,
     help="Model to use for generation.",
 )
@@ -40,7 +40,7 @@ def main():
         [p.value for p in LLMPromptType],
         case_sensitive=False
     ),
-    default=LLMPromptType.PREDICT_FEW_SHOT,
+    default=LLMPromptType.PREDICT_FEW_SHOT.value,
     show_default=True,
     help="Type of prompting strategy to use.",
 )
@@ -109,7 +109,7 @@ def main():
 )
 
 @click.option(
-    "should_cache_retry_errors",
+    "--should_cache_retry_errors",
     type=click.BOOL,
     default=False,
     show_default=True,
@@ -137,6 +137,7 @@ def main(
     if model in set(m.value for m in AnthropicModel):
         adapter = AnthropicAdapter(AnthropicModel(model))
     elif model in set(m.value for m in OpenAIModel):
+        print('Using OpenAI model: ', model)
         adapter = OpenAIAdapter(OpenAIModel(model))
     else:
         raise ValueError(f'Invalid model {model}')
