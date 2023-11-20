@@ -18,7 +18,7 @@ class AnthropicAdapter(ModelAdapter):
     """
     def __init__(self, model : AnthropicModel):
         super().__init__()
-        self._model = model.value
+        self._model = model
 
     def get_cache_key(
         self, 
@@ -78,7 +78,7 @@ class AnthropicAdapter(ModelAdapter):
                 prompt=self._format_message(model_input=model_input, prompt_type=prompt_type),
                 temperature=temperature,
                 max_tokens_to_sample=max_length_tokens,
-                model=self._model
+                model=self._model.value,
             )
         
         return claude_response.completion
