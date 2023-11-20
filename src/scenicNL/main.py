@@ -1,9 +1,11 @@
+from typing import cast
 import click
 import os
 from pathlib import Path
 import scenic
 from scenicNL.adapters.anthropic_adapter import AnthropicAdapter, AnthropicModel
 from scenicNL.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
+from scenicNL.cache import APIError
 from scenicNL.common import ModelInput, LLMPromptType, MAX_TOKEN_LENGTH
 from scenicNL.utils.pdf_parse import PDFParser
 import sys
@@ -186,14 +188,19 @@ def main(
     if not os.path.exists(scenic_path):
         os.makedirs(scenic_path)
 
-    compile_pass, compile_fail = 0, 0
+    compile_pass, compile_fail, api_error = 0, 0, 0
     for index, outputs in enumerate(adapter.predict_batch(
             model_inputs=model_input_list, 
             cache_path=cache_path, num_predictions=1, 
             temperature=0, max_tokens=MAX_TOKEN_LENGTH, prompt_type=prompt_type,
             ignore_cache=ignore_cache, should_cache_retry_errors=should_cache_retry_errors)):
         for attempt, output in enumerate(outputs):
-            print(f'{output}\n\n')
+            if verbose:
+                print(f'Output for query {index} attempt {attempt}: {output}')
+            output = cast((str | APIError), output)
+            if isinstance(output, APIError):
+                api_error += 1
+                continue
             fname = os.path.join(scenic_path, f'{index}-{attempt}.scenic')
             with open(fname, 'w') as f:
                 f.write(output)
@@ -201,11 +208,12 @@ def main(
                 scenic.scenarioFromFile(fname, mode2D=True)
                 compile_pass += 1
             except Exception as e:
-                print(f'Failed with error: {e}')
+                print(f'Error while compiling for input {index}-{attempt}: {e}')
                 compile_fail += 1
             print('----------------\n\n')
 
-    print(f'Compilation success rate: {round((100*compile_pass/(compile_fail+compile_pass)), 2)}%')
+    print(f'API error rate: {round((100*api_error/(api_error+compile_pass+compile_fail)), 2)}%')
+    print(f'Compilation success rate: {round((100*compile_pass/(api_error+compile_pass+compile_fail)), 2)}%')
 
 def _launch():
     # to stop Click handling errors
