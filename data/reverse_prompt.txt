@@ -1,0 +1,58 @@
+Your task is to imagine a real world driving scenario that could have been sampled from the following Scenic code. 
+
+Recall that Scenic is a domain-specific probabilistic programming language for modeling the environments of cyber-physical systems like robots and autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents; sampling from this distribution yields concrete scenes which can be simulated to produce training or testing data.
+
+Your description scenario should include relevant details so that one can reconstruct a Scenic program from just your description. No mention of code, scenic, Carla, simulation, constraints, or programs should be part of this description. Assume that the reader of the description has no idea how to read or write programs so they would not understand code references and it should not be overly technical. Assume the reader is someone like a clerk in a law office. The full description should be at most 120 words. Here is an example of a description that is reasonable: 
+"A Cruise autonomous vehicle (“AV”), operating in driverless autonomous mode, was traveling northbound on 2nd Street between Stillman Street and Bryant Street. As the AV was approaching the intersection with Stillman Street, a blue Model 3 Tesla exited out of a parking garage into the AV’s lane of travel. The AV braked and, shortly thereafter, the AV made contact with the Model 3 Tesla, damaging the AV’s front bumper fascia and front passenger side wheel opening molding. The driver of the Model 3 Tesla left the scene without exchanging information. There were no reported injuries. The driver of the Model 3 Tesla later reported damages."
+ 
+This is the Scenic program you should generate a description for:
+## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)
+param map = localPath('../../../assets/maps/CARLA/Town01.xodr')
+param carla_map = 'Town01'
+model scenic.simulators.carla.model
+
+## CONSTANTS
+EGO_MODEL = "vehicle.lincoln.mkz_2017"
+EGO_SPEED = 10
+EGO_BRAKING_THRESHOLD = 12
+
+LEAD_CAR_SPEED = 10
+LEADCAR_BRAKING_THRESHOLD = 10
+
+BRAKE_ACTION = 1.0
+
+## DEFINING BEHAVIORS
+# EGO BEHAVIOR: Follow lane, and brake after passing a threshold distance to the leading car
+behavior EgoBehavior(speed=10):
+    try:
+        do FollowLaneBehavior(speed)
+
+    interrupt when withinDistanceToAnyCars(self, EGO_BRAKING_THRESHOLD):
+        take SetBrakeAction(BRAKE_ACTION)
+
+# LEAD CAR BEHAVIOR: Follow lane, and brake after passing a threshold distance to obstacle
+behavior LeadingCarBehavior(speed=10):
+    try: 
+        do FollowLaneBehavior(speed)
+
+    interrupt when withinDistanceToAnyObjs(self, LEADCAR_BRAKING_THRESHOLD):
+        take SetBrakeAction(BRAKE_ACTION)
+
+## DEFINING SPATIAL RELATIONS
+# Please refer to scenic/domains/driving/roads.py how to access detailed road infrastructure
+# 'network' is the 'class Network' object in roads.py
+
+# make sure to put '*' to uniformly randomly select from all elements of the list, 'lanes'
+lane = Uniform(*network.lanes)
+
+obstacle = new Trash on lane.centerline
+
+leadCar = new Car following roadDirection from obstacle for Range(-50, -30),
+        with behavior LeadingCarBehavior(LEAD_CAR_SPEED)
+
+ego = new Car following roadDirection from leadCar for Range(-15, -10),
+        with blueprint EGO_MODEL,
+        with behavior EgoBehavior(EGO_SPEED)
+
+require (distance to intersection) > 80
+terminate when ego.speed < 0.1 and (distance to obstacle) < 30
