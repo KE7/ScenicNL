@@ -1,7 +1,15 @@
 # SCENARIO DESCRIPTION
-# Obstacle avoidance without prior action.
-# The ego-vehicle encounters an obstacle / unexpected entity on the road and must perform an
-# emergency brake or an avoidance maneuver.
+# In the urban setting of Elmwood Avenue, a self-driving vehicle, modeled 
+# as a 2017 Lincoln MKZ, was observed executing a prescribed trajectory 
+# along Maple Street. The vehicle adhered to traffic rules and smoothly 
+# transitioned between lanes, following a designated path involving 
+# intersections. Notably, as the vehicle approached the junction of 
+# Elmwood Avenue and Oak Lane, it demonstrated vigilant behavior, 
+# activating a braking action upon detecting a bicycle with a speed 
+# exceeding 1.5 m/s. This precautionary measure ensured a safety 
+# distance of 10 meters from the bicycle, positioned on Oak Lane. The 
+# scenario concluded as the self-driving vehicle moved beyond 50 meters 
+# from its initial position on Maple Street.
 # SCENARIO CODE
 
 ## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)

@@ -1,6 +1,16 @@
 # SCENARIO DESCRIPTION
-# Ego-vehicle must go around a blocking object
-# using the opposite lane, yielding to oncoming traffic.
+# In the bustling city of Town07, a self-driving car was cruising 
+# at a speed of 7 mph along a lane when it encountered a complex 
+# traffic scenario. Ahead, an oncoming car traveled at a speed of 
+# 10 mph. As the self-driving car approached a blocking car within 
+# 15-20 meters, it initiated a lane change to the opposite traffic 
+# direction. If the oncoming car was visible and the distance to 
+# the blocking car was less than 13 meters, the self-driving car 
+# applied brakes. After successfully bypassing the blocking car, 
+# the self-driving car returned to its original lane. The 
+# oncoming car continued its journey along the adjacent lane. 
+# The scenario concluded with the oncoming car visible to the 
+# blocking car, ensuring safe navigation.
 # SCENARIO CODE
 
 param map = localPath('../../../assets/maps/CARLA/Town07.xodr')
