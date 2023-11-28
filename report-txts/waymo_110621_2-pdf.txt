@@ -1,0 +1,8 @@
+On November 6, 2021 at 4:28 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Powell Street at Pacific Avenue.
+
+The Waymo AV was traveling in autonomous mode southbound on Powell Street when it activated its right turn signal and prepared to
+make a right turn onto Pacific Avenue. The Waymo AV stopped to yield to a pedestrian who was in the adjacent crosswalk on Pacific
+Avenue. A passenger vehicle behind the Waymo AV made contact with the rear of the Waymo AV. At the time of the impact, the Waymo
+AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo AV
+sustained minor damage to its rear bumper, and the trailing passenger vehicle sustained minor damage to its front bumper.

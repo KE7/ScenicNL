@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling westbound on Pine Street
+between Powell Street and Stockton Street. At the same time, a motorcyclist approaching from the rear began to merge into the Cruise
+AV's lane behind the Cruise AV, and subsequently made contact with the Cruise AV's rear passenger side bumper, damaging the
+motorcycle's front fender. The driver of the motorcycle reported minor injuries and police were not called.

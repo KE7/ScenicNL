@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) in autonomous mode was stopped in traffic while in the leftmost lane on southbound San
+Antonio Road headed toward Charleston Road in Palo Alto when it was rear-ended by a passenger vehicle maneuvering into the Waymo
+AV’s lane at approximately less than 1 MPH. The Waymo AV sustained minor scratches to its rear sensor, and the passenger vehicle left
+the scene. There were no injuries reported at the scene.

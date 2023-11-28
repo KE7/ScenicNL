@@ -1,0 +1,7 @@
+On March 16, 2023 at 2:19 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Bruno, CA was in a collision
+involving road debris on Interstate 280 at the interchange ramp for Interstate 380 (Exit 43A).
+
+The Waymo AV was traveling south on Interstate 280 in the rightmost exit lane for Exit 43A towards Interstate 380 when it made contact
+
+with road debris (tire scrap). At the time of the impact, the Waymo AV’s Level 4 ADS was (engaged in autonomous mode, and a test driver
+was present (in the driver’s seating position). The Waymo AV sustained damage.

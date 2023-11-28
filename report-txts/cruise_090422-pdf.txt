@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in manual mode, was traveling eastbound on 12th Street between Kissling Street
+and Howard Street. Following the intersection of Howard Street, the Cruise AV came to a stop as a Lexus CT200 was stopped in the wrong
+direction of traffic on 12th Street. The driver of the Lexus CT200 appeared to be asleep. The Cruise AV operator made attempts to wake up
+the driver by flashing the Cruise AV headlights and honking the horn. A nearby cyclist also made attempts to wake up the driver. Shortly
+thereafter, the driver of the Lexus CT200 woke up, accelerated forward and made contact with the Cruise AV, damaging the front passenger
+fender and wheel well of the Cruise AV. There were no reported injuries.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in driverless autonomous mode, was traveling northbound on Steiner Street toward
+the intersection with Eddy Street. The Cruise AV began to brake for the stop sign on Steiner Street at the intersection with Eddy Street when
+a white BMW traveling behind the Cruise AV made contact with the rear driver side bumper of the Cruise AV, damaging the Cruise AV’s
+
+rear fascia. The driver of the other vehicle left the scene without exchanging information. There were no injuries and a police report was
+later filed.

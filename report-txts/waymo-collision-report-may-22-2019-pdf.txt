@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) in autonomous mode was yielding to check for cross traffic while in the slip lane to turn
+from northbound Whisman Station Drive to southbound S. Whisman Road in Mountain View when it was rear-ended by a passenger
+
+vehicle at approximately 7 MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger vehicle had minor damage
+to its front bumper. There were no injuries reported at the scene.

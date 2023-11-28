@@ -1,0 +1,5 @@
+A Zoox vehicle was in autonomy proceeding straight on Pine Street in San Francisco, CA when it encountered a double parked United
+States Postal Service van in lane (vehicle 2: model, year, VIN and insurance are unknown). The Zoox vehicle came to a complete stop while
+waiting for an opportunity to merge around vehicle 2. Vehicle 2 then rolled backwards into the Zoox vehicle, causing minor damage to front
+sensors and Vehicle 2 rear bumper. There were no injuries and first responders were not notified. Post incident review did not observe any
+brake lights or reverse lights on vehicle 2 while it was rolling backwards.

@@ -1,0 +1,9 @@
+On June 28, 2023 at 9:19 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a pickup truck on Great Highway near Kirkham Street.
+
+The Waymo AV was parallel parked along the curb on southbound Great Highway when a pickup truck that was initially parked directly
+behind the Waymo AV began to maneuver out of its parking spot. As the pickup truck pulled out of the parking spot, it initiated a multi-turn
+maneuver and reversed into the parked Waymo AV. The rear passenger's side corner of the pickup truck made contact with the driver side
+
+rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode. The Waymo AV
+sustained damage.

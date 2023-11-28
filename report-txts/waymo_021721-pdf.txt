@@ -1,0 +1,8 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling northbound on Shrader Street at Haight Street in San Francisco when it was
+involved in a collision. While in manual mode, the Waymo AV test driver stopped the Waymo AV at a 4-way stop sign intersection on
+Shrader Street at Haight Street, signaling to make a left turn. The Waymo AV test driver yielded to a passenger vehicle to their right (facing
+westbound on Haight Street), allowing the passenger vehicle to enter the intersection before the Waymo AV test driver began to slowly
+enter the intersection. When the passenger vehicle began to make a left turn in front of the Waymo AV from westbound Haight Street onto
+southbound Shrader Street, the Waymo AV test driver stopped the Waymo AV. A passenger vehicle behind the Waymo AV then made
+contact with the stationary Waymo AV’s rear bumper at approximately 7 MPH. The Waymo AV sustained minor damage to its rear
+bumper, and the passenger vehicle left the scene without exchanging information. No injuries were reported.

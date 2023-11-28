@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV), operating in autonomous mode, was yielding to oncoming traffic prior to making a left turn
+onto eastbound 17th Street from southbound Potrero Avenue when another vehicle made contact with the rear bumper of the Cruise AV,
+damaging the Cruise AV's right rear bumper bar and fascia. The Cruise AV test operator in the driver's seat reported back pain at the scene
+
+but did not request emergency assistance. The Cruise AV test operator sitting in the front passenger seat did not report any injuries at the
+scene, but later reported neck pain. Police were not called.

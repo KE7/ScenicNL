@@ -1,0 +1,7 @@
+On March 1, 2023 at 8:27 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision involving
+a fixed object on O’Farrell Street near Anzavista Avenue.
+
+As the Waymo AV was leaving a parking lot to turn left onto O’Farrell Street, the front of the Waymo AV made contact with a chain that
+
+was connected between a parking lot road sign and a temporary pole. At the time of the impact, the Waymo AV’s Level 4 ADS was
+engaged in autonomous mode. The road sign fell down due to tension on the chain.

@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in autonomous mode, was traveling northwest bound on 9th Street near the
+intersection with Folsom Street in the right lane when it stopped due to traffic ahead in the intersection. Shortly thereafter, another vehicle
+made contact with the Cruise AV, damaging the Cruise AV's left rear bumper, wheel well, and tail lamp and the other vehicle's front right
+bumper, headlight, and fender. The Cruise AV test operator sitting in the front passenger seat reported back pain at the scene, but did not
+request emergency assistance. Police were not called.

@@ -1,0 +1,7 @@
+On February 11, 2022 at 5:36 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Market Street and Valencia Street.
+
+The Waymo AV was approaching stopped traffic in the left turn lane on Market Street at Valencia Street when a passenger vehicle
+approached from behind and made contact with the rear bumper of the Waymo AV. The other vehicle left the scene without exchanging
+information. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in
+the driver’s seating position). The Waymo AV sustained minor damage.

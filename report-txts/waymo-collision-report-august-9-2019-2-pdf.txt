@@ -1,0 +1,9 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode on southbound N. Shoreline Boulevard at W.
+Middlefield Road in Mountain View when a bicyclist made contact with the side of the Waymo AV. The Waymo AV was traveling in the
+far right lane on N. Shoreline Boulevard and slowing for a red light at W. Middlefield Road, when a bicyclist began to cross all lanes of
+traffic from the east side of N. Shoreline Boulevard to the west side of the boulevard, in a diagonal manner, against the flow of traffic. As
+the bicyclist approached the Waymo AV, the Waymo AV began braking for the bicyclist. As the Waymo AV came to a stop, the bicyclist
+then made contact with the driver’s side rear quarter panel of the Waymo AV at approximately 8 MPH. The Waymo AV sustained minor
+
+scratches to the driver’s side rear taillight, and the bicyclist, remaining upright, appeared to sustain no damage or injuries as they cycled
+away from the scene without exchanging information.

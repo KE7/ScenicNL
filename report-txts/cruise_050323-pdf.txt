@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in manual mode, was departing from the Three Embarcadero Center garage facility.
+
+As the Cruise AV was leaving the garage, the garage gate began to lower and made contact with the Cruise AV, damaging the roof Lidar
+assembly. There were no reported injuries.

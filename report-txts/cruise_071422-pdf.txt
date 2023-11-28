@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling southbound in the right lane of
+traffic on Mission Street between Randall Street and Appleton Avenue. The Cruise AV stopped behind and to the left of a Hyundai Elantra
+that was stopped beside the right curb of Mission Street. The driver was standing beside the Hyundai Elantra with the driver door open into
+the lane of traffic. The Hyundai Elantra then rolled backwards at an angle and, shortly thereafter, made contact with the Cruise AV,
+damaging the front passenger door, rear passenger quarter panel, rear passenger bumper, and rear passenger wheel of the Cruise AV. The
+driver of the Hyundai Elantra left the scene without exchanging information. There were no injuries and a police report was later filed.

@@ -1,0 +1,7 @@
+On November 19, 2019 at approximately 2:04pm in clear weather, a Lyft Autonomous Vehicle (“Lyft AV”) was travelling at 29.6mph in
+autonomous mode northbound in the right lane on El Camino Real Blvd in Palo Alto, CA when the Safety Driver commanded manual mode
+with steering and brake inputs in immediate reaction to the third party vehicle in the adjacent center lane abruptly cutting in to the AV's lane,
+apparently attempting to make a last-second right turn onto Medical Foundation Drive. Approximately 1.5 seconds later, the third party vehicle
+collided with AV which was then travelling at 14mph. The third party passenger vehicle made contact with the Lyft AV’s front left lidar sensor
+and the driver side fender. Damage was limited to the third party’s passenger side door and passenger side fender, and the Lyft AV’s front
+bumper, left bumper lidar sensor and driver side fender. No injuries were reported and law enforcement was not called.

@@ -1,0 +1,9 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was traveling southbound on 10th Street between
+Howard Street and Mission Street. The Cruise AV was traveling 24.9 mph upon coming to the intersection with Howard Street on a green
+light. As the Cruise AV entered the intersection, a 2021 Range Rover was traveling the wrong way on a one-way section of Howard Street.
+The 2021 Range Rover was traveling eastbound on Howard Street and entered the intersection on a red light. The Cruise AV braked prior to
+the Cruise AV operator disengaging the Cruise AV from autonomous mode. The Cruise AV operator continued to brake while steering
+away from the approaching vehicle but, shortly thereafter, the 2021 Range Rover made contact with the Cruise AV, damaging the front
+
+right of the Cruise AV and the front left bumper of the 2021 Range Rover. The Cruise AV was traveling 11.2 mph at the time of contact.
+Police were called to the scene and no injuries were reported.

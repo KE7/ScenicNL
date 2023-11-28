@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling westbound on 19th Street between
+Capp Street and Mission Street. The Cruise AV slowed to a stop due to a pedestrian on a scooter who entered the lane of traffic in front of
+the AV and started proceeding in circles. Shortly thereafter, the pedestrian approached the stopped Cruise AV, placed the scooter on the
+ground in front of the Cruise AV’s front passenger side tire, and walked away off the roadway. After the pedestrian left, the Cruise AV
+
+attempted to proceed forward and made contact with the abandoned scooter. There were no damages to the Cruise AV and there were no
+reported injuries.

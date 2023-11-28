@@ -1,0 +1,6 @@
+On November 4, 2021 at 6:41 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA made contact with
+a fixed object at the intersection of Icehouse Alley and Green Street.
+
+The Waymo AV was traveling eastbound on Green Street when the vehicle approached a partially covered manhole. The manhole cover
+made contact with the underside of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous
+mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained minor damage to the underside of the car.

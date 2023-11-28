@@ -1,0 +1,6 @@
+On August 17, 2023 at 1:05 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving an SUV on Bayshore Boulevard near Jerrold Avenue.
+
+The Waymo AV was traveling northbound on Bayshore Boulevard. As the SUV was passing the Waymo AV to the left, it initiated a right
+lane change. The front of the SUV made contact with the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS
+was engaged in autonomous mode. Both vehicles sustained damage, and the SUV left the scene without exchanging information.

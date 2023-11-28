@@ -1,0 +1,10 @@
+On April 12, 2023 at 5:29 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in Santa Monica, California was in a collision
+involving an SUV on Wilshire Boulevard at 26th Street.
+
+The Waymo AV was traveling southwest on Wilshire Boulevard in the rightmost lane as it was approaching the intersection with 26th
+Street. The signal for traffic proceeding southwest on Wilshire Boulevard was red as the Waymo AV approached the intersection and came
+
+to a stop. The signal for traffic proceeding southwest on Wilshire Boulevard then turned green, and traffic in adjacent lanes began moving
+while the Waymo AV waited for traffic in its lane to begin to move.
+
+The SUV that had been stopped directly behind the Waymo AV began moving forward and the front of the SUV made contact with the rear

@@ -1,0 +1,6 @@
+A Ghost vehicle in conventional mode was traveling east on Main Street in Alameda, CA. Vehicle 2 was parked on Main Street facing east.
+Vehicle 2 abruptly exited the parking space and pulled into the lane in front of the Ghost vehicle. The Ghost driver engaged the brakes and
+moved towards the adjacent lane, preventing a front to rear collision. Vehicle 2 continued into the lane and made contact with the right side
+of the Ghost vehicle. The other driver stated that he was distracted by a conversation with his passenger while exiting the parking space and
+did not notice close oncoming traffic before pulling into the lane. First responders were not called to the scene. The California Highway
+Patrol did not report to the scene. Autonomy was not engaged at any point during the drive cycle preceding the event.

@@ -1,0 +1,9 @@
+On April 5, 2023 at 10:46 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger car on Potrero Avenue at 21st Street.
+
+The Waymo AV was traveling southbound on Potrero Avenue in the leftmost lane as it was approaching the intersection with 21st Street.
+The signal for traffic proceeding south on Potrero Avenue was green for the Waymo AV as it approached the intersection. As the Waymo
+AV approached, an individual riding a motorized scooter traveling north on Potrero Avenue proceeded to turn left onto westbound 21st
+Street, across the paths of the Waymo AV and other oncoming vehicles. The Waymo AV began to brake, and the Waymo AV test driver
+transitioned to manual mode and brought the Waymo AV to a stop. A passenger car traveling directly behind the Waymo AV then made
+contact with the rear of the Waymo AV. The individual riding the scooter was not contacted by the Waymo AV or any other vehicle. At the

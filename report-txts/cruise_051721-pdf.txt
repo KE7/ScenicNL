@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle, operating in autonomous mode, was traveling northbound on Guerrero Street. The Cruise AV was making a
+right turn onto 24th Street when a 2004 Toyota Sienna that was traveling straight on Guerrero made contact with the rear driver bumper of
+
+the Cruise AV. This caused damage to the rear driver bumper and wheel well of the Cruise AV. There were no injuries and police were not
+called.

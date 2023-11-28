@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling southbound on Polk Street near the
+intersection with Clay Street. Shortly after passing through the intersection with Clay Street, the Cruise AV made contact with a downed
+power cable stretching across Polk Street and came to a stop. This caused damage to the Cruise AV’s front fascia. There were no injuries.
+Cruise was informed by law enforcement to keep the Cruise AV stationary until the power cables were cleared. During the time that the
+power cable was being cleared and that the Cruise AV was stopped, the Cruise AV ran low on battery power and did not have enough
+power to return to Cruise facilities on its own. The Cruise AV was therefore towed from the scene once the power cables were cleared.

@@ -1,0 +1,8 @@
+On October 27, 2021 at 3:54 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving a passenger vehicle at Flower Street and Bayshore Avenue.
+
+While in manual mode, the operator of the Waymo AV was at a complete stop while yielding to traffic approaching from the left, waiting to
+make a left turn onto Bayshore Avenue from northwest Flower Street. A passenger vehicle approached from behind and made contact with
+
+the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the
+Waymo AV in manual mode. Both vehicles sustained minor damage.

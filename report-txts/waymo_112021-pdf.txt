@@ -1,0 +1,10 @@
+On November 20, 2021 at 11:11 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was ina
+collision involving an SUV on the 1700 block of Steiner Street.
+
+The Waymo AV was in autonomous mode and traveling northbound on Steiner Street as it crossed the intersection at Post Street. An SUV
+then turned right from Post Street onto Steiner Street and began closely following the Waymo AV. The Waymo AV test driver then took
+manual control and stopped the Waymo AV. The SUV then stopped, reversed, and drove around the Waymo AV and made contact with the
+Waymo AV’s driver side rear fender. At the time of the impact the Waymo AV’s Level 4 ADS was not engaged and a test driver was
+
+operating the Waymo AV in manual mode. The Waymo AV sustained minor damage and the SUV left the scene without exchanging
+information.

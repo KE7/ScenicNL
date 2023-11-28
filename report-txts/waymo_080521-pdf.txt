@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision involving a parked vehicle on the
+200 block of Parnassus Avenue. While operating in manual mode, the operator of the Waymo vehicle was attempting to enter the adjacent
+travel lane from a parallel parked position on the right-hand edge of the street, when they made contact with the rear of a vehicle parked
+directly in front of the Waymo vehicle. The Waymo vehicle sustained minor damage to the front bumper and sensor casing. The other
+party’s vehicle sustained minor scratches and denting to the rear bumper.

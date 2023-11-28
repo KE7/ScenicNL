@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode in traffic at a red light on southbound Rengstorff
+Avenue at Central Expressway in Mountain View when it was rear-ended by a passenger vehicle. The passenger vehicle made contact with
+
+the Waymo AV’s rear bumper at approximately 1 MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger
+vehicle sustained minor damage to its front bumper. No injuries were reported.

@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was in autonomous mode on the off-ramp from eastbound Alma Street to southbound
+Oregon Expressway in Palo Alto when it was rear-ended. The Waymo AV was traveling approximately less than 1 MPH and yielding to
+cross-traffic when a passenger vehicle made contact with the Waymo AV’s rear bumper at approximately 5 MPH. The Waymo AV
+
+sustained minor damage to the rear bumper, and the passenger vehicle sustained minor damage to its front bumper. There were no injuries
+reported at the scene.

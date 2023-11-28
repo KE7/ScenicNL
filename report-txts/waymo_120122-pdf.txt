@@ -1,0 +1,7 @@
+On December 1, 2022 at 7:57 AM PST a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Franklin Street at O'Farrell Street.
+
+The Waymo AV was slowing for stopped traffic in the right lane of a three lane, one-way street in manual mode. A passenger vehicle
+traveling behind the Waymo AV attempted to go around the Waymo AV to merge with traffic in the center lane but collided with a third
+passenger vehicle, after which it then also made contact with the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS
+was not engaged and a test driver was operating the Waymo AV. All three vehicles sustained damage.

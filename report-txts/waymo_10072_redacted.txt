@@ -1,0 +1,4 @@
+On October 4, 2021 at 11:12 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle at Mission Street and Highland Street. While operating in manual mode, a Waymo AV was waiting
+at a red light facing southbound on Mission Street when a passenger vehicle approached from behind and made contact with the right rear
+sensor housing of the Waymo AV. The Waymo AV sustained minor damage to the sensor housing.The passenger vehicle left the scene.

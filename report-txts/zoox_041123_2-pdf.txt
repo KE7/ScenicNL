@@ -1,0 +1,3 @@
+A Zoox vehicle in manual mode was traveling eastbound on Lombard St. towards Leavenworth St. following a sharp curve in the road when
+it made contact with a concrete abutment on the right. There were no injuries and police were not called. Autonomy was not engaged at any
+point during the drive cycle proceeding the event.

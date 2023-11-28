@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling northbound on Lomita Avenue approaching Aloha Avenue in San Francisco was
+involved in a collision. While being driven in manual mode and approaching an oncoming passenger vehicle, the Waymo AV’s passenger
+side view mirror made contact with an unoccupied parked passenger vehicle’s driver side view mirror at approximately 17 MPH. The
+
+Waymo AV sustained minor damage to its passenger side view mirror, and the unoccupied passenger vehicle sustained minor damage to its
+driver side view mirror. No injuries were reported at the scene.

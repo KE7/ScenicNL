@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“AV”), operating in driverless autonomous mode, was traveling northbound on Pennsylvania Avenue
+between 23rd Street and 25th Street when the AV approached a double-parked semi-trailer truck in the AV’s lane of travel. The AV began
+to maneuver around and to the left of the semi-trailer truck and came to a stop for a stop sign at the intersection with 23rd Street. At the
+same time, the semi-trailer truck proceeded forward and, shortly thereafter, made contact with the AV. This caused damage to the front
+passenger side bumper fascia of the AV. The parties exchanged information and there were no reported injuries.

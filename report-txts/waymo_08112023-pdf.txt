@@ -1,0 +1,7 @@
+On August 11, 2023 at 7:38 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in Los Angeles, California was in a collision
+involving a stationary object on North Curson Avenue at Waring Avenue.
+
+The Waymo AV was pulling over to the right side of the road, when the test driver transitioned to manual mode and made contact with a
+
+recycling bin on the right side of the street. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was
+operating the Waymo AV in manual mode. The Waymo AV sustained damage.

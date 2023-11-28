@@ -1,0 +1,4 @@
+A Zoox vehicle in autonomy was stopped at a red light waiting for traffic ahead on Embarcadero with brake lights illuminated. When the
+traffic light changed to green, surrounding traffic began to move. The Zoox vehicle appropriately continued to wait for a stopped lead
+vehicle immediately ahead when vehicle 2 struck the Zoox vehicle from the rear. Zoox vehicle camera footage shows the driver of vehicle 2
+holding their cellphone raised in their hand at the time of contact. There were no injuries and police were not called.

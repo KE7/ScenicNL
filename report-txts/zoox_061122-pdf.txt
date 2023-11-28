@@ -1,0 +1,5 @@
+A Zoox vehicle was in autonomy exiting a parking space on Halsey Ave. between S. Norfolk St. and Eisenhower St. in San Mateo, CA,
+with a second vehicle stopped in the lane with its right turn indicator on, when a third vehicle overtook the second vehicle and cut in
+
+abruptly from the left, making contact with the front left side and sensors of the Zoox vehicle as it was exiting the space. The Zoox operator
+disengaged to manual mode just before the contact.

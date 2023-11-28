@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southeast bound on 11th Street between
+Howard and Folsom Streets when the Cruise AV slowed down for a passing motorcyclist behind it. The driver of the Cruise AV disengaged
+from autonomous mode and, shortly thereafter, the motorcyclist made contact with the left rear corner of the Cruise AV. The collision
+resulted in damage to both the Cruise AV and the motorcycle. There were no injuries and police were not called.

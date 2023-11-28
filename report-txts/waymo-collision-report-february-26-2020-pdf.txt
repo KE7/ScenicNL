@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in autonomous mode, entering the slip lane onto northbound Central
+Expressway from the northbound S. Shoreline Boulevard ramp in Mountain View, when it began braking to yield to approaching traffic on
+Central Expressway. As the Waymo AV slowed down, the Waymo AV test driver disengaged and brought the Waymo AV to a stop.
+Moments later a passenger vehicle made contact with the Waymo AV’s rear bumper at approximately 15 MPH. The Waymo AV sustained
+moderate damage to its rear bumper, and the other vehicle had moderate damage to its front bumper. No injuries were reported.

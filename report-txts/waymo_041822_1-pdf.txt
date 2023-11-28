@@ -1,0 +1,7 @@
+On April 18, 2022 at 2:31 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA made contact with a
+parking lot driveway on the 200 block of Duboce Avenue.
+
+The Waymo AV was traveling westbound on Duboce Avenue in autonomous mode when it approached a parking lot on the left side of the
+street. As the Waymo AV turned left and into the parking lot, the Waymo AV’s undercarriage made contact with the driveway pavement
+(the AV did not contact any vehicle or road user). At the time of the contact, the Waymo AV’s Level 4 ADS was engaged in autonomous
+mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained minor undercarriage damage.

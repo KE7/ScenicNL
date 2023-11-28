@@ -1,0 +1,4 @@
+A Zoox vehicle in autonomy was fully stopped with brake lights illuminated in the left turn lane at a red traffic light waiting to complete a
+left hand turn from Harrison St. onto 11th St in San Francisco, Ca. As the light turned green, the Zoox vehicle appropriately yielded to
+oncoming traffic when Vehicle 2 attempted to make a lane change to the right and struck the rear of the Zoox vehicle. The Zoox vehicle
+incurred minor damage to the rear sensors and bumper. There were no injuries and police were not called.

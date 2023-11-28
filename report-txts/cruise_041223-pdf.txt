@@ -1,0 +1,4 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in driverless autonomous mode, was traveling westbound on Turk Street Street
+between Webster Street and Laguna Street. The Cruise AV came to a complete stop for a double-parked Sedan in the leftmost lane. The
+Cruise AV began to maneuver around and to the right of the Sedan when the Sedan reversed into the Cruise AV, damaging the Cruise AV’s
+front driver side bumper. The driver of the Sedan left the scene without exchanging information. There were no reported injuries.

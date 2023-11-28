@@ -1,0 +1,36 @@
+Here is a quick tutorial about the Scenic language.
+Scenic scripts are typically divided into three sections: parameter definitions, scene setup, and behaviors.
+
+1. Parameter Definitions:
+ In the parameter definitions section, you handle imports and define any parameters your scenario will use.
+A Scenic script begins with importing necessary libraries.
+The first lines could be: "param map = localPath('../../../assets/maps/CARLA/Town05.xodr')
+param carla_map = 'Town05'
+model scenic.simulators.carla.model" to import the simulator library.
+The set of maps allowed is only of the format ../../../assets/maps/CARLA/Town01.xodr for Town01, Town02, Town03, Town04, Town05, Town06, Town07.
+No other map can be accessed. Please do not access exact streets or lanes as a result.
+Then define any scene parameters, for example: "speed = Range(15, 25)" defines a parameter speed with values ranging from 15 to 25.
+
+2. Scene Setup:
+In the scene setup section, you describe the static aspects of the scenario.
+For example, "lane = Uniform(*network.lanes)
+spawnPt = new OrientedPoint on lane.centerline
+obstacle = new Trash at spawnPt offset by Range(1, -1) @ 0" creates a Trash obstacle offset from the centerline of a random lane.
+
+3. Behaviors:
+In the behavior section, you describe the dynamic aspects of the scenario.
+For example, "behavior EgoBehavior(speed=10):
+	try:
+		do FollowLaneBehavior(speed)
+	interrupt when withinDistanceToAnyObjs(self, EGO_BRAKING_THRESHOLD):
+		take SetBrakeAction(BRAKE_ACTION)" defines a behavior for a vehicle to follow a lane and brake once any vehicle comes within a certain distance.
+After this, "ego = new Car following roadDirection from spawnPt for Range(-50, -30),
+	with blueprint EGO_MODEL,
+	with behavior EgoBehavior(EGO_SPEED)" defines a dynamic agent with this behavior and other properties. All scenes must have an ego vehicle.
+Scenic provides a rich set of built-in behaviors but also allows for custom behavior definitions.
+After all behaviors and agents are defined, the last optional require and terminate statements can be used to enforce conditions that determine how long the simulationa runs.
+For example (require statement): "require (distance to intersection) > 75" or (terminate statement): "terminate when ego.speed < 0.1 and (distance to obstacle) < 15" might be added to the end of a program but are optional.
+The output should be a single block of Python code for a Scenic script that sets up a scene that models the given natural language description.
+Do not include any sort of command simulate at the end. The simulation will be run separately.
+All actions and values must be specified before being used as values, besides very few scenic built-ins included in the examples.
+Any try block must have at least one corresponding interrupt when block for the program to work properly. All variables must be assigned in the correct order to ensure the program compiles without any undefined variable errors.

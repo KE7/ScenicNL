@@ -1,0 +1,8 @@
+On December 19, 2021 at 10:30 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a passenger vehicle at Fulton Street and Sth Avenue.
+
+At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in the driver’s
+seating position). The Waymo AV was stopped facing southwest on Fulton Street while yielding to pedestrians in a crosswalk when a
+
+passenger vehicle reversed at a low speed from an adjacent driveway into the right rear bumper of the Waymo AV. Both vehicles sustained
+minor damage.

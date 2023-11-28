@@ -1,0 +1,9 @@
+On December 4, 2021 at 4:10 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving an SUV on Winson Drive between 19th and 20th Avenues.
+
+While in autonomous mode, the Waymo AV turned right from southbound 19th Avenue onto westbound Winston Drive. As the Waymo
+AV proceeded onto Winston Drive in the far right lane, an SUV also proceeding westbound on Winston Drive made a continuous right lane
+change from the far left lane, through the middle lane, and entered the far right lane in front of the Waymo AV. The Waymo AV was
+decelerating when the test driver transitioned to manual mode. The Waymo AV then made contact with the SUV. At the time of the impact,
+the Waymo AV’s Level 4 ADS was not engaged and a test driver (in the driver’s seating position) was operating the Waymo AV in manual
+mode. The Waymo AV sustained damage to its front driver side fender and the SUV sustained damage to its front passenger side fender.

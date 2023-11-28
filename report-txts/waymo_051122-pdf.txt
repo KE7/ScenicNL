@@ -1,0 +1,8 @@
+On May 11, 2022 at 9:19 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a SUV on 24th Street and Capp Street.
+
+The Waymo AV was attempting to make a right turn from 24th Street onto Capp Street while yielding to a pedestrian in the adjacent
+crosswalk in autonomous mode. A SUV approaching from behind the Waymo AV passed on the left side, making contact with the Waymo
+AV’s rear left sensor housing. The Waymo AV operator transitioned the system from autonomous to manual mode just before the moment
+of impact. The SUV immediately left the scene. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver
+was operating the Waymo AV in manual mode. The Waymo AV sustained minor damage.

@@ -1,0 +1,8 @@
+On February 28, 2022 at 1:00 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Polk Street at Jackson Street.
+
+While traveling southbound on Polk Street at Jackson Street in autonomous mode, the Waymo AV approached a green light and signaled
+for a right turn when a pedestrian entered the adjacent crosswalk in accordance with the pedestrian “WALK” signal. As the Waymo AV
+began to slow, the driver transitioned the system into manual mode. A few seconds later, a passenger vehicle approached from behind and
+made contact with the rear bumper of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test
+driver was operating the Waymo AV in manual mode. The Waymo AV sustained minor damage.

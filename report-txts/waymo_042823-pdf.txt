@@ -1,0 +1,5 @@
+The Waymo AV was traveling east on 25th Street between Sanchez Street and Vicksburg Street when it approached an SUV that was
+stopped in the lane in front of the Waymo AV. The Waymo AV began passing the stopped SUV on the left when the SUV began reversing
+in the lane. The Waymo AV then stopped behind and to the left of the SUV, and the SUV continued reversing and began a turning
+maneuver to enter a parking space. The left side of the SUV made contact with the front right corner of the Waymo AV. At the time of the
+impact, the Waymo AV was stopped and the AV’s Level 4 ADS was engaged in autonomous mode. Both vehicles sustained damage.

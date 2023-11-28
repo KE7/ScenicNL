@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling southbound on Stanyan Street at the
+intersection with Beulah Street when a lane-encroaching municipal city bus in the right adjacent lane attempted to pass the Cruise AV. The
+driver of the Cruise AV disengaged from autonomous mode and, shortly thereafter, the city bus made contact with the right side of the
+
+Cruise AV, damaging the Cruise AV’s right articulating radar casing. There were no injuries. Police were called but not dispatched to the
+scene.

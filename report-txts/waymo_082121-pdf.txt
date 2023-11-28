@@ -1,0 +1,7 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision involving a vehicle at Scott Street and
+Sacramento Street. While operating in autonomous mode, the Waymo AV was stopped at a stop sign intersection yielding to a pedestrian in
+the crosswalk as a passenger vehicle arrived at the intersection from the left. Once the pedestrian cleared the crosswalk, the Waymo AV
+started to proceed at the same time as the passenger vehicle to the left. The driver of the Waymo AV transitioned into manual mode,
+
+bringing the vehicle to a stop and the passenger vehicle behind the AV accelerated into the rear of the Waymo vehicle. The Waymo AV
+sustained minor damage to the rear bumper.

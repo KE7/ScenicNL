@@ -1,0 +1,7 @@
+On February 15, 2023 at 5:43 AM PST a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a
+collision involving road debris on North Point Street at Buchanan Street.
+
+The Waymo AV was proceeding East on North Point Street through the intersection with Buchanan Street when the front of the Waymo AV
+
+made contact with cardboard debris. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode. The
+Waymo AV sustained damage.

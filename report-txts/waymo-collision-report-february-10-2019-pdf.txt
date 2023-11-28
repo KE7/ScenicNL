@@ -1,0 +1,10 @@
+Per the DMV's request of 02/21/2019, Waymo is resubmitting this OL316 so the DMV's digital version is compliant with accessibility
+requirements under AB 434. Waymo's original report was submitted on 02/19/2019.
+
+A Waymo Autonomous Vehicle (“Waymo AV”) was traveling in autonomous mode in the far right lane on southbound Highway 85
+passing E] Camino Real in Mountain View. A passenger vehicle entered the highway from El Camino Real and made an unsafe maneuver
+by crossing over a solid white line and cutting-in to the Waymo AV’s lane. Out of an abundance of caution, the Waymo AV’s test driver
+disengaged the autonomous mode on the Waymo AV and made an evasive maneuver into the left adjacent lane at approximately 45 MPH.
+As the test driver made the maneuver, the Waymo AV came into contact with a second passenger vehicle that had been approaching from
+behind in the left adjacent lane. The Waymo AV sustained minor damage and tire marks to the driver side of the vehicle, and the second
+passenger vehicle sustained no damage. The driver of the second passenger vehicle stopped to exchange information with the Waymo test

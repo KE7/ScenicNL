@@ -1,0 +1,8 @@
+On November 15, 2021 at 2:20 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a passenger vehicle at Noriega Street at 40th Avenue.
+
+The Waymo AV was stopped at a stop sign at Noriega Street at 40th Avenue when a passenger vehicle made contact with the rear of the
+Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in
+
+the driver’s seating position). The Waymo AV’s rear bumper and undercarriage sustained moderate damage, and the passenger vehicle’s
+front bumper and hood sustained moderate damage.

@@ -1,0 +1,8 @@
+The driver was manually driving the Mercedes-Benz vehicle on the interchange from the 105W to 405S when the vehicle in front of him
+came to an abrupt stop due to slowed traffic on the freeway. The driver manually brought the Mercedes-Benz vehicle to a stop in his lane.
+The vehicle behind him did not come to a stop in time and rear ended the Mercedes-Benz. There was no injury or property damage. The
+
+Mercedes-Benz was able to drive away from the accident. Damange was sustained to the rear bumper of the Mercedes Benz and the front
+bumper of the following vehicle.
+
+At no point during the incident was the vehicle operating in autonomous mode.

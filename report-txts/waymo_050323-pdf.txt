@@ -1,0 +1,9 @@
+On May 3, 2023 at 10:32 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving an SUV on Pine Street near Broderick Street.
+
+The Waymo AV was traveling in autonomous mode in the middle lane on westbound Pine Street between Divisadero Street and Broderick
+Street. A slower traveling van in the left adjacent lane began to initiate a right lane change in front of the Waymo AV, and the Waymo AV
+test driver transitioned to manual mode and braked. The SUV traveling behind the Waymo AV then made contact with the rear of the
+
+Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in
+manual mode. The Waymo AV and SUV sustained damage.

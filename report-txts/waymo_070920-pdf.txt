@@ -1,0 +1,5 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was making a turn in manual mode from westbound Palo Alto Avenue onto northbound
+Glenbrook Avenue in San Francisco when it made contact with a curb. The Waymo AV test driver was making a right turn when the right
+
+rear tire of the Waymo AV made contact with a curb at approximately 10 MPH. The Waymo AV’s right rear tire deflated following the curb
+contact. No injuries were reported.

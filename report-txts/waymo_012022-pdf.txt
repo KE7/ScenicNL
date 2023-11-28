@@ -1,0 +1,8 @@
+On January 20, 2022 at 2:24 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a passenger vehicle on Polk Street at Sacramento Street.
+
+The Waymo AV was stopped at a red light facing north on Polk Street in autonomous mode at the Sacramento Street intersection. The light
+turned green and the Waymo AV proceeded partially into the intersection, yielding to pedestrians in the left crosswalk while preparing to
+make a left turn. A passenger vehicle parked behind the Waymo AV on the right shoulder of Sacramento street pulled out of the shoulder
+and made contact with the right side of the rear of the Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged
+in autonomous mode, and a test driver was present. The Waymo AV sustained minor damage.

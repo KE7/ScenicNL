@@ -1,0 +1,8 @@
+Per the DMV's request of 02/21/2019, Waymo is resubmitting this OL316 so the DMV's digital version is compliant with accessibility
+requirements under AB 434. Waymo's original report was submitted on 01/31/2019.
+
+A Waymo Autonomous Vehicle (“Waymo AV”) in manual mode was yielding to check for cross traffic while in the slip lane to turn from
+southbound Shoreline Boulevard to westbound El Camino Real in Mountain View when it was rear-ended by a passenger vehicle. The
+
+Waymo AV sustained minor damage to the rear left of the vehicle, and the passenger vehicle had minor damage to the front right of the
+vehicle. No injuries were reported.

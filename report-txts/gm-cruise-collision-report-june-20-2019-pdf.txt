@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was making a left turn from the leftmost lane on westbound
+Bush Street onto northbound Octavia Street when the Cruise AV slowed down. The driver of the Cruise AV disengaged from autonomous
+mode and, shortly thereafter, another vehicle clipped the Cruise AV’s right rear corner, damaging the right rear bumper cover, wheel well,
+
+and wheel. The driver of the other vehicle drove away without exchanging information. There were no injuries. Police were called but not
+dispatched to the scene.

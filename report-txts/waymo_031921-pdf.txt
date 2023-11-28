@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling northbound on Church Street at 21st Street in San Francisco was involved in a
+collision. While stopped in autonomous mode, the Waymo AV switched to reverse gear in preparation for making a multipoint turn, just as
+the test driver disengaged by applying the accelerator pedal. The Waymo AV made contact with a passenger vehicle behind it at
+
+approximately 3 MPH. The Waymo AV sustained minor damage to its rear bumper, and the passenger vehicle sustained minor damage to
+its front bumper. No injuries were reported at the scene.

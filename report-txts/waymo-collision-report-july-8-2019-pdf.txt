@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in autonomous mode on southbound Escuela Avenue at El Camino Real in
+Mountain View when it was side-swiped. The Waymo AV was stopped in traffic at a red light when a passenger vehicle attempted to pass
+the Waymo AV on the right, and made contact with a sensor on the Waymo AV’s passenger side front fender at approximately 1 MPH. The
+
+Waymo AV’s sensor housing sustained a minor scratch, and the passenger vehicle sustained a minor scratch to its driver side mirror. There
+were no injuries reported at the scene.

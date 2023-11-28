@@ -6,8 +6,12 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
+        "anthropic",
+        "bs4",
         "scenic==3.0.0b2",
-        "openai",
+        "openai>=0.28,<=0.28.1",
+        "pdf2image",
+        "pyocr",
         "SQLAlchemy",
         "tenacity",
         "lmql[hf]",
@@ -16,7 +20,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "gen_scenes=main.__main__:_launch",
+            "gen_scenic=scenicNL.main:_launch",
         ],
     },
     extras_require={
@@ -27,6 +31,7 @@ setup(
             "mock",
             "pytest-mock",
             "beautifulsoup4",
+            "pytype",
         ],
     },
     python_requires=">=3.11",

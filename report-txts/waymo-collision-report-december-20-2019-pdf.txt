@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) was stopped in manual mode in the slip lane from southbound Whisman Station Drive to
+northbound Central Expressway in Mountain View when it was rear-ended. The Waymo AV test driver was yielding to approaching traffic
+when a passenger vehicle made contact with the Waymo AV’s rear bumper at approximately 2 MPH. The Waymo AV sustained minor
+damage to its rear bumper, and the passenger vehicle sustained minor damage to its front bumper. No injuries were reported at the scene.

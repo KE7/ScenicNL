@@ -1,0 +1,7 @@
+On April 14, 2021 at 9:38am, AV104 driving in autonomous mode in San Francisco, California, experienced longitudinal contact from a
+Toyota sedan at the intersection of First and Harrison Streets. The AV was moving at 9mph in the right lane and slowing to begin to execute
+a right turn, when the Toyota sedan “‘side-swiped” the left front lidar unit on the AV while overtaking at a greater speed from the left
+adjacent lane. The AV vehicle sustained moderate property damage to the lidar unit, mount, and front fender/bumper. The driver of the
+Toyota did not stop*. There are no known injuries, and Lyft does not know what (if any) damage was sustained by the Toyota.
+
+*Note: this lane merges onto a freeway ramp and may not have provided a place to safely pull over.

@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in supervised autonomous mode, was at a complete stop in response to a red light on
+36th Avenue at the intersection with Lincoln Way. The Cruise AV began to make a left turn onto Lincoln Way after the light turned green.
+While the Cruise AV was in the intersection completing the turn, the Cruise AV operator disengaged from autonomous into manual mode.
+After the disengagement, the Cruise AV operator continued straight forward, and shortly thereafter, made contact with the right curb and
+concrete guardrail on Lincoln Way. This caused damage to the Cruise AV’s front passenger side bumper and front passenger side fascia.
+The Cruise AV operator reported injuries and the Cruise AV was towed from the incident.

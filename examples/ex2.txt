@@ -1,0 +1,59 @@
+# SCENARIO DESCRIPTION
+# In the urban setting of Elmwood Avenue, a self-driving vehicle, modeled 
+# as a 2017 Lincoln MKZ, was observed executing a prescribed trajectory 
+# along Maple Street. The vehicle adhered to traffic rules and smoothly 
+# transitioned between lanes, following a designated path involving 
+# intersections. Notably, as the vehicle approached the junction of 
+# Elmwood Avenue and Oak Lane, it demonstrated vigilant behavior, 
+# activating a braking action upon detecting a bicycle with a speed 
+# exceeding 1.5 m/s. This precautionary measure ensured a safety 
+# distance of 10 meters from the bicycle, positioned on Oak Lane. The 
+# scenario concluded as the self-driving vehicle moved beyond 50 meters 
+# from its initial position on Maple Street.
+# SCENARIO CODE
+
+## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)
+param map = localPath('../../../assets/maps/CARLA/Town01.xodr')
+param carla_map = 'Town01'
+model scenic.simulators.carla.model
+
+## CONSTANTS
+EGO_MODEL = "vehicle.lincoln.mkz_2017"
+BICYCLE_MIN_SPEED = 1.5
+THRESHOLD = 18
+BRAKE_ACTION = 1.0
+SAFETY_DISTANCE = 10
+
+## DEFINING BEHAVIORS
+behavior EgoBehavior(trajectory):
+    try:
+        do FollowTrajectoryBehavior(trajectory = trajectory)
+
+    interrupt when withinDistanceToObjsInLane(self, SAFETY_DISTANCE):
+        take SetBrakeAction(BRAKE_ACTION)
+
+behavior BicycleBehavior(speed=3, threshold=15):
+    do CrossingBehavior(ego, speed, threshold)
+
+## DEFINING SPATIAL RELATIONS
+# make sure to put '*' to uniformly randomly select from all elements of the list
+intersec = Uniform(*network.intersections)
+startLane = Uniform(*intersec.incomingLanes)
+maneuver = Uniform(*startLane.maneuvers)
+ego_trajectory = [maneuver.startLane, maneuver.connectingLane, maneuver.endLane]
+
+spot = new OrientedPoint in maneuver.startLane.centerline
+ego = new Car at spot,
+    with blueprint EGO_MODEL,
+    with behavior EgoBehavior(trajectory = ego_trajectory)
+
+spotBicycle = new OrientedPoint in maneuver.endLane.centerline,
+    facing roadDirection
+bicycle = new Bicycle at spotBicycle offset by 3.5@0,
+    with heading 90 deg relative to spotBicycle.heading,
+    with behavior BicycleBehavior(BICYCLE_MIN_SPEED, THRESHOLD),
+    with regionContainedIn None
+
+require 10 <= (distance to intersec) <= 15
+require 10 <= (distance from bicycle to intersec) <= 15
+terminate when (distance to spot) > 50
