@@ -1,7 +1,14 @@
 # SCENARIO DESCRIPTION
-# Longitudinal control after leading vehicle’s brake.
-# The leading vehicle decelerates suddenly due to an obstacle and the ego-vehicle must perform an
-# emergency brake or an avoidance maneuver.
+# A self-driving car was cruising at a speed of 10 mph on 2nd Street, 
+# between Stillman Street and Bryant Street. As the car approached the 
+# intersection with Stillman Street, it detected a randomly placed trash 
+# obstacle on its lane and initiated a braking action. Meanwhile, 
+# a lead car, also traveling at 10 mph, was following the road ahead. 
+# The lead car's behavior involved following the lane and braking upon 
+# nearing an obstacle. The self-driving car, following behind the lead 
+# car, maintained a safe distance. The scenario concluded when the 
+# self-driving car's speed dropped to almost zero, and the distance 
+# to the obstacle ahead was less than 30 meters.
 # SCENARIO CODE
 
 ## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)
