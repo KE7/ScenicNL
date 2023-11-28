@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -61,3 +62,13 @@ def write_jsonl(
             if idx > 0:
                 output_file.write("\n")
             json.dump(example, output_file)
+
+
+def format_scenic_tutorial_prompt(prompt_path: str) -> str:
+        """
+        Formats the message providing introduction to Scenic language and syntax.
+        """
+        st_prompt = ''
+        with open(os.path.join(prompt_path, 'dynamic_scenarios_prompt.txt')) as f:
+            st_prompt = f.read()
+        return st_prompt

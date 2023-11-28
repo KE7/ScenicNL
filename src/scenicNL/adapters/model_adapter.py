@@ -48,6 +48,7 @@ class ModelAdapter(abc.ABC):
         temperature: float,
         max_length_tokens: int,
         prompt_type: LLMPromptType,
+        verbose: bool,
     ) -> str:
         """Perform a single prediction. Must be overriden by subclasses."""
         raise NotImplementedError
@@ -79,13 +80,16 @@ class ModelAdapter(abc.ABC):
         cache: Cache,
         prompt_type: LLMPromptType,
         ignore_cache: bool,
+        verbose: bool = False,
     ) -> Callable[[ModelInput], list[str | APIError]]:
         """
         Return a function that takes a list of model inputs and returns a
         list of predictions. This function will be used by the batch_predict
         method.
         """
-        def process_single(model_input: ModelInput) -> list[str | APIError]:
+        def process_single(
+            model_input: ModelInput,
+        ) -> list[str | APIError]:
             cache_key = self.get_cache_key(
                 model_input=model_input,
                 temperature=temperature,
@@ -109,6 +113,7 @@ class ModelAdapter(abc.ABC):
                             temperature=temperature,
                             max_length_tokens=max_tokens,
                             prompt_type=prompt_type,
+                            verbose=verbose,
                         )
                         if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
                             api_input = ModelInput(model_input.examples, prediction)
@@ -162,6 +167,7 @@ class ModelAdapter(abc.ABC):
                 cache=cache,
                 prompt_type=prompt_type,
                 ignore_cache=ignore_cache,
+                verbose=verbose,
             )
 
             with ThreadPool(num_workers) as pool:
