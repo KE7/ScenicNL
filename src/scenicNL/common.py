@@ -64,7 +64,7 @@ def write_jsonl(
             json.dump(example, output_file)
 
 
-def format_scenic_tutorial_prompt(prompt_path: Path) -> str:
+def format_scenic_tutorial_prompt(prompt_path: str) -> str:
         """
         Formats the message providing introduction to Scenic language and syntax.
         """
