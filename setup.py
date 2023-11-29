@@ -19,6 +19,7 @@ setup(
         "pytype",
         "lmql",
         "nest_asyncio",
+        "transformers",
     ],
     entry_points={
         "console_scripts": [
