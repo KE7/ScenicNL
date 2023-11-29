@@ -4,6 +4,7 @@ import os
 
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
+from scenicNL.adapters.api_adapter import Scenic3
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import LLMPromptType, ModelInput, format_scenic_tutorial_prompt
 
@@ -21,7 +22,9 @@ class AnthropicAdapter(ModelAdapter):
         super().__init__()
         self._model = model
         self.PROMPT_FILE = 'scenic_tutorial_prompt.txt' # 12%
+        self.API_FILE = 'python_api_prompt.txt'
         self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts', self.PROMPT_FILE)
+        self.API_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts', self.API_FILE)
 
     def get_cache_key(
         self, 
@@ -72,6 +75,31 @@ class AnthropicAdapter(ModelAdapter):
             f"\n\n{AI_PROMPT}"
         )
 
+    def _python_api_prompt(
+        self,
+        model_input: ModelInput
+    ) -> str:
+        return (
+            f"{HUMAN_PROMPT} Consider the following tutorial about the Python API for Scenic-3 code generation."
+            f"\n-- Here is the tutorial. --\n {format_scenic_tutorial_prompt(self.API_PATH)}\n\n"
+            f"\n\n{AI_PROMPT}"
+        )
+
+    def _python_api_prompt_oneline(
+        self,
+        model_input: ModelInput
+    ) -> str:
+        return (
+            f"{HUMAN_PROMPT} Consider the following Scenic-3 example programs."
+            f"\n-- Here are some example scenic programs. --\n"
+            f"\n{model_input.examples[0]}\n{model_input.examples[1]}\n{model_input.examples[2]}\n"
+            f"\n-- Here is a scenic tutorial. --\n {format_scenic_tutorial_prompt(self.PROMPT_PATH)}\n\n"
+            f"Write me just one line of valid Scenic-3 code based on the Python API input provided.\n"
+            f"\nThe output should be a single block of valid Scenic code from the API call: {model_input.nat_lang_scene_des}"
+            f"\nOutput just one short block of Scenic-3 code as your output, with four spaces per indent if any. Provide no other output text."
+            f"\n\n{AI_PROMPT}"
+        )
+
     def _format_message(
         self,
         *,
@@ -87,6 +115,10 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_prompt(model_input=model_input)
         elif prompt_type == LLMPromptType.PREDICT_ZERO_SHOT:
             msg = self._zero_shot_prompt(model_input=model_input)
+        # elif prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
+        #     msg = self._python_api_prompt(model_input=model_input)
+        # elif prompt_type.value == LLMPromptType.PREDICT_PYTHON_API_ONELINE.value: # for one-line corrections of function calling
+        #     msg = self._python_api_prompt_oneline(model_input=model_input)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
         
