@@ -20,5 +20,5 @@ pip install -e '.[dev]'
 
 An example command to running our pipeline
 ```bash
-gen_scenic --query_path <path-to-descriptions> --output_path <path-to-output> --model gpt-3.5-turbo-0613 --prompt_type predict_few_shot
+gen_scenic --query_path <path-to-descriptions> --output-path <path-to-output> --model gpt-3.5-turbo-0613 --llm_prompt_type predict_few_shot
 ```
