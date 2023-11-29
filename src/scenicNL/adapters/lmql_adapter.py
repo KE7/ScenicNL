@@ -97,7 +97,6 @@ class LMQLAdapter(ModelAdapter):
     ) -> str:
         
         example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
-        print(model_input.nat_lang_scene_des)
         response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
 
         return response
