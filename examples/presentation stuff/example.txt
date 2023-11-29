@@ -7,7 +7,7 @@ with 25th Avenue. As the Waymo AV slowed to a stop, a SUV traveling
 in the opposite lane, East on Martin Luther King Jr. Drive, crossed 
 the intersection with 25th Avenue and came to a stop in the opposite 
 lane, next to the Waymo AV. After stopping, the SUV began moving again
- and the front  left corner of the SUV made contact with the left
-  side of the Waymo AV. The SUV then left the scene. 
-  The Waymo AV sustained minor damage.
+and the front  left corner of the SUV made contact with the left
+side of the Waymo AV. The SUV then left the scene. 
+The Waymo AV sustained minor damage.
 
