@@ -81,6 +81,17 @@ def main():
 )
 
 @click.option(
+    "--result-path",
+    type=click.Path(
+        file_okay=False,
+        dir_okay=True,
+    ),
+    default="scenes",
+    show_default=True,
+    help="Path to all scenes that compile.",
+)
+
+@click.option(
     "--cache-path",
     type=click.Path(
         file_okay=True,
@@ -105,6 +116,14 @@ def main():
 )
 
 @click.option(
+    "--offset",
+    type=click.INT,
+    default=0,
+    show_default=True,
+    help="Offset to use as start index for evaluation run."
+)
+
+@click.option(
     "--verbose",
     is_flag=True,
     help="Boolean condition to display or omit verbose output."
@@ -123,9 +142,11 @@ def main(
     output_path: Path,
     text_path: Path,
     example_path: Path,
+    result_path: Path,
     cache_path: Path,
     ignore_cache: bool,
     count: int,
+    offset: int,
     verbose: bool,
     model: str,
     llm_prompt_type: str,
@@ -146,9 +167,11 @@ def main(
     query_list = []
     if not os.path.isdir(text_path):
         os.mkdir(text_path)
+    if not os.path.isdir(result_path):
+        os.mkdir(result_path)
     if os.path.isdir(query_path):
         file_list = os.listdir(query_path)
-        file_list = file_list[:count] if count else file_list
+        file_list = file_list[offset:count+offset] if count else file_list[offset:]
         for filename in file_list:
             full_path = os.path.join(query_path, filename)
             if filename.endswith('.pdf'):
@@ -206,6 +229,10 @@ def main(
                 f.write(output)
             try:
                 scenic.scenarioFromFile(fname, mode2D=True)
+                fname_compile = os.path.join(result_path, f'{index}-{attempt}.scenic')
+                with open(fname_compile, 'w') as f:
+                    f.write(output)
+                print(f'No errors when compiling input {index}-{attempt}')
                 compile_pass += 1
             except Exception as e:
                 print(f'Error while compiling for input {index}-{attempt}: {e}')
