@@ -56,7 +56,22 @@ class AnthropicAdapter(ModelAdapter):
             f"then the scenic program. Do not include any other text."
             f"\n\n{AI_PROMPT}"
         )
-    
+
+    def _zero_shot_prompt(
+        self,
+        model_input: ModelInput
+    ) -> str:
+        return (
+            f"{HUMAN_PROMPT} Please generate a scenic program for a CARLA "
+            f"simulation to replicate the input natural language description below."
+            f"\n-- Here is a scenic tutorial. --\n {format_scenic_tutorial_prompt(self.PROMPT_PATH)}\n\n"
+            f"Given the following report, write a scenic program that models it: \n"
+            f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
+            f"Output the original scene description as a comment at the top of the file first, "
+            f"then the scenic program. Do not include any other text."
+            f"\n\n{AI_PROMPT}"
+        )
+
     def _format_message(
         self,
         *,
@@ -70,6 +85,10 @@ class AnthropicAdapter(ModelAdapter):
         msg = None
         if prompt_type == LLMPromptType.PREDICT_FEW_SHOT:
             msg = self._few_shot_prompt(model_input=model_input)
+        elif prompt_type == LLMPromptType.PREDICT_ZERO_SHOT:
+            msg = self._zero_shot_prompt(model_input=model_input)
+        else:
+            raise ValueError(f"Invalid prompt type: {prompt_type}")
         
         if verbose:
             print(f"Message formatted using {LLMPromptType(prompt_type).name}")
