@@ -14,6 +14,11 @@ setup(
         "pyocr",
         "SQLAlchemy",
         "tenacity",
+        "lmql[hf]",
+        "openai",
+        "pytype",
+        "lmql",
+        "nest_asyncio",
     ],
     entry_points={
         "console_scripts": [

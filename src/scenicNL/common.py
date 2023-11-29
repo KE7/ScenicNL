@@ -14,6 +14,7 @@ class LLMPromptType(Enum):
     PREDICT_SCENIC_TUTORIAL = "predict_scenic_tutorial"
     PREDICT_PYTHON_API = "predict_python_api"
     PREDICT_PYTHON_API_ONELINE = "predict_python_api_oneline"
+    PREDICT_LMQL = "predict_lmql"
 
 
 @dataclass(frozen=True)
