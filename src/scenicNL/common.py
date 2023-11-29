@@ -19,6 +19,7 @@ class LLMPromptType(Enum):
     PREDICT_PYTHON_API = "predict_python_api"
     PREDICT_PYTHON_API_ONELINE = "predict_python_api_oneline"
     PREDICT_LMQL = "predict_lmql"
+    PREDICT_FEW_SHOT_WITH_RAG = "predict_few_shot_with_rag"
 
 
 @dataclass(frozen=True)
@@ -30,6 +31,7 @@ class ModelInput:
     """
     examples: list[str]
     nat_lang_scene_des: str
+    first_attempt_scenic_program: Optional[str] = None
 
 
 def load_jsonl(
@@ -177,12 +179,13 @@ class VectorDB():
         self,
         query_or_queries : Union[str, List[str]],
         top_k : int = 3,
-    ) -> List[str]:
+    ) -> Optional[List[str]]:
         if isinstance(query_or_queries, str):
             query_or_queries = [query_or_queries]
         
         query_embeddings = [self.get_embedding(query) for query in query_or_queries]
-        results = self.index.query(query_embeddings, top_k=top_k, include_metadata=True)
-        
-        passages = [results['metadata']['text'] for results in results]
+        results_dict = self.index.query(query_embeddings, top_k=top_k, include_metadata=True)
+        passages = [results['metadata']['text'] for results in results_dict['matches']]
+        if len(passages) < top_k:
+            return None
         return passages

@@ -67,10 +67,17 @@ class AnthropicAdapter(ModelAdapter):
         # but rather on scenic programs so we should actually call this function
         # after the LLM does a first attempt at generating a scenic program
         # and then we can use the scenic program to query the index
-        examples = self.index.query(model_input.nat_lang_scene_des, top_k=top_k)
+        if model_input.first_attempt_scenic_program is None:
+            return self._few_shot_prompt(model_input=model_input)
+        
+        examples = self.index.query(model_input.first_attempt_scenic_program, top_k=top_k)
+        if examples is None:
+            return self._few_shot_prompt(model_input=model_input)
+        
         relevant_model_input = ModelInput(
             examples=[example for example in examples],
             nat_lang_scene_des=model_input.nat_lang_scene_des,
+            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
         return self._few_shot_prompt(model_input=relevant_model_input)
 
@@ -104,6 +111,8 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_prompt(model_input=model_input)
         elif prompt_type == LLMPromptType.PREDICT_ZERO_SHOT:
             msg = self._zero_shot_prompt(model_input=model_input)
+        elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT_WITH_RAG:
+            msg = self._few_shot_prompt_with_rag(model_input=model_input)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
         
@@ -128,12 +137,32 @@ class AnthropicAdapter(ModelAdapter):
         # to prevent misuse of file handlers
         limits = httpx.Limits(max_keepalive_connections=1, max_connections=1)
         with Anthropic(connection_pool_limits=limits, max_retries=10) as claude:
-            claude_response = claude.completions.create(
-                prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),
-                temperature=temperature,
-                max_tokens_to_sample=max_length_tokens,
-                model=self._model.value,
-            )
+            if prompt_type != LLMPromptType.PREDICT_FEW_SHOT_WITH_RAG:
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            else:
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+                # We need to call Claude again
+                new_model_input = ModelInput(
+                    examples=model_input.examples, # this will get overwritten by the search query
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=claude_response.completion, # this is used for the query search
+                )
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
         
         return claude_response.completion
         
