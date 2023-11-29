@@ -34,3 +34,4 @@ The output should be a single block of Python code for a Scenic script that sets
 Do not include any sort of command simulate at the end. The simulation will be run separately.
 All actions and values must be specified before being used as values, besides very few scenic built-ins included in the examples.
 Any try block must have at least one corresponding interrupt when block for the program to work properly. All variables must be assigned in the correct order to ensure the program compiles without any undefined variable errors.
+Scenic CANNOT retrieve streets by name. Do NOT attempt to retrieve or use specific streets by name.

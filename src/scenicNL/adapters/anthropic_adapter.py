@@ -20,7 +20,8 @@ class AnthropicAdapter(ModelAdapter):
     def __init__(self, model : AnthropicModel):
         super().__init__()
         self._model = model
-        self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
+        self.PROMPT_FILE = 'scenic_tutorial_prompt.txt' # 12%
+        self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts', self.PROMPT_FILE)
 
     def get_cache_key(
         self, 
@@ -51,7 +52,7 @@ class AnthropicAdapter(ModelAdapter):
             f"Here are some examples scenic programs. \n{model_input.examples[0]}\n{model_input.examples[1]}\n{model_input.examples[2]}\n"
             f"Given the following report, write a scenic program that models it: \n"
             f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
-            f"Ouput the original scene description as a comment at the top of the file first, "
+            f"Output the original scene description as a comment at the top of the file first, "
             f"then the scenic program. Do not include any other text."
             f"\n\n{AI_PROMPT}"
         )

@@ -69,6 +69,6 @@ def format_scenic_tutorial_prompt(prompt_path: str) -> str:
         Formats the message providing introduction to Scenic language and syntax.
         """
         st_prompt = ''
-        with open(os.path.join(prompt_path, 'dynamic_scenarios_prompt.txt')) as f:
+        with open(prompt_path) as f:
             st_prompt = f.read()
         return st_prompt
