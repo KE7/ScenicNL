@@ -185,6 +185,7 @@ def main(
 
     model_input_list = []
     for query in query_list:
+        query = query.replace("\n", " ")
         model_input = ModelInput(examples=example_list, nat_lang_scene_des=query)
         model_input_list.append(model_input)
 

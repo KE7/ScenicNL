@@ -7,6 +7,7 @@
 ## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)
 param map = localPath(f'../../../assets/maps/CARLA/{CARLA_MAP_NAME_TODO}.xodr')
 param carla_map = '{CARLA_MAP_NAME_TODO}'
+param weather = '{WEATHER_PARAM_TODO}'
 model scenic.simulators.carla.model
 
 ## CONSTANTS
