@@ -9,11 +9,11 @@ import os
 
 import openai
 
-from scenicNL.common import LLMPromptType, ModelInput
+from scenicNL.common import LLMPromptType, ModelInput, VectorDB
 
 
 class OpenAIModel(Enum):
-    GPT_35_TURBO = "gpt-3.5-turbo-0613"
+    GPT_35_TURBO = "gpt-3.5-turbo-1106"
     GPT_4 = "gpt-4-0613"
 
 
@@ -28,6 +28,7 @@ class OpenAIAdapter(ModelAdapter):
             openai.organization = os.getenv("OPENAI_ORGANIZATION")
         self.model = model
         self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
+        self.index = VectorDB(index_name='scenic-programs')
 
     def _zero_shot_prompt(
         self,
@@ -123,6 +124,29 @@ class OpenAIAdapter(ModelAdapter):
             {"role": "user", "content": main_prompt},
         ]
     
+    def _few_shot_prompt_with_rag(
+        self,
+        model_input: ModelInput,
+        top_k: int = 3,
+    ) -> str:
+        # this query might not make sense since the index is not built on descriptions
+        # but rather on scenic programs so we should actually call this function
+        # after the LLM does a first attempt at generating a scenic program
+        # and then we can use the scenic program to query the index
+        if model_input.first_attempt_scenic_program is None:
+            return self._few_shot_prompt(model_input=model_input)
+        
+        examples = self.index.query(model_input.first_attempt_scenic_program, top_k=top_k)
+        if examples is None:
+            return self._few_shot_prompt(model_input=model_input)
+        
+        relevant_model_input = ModelInput(
+            examples=[example for example in examples],
+            nat_lang_scene_des=model_input.nat_lang_scene_des,
+            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+        )
+        return self._few_shot_prompt(model_input=relevant_model_input)
+    
     def _format_message(
         self,
         *,
@@ -142,6 +166,8 @@ class OpenAIAdapter(ModelAdapter):
             return self._python_api_prompt(model_input=model_input)
         elif prompt_type.value == LLMPromptType.PREDICT_PYTHON_API_ONELINE.value: # for one-line corrections of function calling
             return self._python_api_prompt_oneline(model_input=model_input)
+        elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT_WITH_RAG:
+            return self._few_shot_prompt_with_rag(model_input=model_input)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -173,15 +199,37 @@ class OpenAIAdapter(ModelAdapter):
         temperature: float, 
         max_length_tokens: int,
         prompt_type: LLMPromptType,
+        verbose: bool,
     ) -> str:
-        messages = self._format_message(model_input=model_input, prompt_type=prompt_type)
-        response = openai.ChatCompletion.create(
-            temperature=temperature,
-            model=self.model.value,
-            max_tokens=max_length_tokens,
-            messages=messages
-        )
-        return response.choices[0].message.content
+        if prompt_type != LLMPromptType.PREDICT_FEW_SHOT_WITH_RAG:
+            messages = self._format_message(model_input=model_input, prompt_type=prompt_type)
+            response = openai.ChatCompletion.create(
+                temperature=temperature,
+                model=self.model.value,
+                max_tokens=max_length_tokens,
+                messages=messages
+            )
+            return response.choices[0].message.content
+        else:
+            response = openai.ChatCompletion.create(
+                temperature=temperature,
+                model=self.model.value,
+                max_tokens=max_length_tokens,
+                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT),
+            )
+            # We need to call GPT again
+            new_model_input = ModelInput(
+                examples=model_input.examples, # this will get overwritten by the search query
+                nat_lang_scene_des=model_input.nat_lang_scene_des,
+                first_attempt_scenic_program=response.choices[0].message.content,
+            )
+            response = openai.ChatCompletion.create(
+                temperature=temperature,
+                model=self.model.value,
+                max_tokens=max_length_tokens,
+                messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type),
+            )
+            return response.choices[0].message.content
 
     def _format_scenic_tutorial_prompt(
         self,
