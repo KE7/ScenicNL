@@ -1,17 +1,17 @@
+# SCENARIO DESCRIPTION
 """
 {TEXT_DESCRIPTION_TODO}
 """
+# SCENARIO CODE
 
 ## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)
 param map = localPath(f'../../../assets/maps/CARLA/{CARLA_MAP_NAME_TODO}.xodr')
-param carla_map = {CARLA_MAP_NAME_TODO}
+param carla_map = '{CARLA_MAP_NAME_TODO}'
 model scenic.simulators.carla.model
 
 ## CONSTANTS
-EGO_MODEL = {EGO_VEHICLE_BLUEPRINT_ID_TODO}
+EGO_MODEL = '{EGO_VEHICLE_BLUEPRINT_ID_TODO}'
 EGO_SPEED = {EGO_VEHICLE_SPEED_TODO}
-
-## OTHER CONSTANTS
 {OTHER_CONSTANTS_TODO}
 
 ## DEFINING BEHAVIORS
@@ -19,6 +19,3 @@ EGO_SPEED = {EGO_VEHICLE_SPEED_TODO}
 
 ## DEFINING SPATIAL RELATIONS
 {SPATIAL_RELATIONS_TODO}
-
-## POSTCONDITIONS
-{POSTCONDITIONS_TODO}

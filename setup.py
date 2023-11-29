@@ -17,6 +17,7 @@ setup(
         "lmql[hf]",
         "openai",
         "pytype",
+        "lmql",
     ],
     entry_points={
         "console_scripts": [
