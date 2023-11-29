@@ -20,7 +20,9 @@ class LMQLAdapter(ModelAdapter):
     """
     def __init__(self, model: LMQLModel):
         super().__init__()
-        openai.api_key = os.environ["OPENAI_API_KEY"]
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        if os.getenv("OPENAI_ORGANIZATION") and len(os.getenv("OPENAI_ORGANIZATION")) > 0:
+            openai.organization = os.getenv("OPENAI_ORGANIZATION")
         self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
         self._model = model
         
@@ -38,17 +40,6 @@ class LMQLAdapter(ModelAdapter):
             f"then the scenic program. Do not include any other text."
             f"\n\n"
         )
-        # return (
-        #     f"Please generate a scenic program for a CARLA "
-        #     f"simulation to replicate the input natural language description below."
-        #     f"\n-- Here is a scenic tutorial. --\n {format_scenic_tutorial_prompt(self.PROMPT_PATH)}\n\n"
-        #     f"Here are some examples scenic programs. \n{model_input.examples[0]}\n{model_input.examples[1]}\n{model_input.examples[2]}\n"
-        #     f"Given the following report, write a scenic program that models it: \n"
-        #     f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input> "
-        #     f"Ouput the original scene description as a comment at the top of the file first, "
-        #     f"then the scenic program. Do not include any other text."
-        #     f"\n\n"
-        # )
     
     def _format_message(
         self,
@@ -106,6 +97,7 @@ class LMQLAdapter(ModelAdapter):
     ) -> str:
         
         example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
+        print(model_input.nat_lang_scene_des)
         response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
 
         return response

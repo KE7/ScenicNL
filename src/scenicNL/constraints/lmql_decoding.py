@@ -1,9 +1,10 @@
 import lmql
 import numpy as np
 import string
+import time
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_scenic_code_inline(example_prompt, scenic_template, text_description, towns, vehicles):
+def generate_scenic_code(example_prompt, towns, vehicles):
     '''lmql
     "{example_prompt}\n"
 
@@ -63,12 +64,11 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
     scenic_template = open(scenic_template_path, 'r').read()
 
     #query lmql to get fill in blanks
-    lmql_outputs = generate_scenic_code_inline(example_prompt, scenic_template, nat_lang_scene_des, towns, vehicles)
+    lmql_outputs = generate_scenic_code(example_prompt, scenic_template, nat_lang_scene_des, towns, vehicles)
 
     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
     
     #complete the template using the lmql_outputs
     final_scenic = scenic_template.format_map(lmql_outputs)
-    print(final_scenic)
 
     return final_scenic

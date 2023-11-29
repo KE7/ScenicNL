@@ -18,6 +18,7 @@ setup(
         "openai",
         "pytype",
         "lmql",
+        "nest_asyncio",
     ],
     entry_points={
         "console_scripts": [
