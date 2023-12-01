@@ -217,6 +217,7 @@ def main(
         os.makedirs(scenic_path)
 
     compile_pass, compile_fail, api_error = 0, 0, 0
+    success_from_file, success_from_string = 0, 0
     for index, outputs in enumerate(adapter.predict_batch(
             model_inputs=model_input_list, 
             cache_path=cache_path, num_predictions=1, 
@@ -224,28 +225,42 @@ def main(
             ignore_cache=ignore_cache, should_cache_retry_errors=should_cache_retry_errors)):
         for attempt, output in enumerate(outputs):
             if verbose:
-                print(f'Output for query {index} attempt {attempt}: {output}')
+                print(f'Output for query {index} attempt {attempt}:\n{output}')
             output = cast((str | APIError), output)
             if isinstance(output, APIError):
                 api_error += 1
                 continue
+            output = output.strip()
             fname = os.path.join(scenic_path, f'{index}-{attempt}.scenic')
             with open(fname, 'w') as f:
                 f.write(output)
             try:
+                scenic.setDebuggingOptions(debugExceptions=True, fullBacktrace=True)
                 scenic.scenarioFromFile(fname, mode2D=True)
                 fname_compile = os.path.join(result_path, f'{index}-{attempt}.scenic')
                 with open(fname_compile, 'w') as f:
                     f.write(output)
-                print(f'No errors when compiling input {index}-{attempt}')
+                if verbose:
+                    print(f'No errors when compiling input {index}-{attempt}\n')
                 compile_pass += 1
+                success_from_file += 1
             except Exception as e:
-                print(f'Error while compiling for input {index}-{attempt}: {e}')
-                compile_fail += 1
+                try:
+                    scenic.scenarioFromString(output, mode2D=True)
+                    if verbose:
+                        print(f'No errors when compiling input {index}-{attempt}\n')
+                    compile_pass += 1
+                    success_from_string += 1
+                except Exception as e:
+                    if verbose:
+                        print(f'Error while compiling for input {index}-{attempt}:\n{e}\n')
+                    compile_fail += 1
             print('----------------\n\n')
 
     print(f'API error rate: {round((100*api_error/(api_error+compile_pass+compile_fail)), 2)}%')
-    print(f'Compilation success rate: {round((100*compile_pass/(api_error+compile_pass+compile_fail)), 2)}%')
+    print(f'Combined compilation success rate: {round((100*compile_pass/(api_error+compile_pass+compile_fail)), 2)}%')
+    print(f'Compilation success rate from file: {round((100*success_from_file/(api_error+compile_pass+compile_fail)), 2)}%')
+    print(f'Compilation success rate from string: {round((100*success_from_string/(api_error+compile_pass+compile_fail)), 2)}%')
 
 def _launch():
     # to stop Click handling errors
