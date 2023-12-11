@@ -19,6 +19,7 @@ setup(
         "pytype",
         "lmql",
         "nest_asyncio",
+        "transformers",
     ],
     entry_points={
         "console_scripts": [
@@ -40,7 +41,7 @@ setup(
             "tqdm",
         ],
     },
-    python_requires=">=3.11",
+    python_requires=">=3.10",
     author="Karim Elmaaroufi",
     author_email="k.e@berkeley.edu",
     description="Generate simulator scenes using Scenic from natural language descriptions.",
