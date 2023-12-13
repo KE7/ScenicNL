@@ -1,0 +1,9 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was at a complete stop in response to a red light on
+southbound Masonic Avenue at the intersection with Oak Street. At the intersection, an Acura Sedan was stopped in front of the Cruise AV
+in the left southbound lane. To the right of the Cruise AV, was a BMW Sedan in the right southbound lane. In response to the green light,
+the Acura Sedan made a signaled left turn onto Oak Street as the BMW Sedan stayed parallel to the Cruise AV. As the Cruise AV entered
+the intersection, the BMW Sedan made a prohibited left turn from the right southbound lane on Masonic Avenue with no turn signal. The
+Cruise AV braked and, shortly thereafter, the BMW Sedan made contact with the Cruise AV, damaging the front right bumper of the Cruise
+
+AV. The driver of the BMW Sedan left the scene without exchanging information. There were no injuries and Cruise filed a police report on
+February 12, 2022.

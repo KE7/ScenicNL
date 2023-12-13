@@ -1,0 +1,9 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in driverless autonomous mode, was stopped at a red light on westbound
+Sacramento Street at the intersection with Van Ness Avenue. The Cruise AV began to proceed straight after the light turned green. At the
+same time, a silver Hyundai Sedan was traveling the wrong way (eastbound) on a one-way section of Sacramento Street between Franklin
+Street and Van Ness Avenue. The silver Hyundai Sedan entered the intersection across from the Cruise AV, and the Cruise AV came to a
+full stop. The silver Hyundai Sedan continued traveling the wrong way through the intersection with Van Ness Avenue and, shortly
+thereafter, made contact with the Cruise AV, damaging the front fascia assembly and various components on the front of the Cruise AV.
+
+The driver of the silver Hyundai Sedan left the scene without exchanging information. The Cruise AV was towed from the scene. There
+were no injuries and a police report was later filed.

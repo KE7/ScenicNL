@@ -1,0 +1,10 @@
+On November 26, 2021 at 8:02 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a collision
+involving a passenger vehicle at Scotia Avenue, Thornton Avenue, and Bridgeview Drive.
+
+The Waymo AV was traveling southbound on Scotia Avenue, a narrow road with vehicles parked on both sides, and approaching the
+intersection with Thornton Avenue and Bridgeview Drive. A passenger vehicle approaching from the right of the Waymo AV on eastbound
+Thornton Avenue made a left turn in front of the Waymo AV to head northbound on Scotia Avenue. The Waymo AV slowed to a near stop
+and nudged to its right in order to share the narrow road with the oncoming vehicle and then came to a stop at the stop sign as the oncoming
+vehicle completed its turn. At approximately 5 mph, the turning passenger vehicle made contact with Waymo AV’s sensor hardware
+housing on the driver side rear corner fender of the stopped Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was
+engaged in autonomous mode, and a test driver was present (in the driver’s seating position). The Waymo AV sustained minor damage to

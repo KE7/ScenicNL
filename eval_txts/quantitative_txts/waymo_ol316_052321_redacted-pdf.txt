@@ -1,0 +1,6 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) traveling northbound on Sanchez Street at 16th Street in San Francisco was involved in a
+collision. While in autonomous mode, the Waymo AV was stationary for a red light when a passenger vehicle behind the Waymo AV made
+contact with the Waymo AV’s rear bumper at approximately 7 MPH. The Waymo AV was traveling 0 MPH. The Waymo AV sustained
+
+minor damage to its rear bumper, and the passenger vehicle sustained minor damage to its front bumper. No injuries were reported at the
+scene.

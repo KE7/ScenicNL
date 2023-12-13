@@ -1,0 +1,8 @@
+On November 30, 2021 at 12:21pm PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, CA was in a
+collision involving an SUV on the 10 block of Castro Street.
+
+As the Waymo AV test driver drove the Waymo AV in manual mode on southbound Castro Street between Waller Street and Lloyd Street,
+the passenger side mirror of the Waymo AV made contact with a parked SUV. At the time of the impact, the Waymo AV’s Level 4 ADS
+
+was not engaged and a test driver was operating the Waymo AV in manual mode. The Waymo AV sustained damage to its passenger side
+rearview mirror.

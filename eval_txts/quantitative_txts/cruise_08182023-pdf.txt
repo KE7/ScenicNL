@@ -1,0 +1,7 @@
+A Cruise autonomous vehicle (“AV”), operating in driverless autonomous mode, was at a complete stop in response to a red light on
+eastbound 26th Street at the intersection with Mission Street. As the AV was proceeding after the light turned green, a Dodge Charger
+traveling southbound on Mission Street failed to stop for the red light, entered the intersection, and made contact with the AV, damaging the
+front and rear driver side and rear bumper fascia of the AV. Police and Emergency Medical Services (EMS) were called to the scene. The
+
+AV was towed from the scene. The passenger of the Dodge Charger was assessed by medical personnel at the scene and was not transported
+by EMS.

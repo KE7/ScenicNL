@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was making a right turn from northbound 10th Avenue onto
+eastbound California Street when another vehicle made contact with the Cruise AV’s left rear bumper, damaging the upper rear fascia and
+lower tail light assembly. The driver of the other vehicle drove away without exchanging information. Police were not called and no injuries
+
+were reported at the scene by either party. The Cruise AV tester sitting in the driver seat did not report injuries on the scene but later
+mentioned injuries.

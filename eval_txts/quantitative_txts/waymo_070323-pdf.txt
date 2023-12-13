@@ -1,0 +1,8 @@
+On July 3, 2023 at 1:13 PM PT a Waymo Autonomous Vehicle (““Waymo AV”) operating in San Francisco, California was in a collision
+involving a passenger car on Hampshire Street at 21st Street.
+
+The Waymo AV was traveling southbound on Hampshire Street in autonomous mode when it began to brake as it approached a stopped van
+on the oncoming side of the narrow roadway. The Waymo AV test driver transitioned to manual mode and began proceeding straight when
+the passenger side front sensor housing of the Waymo AV made contact with the driver side mirror of a passenger car parked along the curb
+on southbound Hampshire Street. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating
+the Waymo AV in manual mode. Both the Waymo AV and the passenger car sustained damage.

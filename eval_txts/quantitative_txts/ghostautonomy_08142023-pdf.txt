@@ -1,0 +1,10 @@
+A registered Ghost AV Test vehicle was hit by crash debris while traveling on 1-680 N. The Ghost vehicle neither hit nor was hit by another
+vehicle. The Ghost car was traveling in AV mode with a registered AV Test Driver behind the wheel and an additional Safety Co-Driver in
+the passenger seat. Traffic slowed quickly due to a crash ahead of the Ghost car. Consistent with their training, the Ghost driver took control
+by braking and disengaging the autonomous system. The Ghost car stopped without impacting the preceding car. A Mercedes car
+immediately following the Ghost car also came to a stop without impacting the Ghost car. Ghost's understanding based on communications
+at the scene is that a Grand Cherokee traveling behind the Mercedes tried to swerve to avoid impacting the Mercedes but clipped the
+Mercedes and rolled over. To Ghost's knowledge, nobody in the Grand Cherokee was injured. The Ghost drivers heard a noise and then
+
+found that the rear bumper of the Ghost car had been damaged, which Ghost believes resulted from crash debris. The Ghost drivers drove
+the Ghost car back to the garage in conventional mode.
