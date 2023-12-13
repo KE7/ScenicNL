@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle (“Cruise AV”), was in autonomous mode and traveling westbound on McAllister Street near Baker Street.
+The AV came to a complete stop at the stop sign at McAllister and Baker. With no other vehicles present at the intersection and having the
+right of way after the stop, the AV started to proceed left onto Baker Street from McAllister. As the AV was making the left turn, a Subaru
+traveling northbound on Baker Street quickly approached the intersection, failed to stop for the stop sign and struck the front left side of the
+Cruise AV. The AVTO disengaged from autonomous mode approximately 1.5 seconds before impact. The AVTOs sustained minor injuries
+and the AV sustained damage to the driver's side bumper and wheel assembly. The police were called but did not respond to the scene.

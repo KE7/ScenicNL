@@ -1,0 +1,4 @@
+An Apollo autonomous vehicle (“AV”) was traveling westbound on Rivera Street in San Francisco in autonomous mode and stopped for a
+double-parked vehicle near 31st Avenue. An Apollo safety operator disengaged the AV from autonomous mode into conventional mode
+with use of the steering wheel. Then the AV side-swiped the double-parked vehicle while in conventional mode. There were no injuries and
+emergency services were not needed. Both the AV and the second vehicle sustained minor damage.

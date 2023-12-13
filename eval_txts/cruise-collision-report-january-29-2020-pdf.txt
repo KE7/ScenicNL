@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling northwest bound on Columbus Street
+approaching the intersection with Jones Street when the Cruise AV slowed down. The driver of the Cruise AV disengaged from
+autonomous mode and, shortly thereafter, another vehicle, changing into the Cruise AV’s lane from the left adjacent lane, made contact with
+the rear bumper of the Cruise AV. There were no injuries reported at the scene by either party and police were not called. Both of the Cruise
+AV test operators later mentioned neck and shoulder pain.

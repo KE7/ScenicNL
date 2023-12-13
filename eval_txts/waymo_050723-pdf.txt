@@ -1,0 +1,9 @@
+On May 7, 2023 at 3:27 PM PDT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+involving a cyclist on Bay Street near Mason Street.
+
+The Waymo AV was traveling westbound in the left lane on Bay Street and had just passed Mason Street when it detected an oncoming
+pickup truck traveling eastbound in the Waymo AV’s lane. The Waymo AV stopped and the pickup truck re-entered the correct lane for
+eastbound traffic and passed the Waymo AV. The pickup truck was immediately followed by a large group of cyclists traveling eastbound
+in multiple lanes of the roadway, including the right lanes and on the wrong side of the double-yellow centerline. The Waymo AV remained
+stopped as the oncoming cyclists rode around both sides of the Waymo AV. One cyclist then made contact with the front of the stationary
+Waymo AV, and then immediately left the scene. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous

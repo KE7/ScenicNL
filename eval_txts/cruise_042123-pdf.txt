@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in manual mode, was at a complete stop in response to a red light in the rightmost
+lane on westbound Geary Boulevard at the intersection with Larkin Street. While the Cruise AV was fully stopped, a Mercedes SUV exited
+a parking lot onto westbound Geary Boulevard, pulled behind and to the left of the Cruise AV, and made contact with the left side of the
+Cruise AV, causing damage to the Cruise AV’s rear driver side door and rear driver side wheel well. The parties exchanged information.
+The Cruise AV operator in the Cruise AV later reported head, shoulder and back injuries.

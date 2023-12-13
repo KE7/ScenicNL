@@ -1,0 +1,8 @@
+On February 11, 2022 at 2:07 AM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco was in a collision
+involving a passenger vehicle on Silver Avenue at Mission Street.
+
+After making a right turn onto southbound Silver Avenue from Mission Street in manual mode, the test driver of the Waymo AV pulled
+over to the right shoulder of Silver Avenue while waiting for emergency vehicles to pass. A moment later, a passenger vehicle turned right
+onto Silver Avenue from Mission Street into the oncoming traffic lane and swerved into the driver door of the Waymo AV. At the time of
+the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the Waymo AV in manual mode. Both vehicles
+sustained major damage. The driver of the other vehicle was transported from the scene by first responders with injuries.

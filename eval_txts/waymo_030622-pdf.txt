@@ -1,0 +1,8 @@
+On March 6, 2022 at 6:00 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision
+on Oak Street at Divisadero Street.
+
+The Waymo AV was parked in manual mode on the right side of Oak Street just east of Divisadero Street. The Waymo AV inched forward
+and to the left momentarily, but stopped as two cyclists approached the rear of the vehicle. As the second of the two cyclists attempted to
+pass the Waymo AV, they made contact with the left rear view mirror. The cyclist stopped momentarily but then rode away without
+exchanging information. At the time of the impact, the Waymo AV’s Level 4 ADS was not engaged and a test driver was operating the
+Waymo AV in manual mode. The Waymo AV sustained minor damage. No injuries were reported.

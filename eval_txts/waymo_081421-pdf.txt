@@ -1,0 +1,4 @@
+A Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a collision involving a parked vehicle at
+Alabama Street at 24th Street. While operating in manual mode, the Waymo AV was driving southbound on Alabama Street and nearing the
+intersection at 24th Street. While navigating the narrow roadway with an oncoming vehicle, the Waymo AV made contact with a parked
+vehicle on the right side of the road causing minor scrapes to both vehicles.

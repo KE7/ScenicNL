@@ -1,0 +1,8 @@
+On December 12, 2022 at 4:54 PM PST a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving an SUV on Monterey Boulevard at Circular Avenue.
+
+The Waymo AV was stopped facing east on Monterey Boulevard behind stopped traffic in the left-most through lane in autonomous mode.
+An SUV approached from behind and attempted to change lanes into the left turn lane, making contact with the left rear sensor of the
+
+Waymo AV. At the time of the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode, and a test driver was present (in
+the driver’s seating position). Both vehicles sustained damage.

@@ -1,0 +1,8 @@
+On August 23, 2023 at 9:54 PM PT a Waymo Autonomous Vehicle (“Waymo AV”) operating in San Francisco, California was in a
+collision involving a heavy truck on Mason Street at Vandewater Street.
+
+The Waymo AV was traveling northbound on Mason Street when it approached a heavy truck and trailer that was stopped in the adjacent
+lane on the left side of the street. As the Waymo began to slowly pass the truck, the truck initiated a reversing turn maneuver into a loading
+bay on the left side of Mason Street. The Waymo AV then came to a stop, and as the Waymo AV was initiating its own reversing maneuver
+to clear the path for the truck, the right side of the trailer made contact with the front driver’s side corner of the Waymo AV. At the time of
+the impact, the Waymo AV’s Level 4 ADS was engaged in autonomous mode. The Waymo AV sustained damage.

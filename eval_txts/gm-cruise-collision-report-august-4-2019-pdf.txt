@@ -1,0 +1,5 @@
+A Cruise autonomous vehicle (“Cruise AV”), operating in autonomous mode, was traveling northbound on Leavenworth Street between
+Geary and Post Streets when another vehicle changed from the right adjacent lane to ahead of the Cruise AV without using its left signal.
+The driver of the Cruise AV disengaged from autonomous mode and, shortly thereafter, a second vehicle made contact with the rear bumper
+of the Cruise AV, damaging the Cruise AV’s rear bumper mounting bracket. Police were not called and no injuries were reported at the
+scene by either party. The Cruise AV tester sitting in the driver’s seat later mentioned neck pain.

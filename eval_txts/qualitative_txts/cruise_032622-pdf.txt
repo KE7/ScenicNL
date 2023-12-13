@@ -1,0 +1,6 @@
+A Cruise autonomous vehicle ("Cruise AV"), operating in driverless autonomous mode, was traveling eastbound on Greenwich Street
+between Steiner Street and Fillmore Street. The Cruise AV approached a pickup truck that was reversing on eastbound Greenwich
+
+Street and the Cruise AV stopped as the pickup truck continued to reverse. The pickup truck continued to reverse and made contact
+
+with the Cruise AV, damaging the front bumper of the Cruise AV. There were no injuries and the Cruise AV was towed from the incident.
