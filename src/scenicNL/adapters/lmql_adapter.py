@@ -1,3 +1,4 @@
+import asyncio
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.adapters.api_adapter import Scenic3
 
@@ -97,7 +98,17 @@ class LMQLAdapter(ModelAdapter):
         verbose: bool,
     ) -> str:
         
-        example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
-        response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
+        # example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
+        # response = await construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
         
+        # return response
+
+        example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
+
+        # Create a new event loop to run the async function
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        response = loop.run_until_complete(construct_scenic_program(example_prompt, model_input.nat_lang_scene_des))
+        loop.close()
+
         return response

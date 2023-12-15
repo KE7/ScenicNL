@@ -1,10 +1,11 @@
+import asyncio
 import lmql
 import numpy as np
 import string
 import time
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_scenic_code(example_prompt, towns, vehicles, weather):
+async def generate_scenic_code(example_prompt, towns, vehicles, weather):
     '''lmql
     "{example_prompt}\n"
 
@@ -50,7 +51,7 @@ def strip_other_constants(other_constants):
     
 
 
-def construct_scenic_program(example_prompt, nat_lang_scene_des):
+async def construct_scenic_program(example_prompt, nat_lang_scene_des):
     """
     constructs a scenic program using the template in lmql_template.scenic 
     """
@@ -65,7 +66,7 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
     scenic_template = open(scenic_template_path, 'r').read()
 
     #query lmql to get fill in blanks
-    lmql_outputs = generate_scenic_code(example_prompt, towns, vehicles, weather)
+    lmql_outputs = await generate_scenic_code(example_prompt, towns, vehicles, weather)
 
     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
     lmql_outputs["TEXT_DESCRIPTION_TODO"] = nat_lang_scene_des
