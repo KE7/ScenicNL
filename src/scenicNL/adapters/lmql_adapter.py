@@ -1,4 +1,6 @@
 from scenicNL.adapters.model_adapter import ModelAdapter
+from scenicNL.adapters.api_adapter import Scenic3
+
 import os
 import openai
 import json
@@ -33,7 +35,7 @@ class LMQLAdapter(ModelAdapter):
          return (
             f"Please generate a scenic program for a CARLA "
             f"simulation to replicate the input natural language description below."
-            f"Here are some examples scenic programs. \n{model_input.examples[1]}\n{model_input.examples[1]}\n{model_input.examples[2]}\n"
+            f"Here are some examples scenic programs.\n{model_input.examples[1]}\n"
             f"Given the following report, write a scenic program that models it: \n"
             f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input> "
             f"Ouput the scenic program. Do not include any other text."
@@ -99,3 +101,5 @@ class LMQLAdapter(ModelAdapter):
         response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
         
         return response
+
+    

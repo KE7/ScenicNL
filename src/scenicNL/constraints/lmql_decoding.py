@@ -2,6 +2,9 @@ import lmql
 import numpy as np
 import string
 import time
+import asyncio
+# import nest_asyncio
+# nest_asyncio.apply()
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_scenic_code(example_prompt, towns, vehicles, weather):
@@ -23,7 +26,7 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
     "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
     
     "## DEFINING BEHAVIORS\n"
-    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS")
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
 
     "## DEFINING SPATIAL RELATIONS\n"
     "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
