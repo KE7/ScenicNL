@@ -14,6 +14,7 @@ from scenicNL.common import LLMPromptType, ModelInput
 
 class OpenAIModel(Enum):
     GPT_35_TURBO = "gpt-3.5-turbo-0613"
+    GPT_35_INSTRUCT = "gpt-3.5-turbo-instruct"
     GPT_4 = "gpt-4-0613"
 
 
@@ -173,6 +174,7 @@ class OpenAIAdapter(ModelAdapter):
         temperature: float, 
         max_length_tokens: int,
         prompt_type: LLMPromptType,
+        verbose: bool,
     ) -> str:
         messages = self._format_message(model_input=model_input, prompt_type=prompt_type)
         response = openai.ChatCompletion.create(
@@ -236,7 +238,8 @@ class OpenAIAdapter(ModelAdapter):
         prediction = self._predict(
             model_input=line_input,
             temperature=0,
-            max_length_tokens=40,
+            max_length_tokens=80,
             prompt_type=LLMPromptType.PREDICT_PYTHON_API_ONELINE, # @TODO: timeout 
+            verbose=False,
         )
         return prediction
