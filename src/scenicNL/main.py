@@ -10,6 +10,7 @@ from scenicNL.cache import APIError
 from scenicNL.common import ModelInput, LLMPromptType, MAX_TOKEN_LENGTH
 from scenicNL.utils.pdf_parse import PDFParser
 import sys
+import time
 
 
 @click.group()
@@ -65,7 +66,7 @@ def main():
         file_okay=False,
         dir_okay=True,
     ),
-    default="report-txts",
+    default="report_txts",
     show_default=True,
     help="Path to text directory for report text.",
 )
@@ -138,6 +139,12 @@ def main():
     help="Boolean condition to cache or not cache errors."
 )
 
+@click.option(
+    "--keep-filename",
+    is_flag=True,
+    help="Boolean condition to display or omit verbose output."
+)
+
 def main(
     query_path: Path,
     output_path: Path,
@@ -152,6 +159,7 @@ def main(
     model: str,
     llm_prompt_type: str,
     should_cache_retry_errors: bool,
+    keep_filename: bool
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
@@ -182,7 +190,7 @@ def main(
                 parsed_text = PDFParser.pdf_from_path(full_path)
                 if verbose: print(parsed_text)
                 query_list.append(parsed_text)
-                dest_path = os.path.join(text_path, filename[:-4] + '.txt')
+                dest_path = os.path.join(text_path, filename[:-4])
                 with open(dest_path, 'w') as file:
                     file.write(parsed_text)
             elif filename.endswith('.txt'):
@@ -212,9 +220,15 @@ def main(
         model_input = ModelInput(examples=example_list, nat_lang_scene_des=query)
         model_input_list.append(model_input)
 
-    scenic_path = os.path.join(output_path, prompt_type.value)
+    scenic_path = os.path.join(output_path, prompt_type.value + f'_{model.split(".")[0]}')
+    scenic_metadata_path = os.path.join(scenic_path, '_metadata')
     if not os.path.exists(scenic_path):
         os.makedirs(scenic_path)
+    if not os.path.exists(scenic_metadata_path):
+        os.makedirs(scenic_metadata_path)
+    scenic_error_path = os.path.join(scenic_metadata_path, 'errors.txt')
+    scenic_metric_path = os.path.join(scenic_metadata_path, 'metrics.txt')
+    start_time = time.time()
 
     compile_pass, compile_fail, api_error = 0, 0, 0
     for index, outputs in enumerate(adapter.predict_batch(
@@ -229,23 +243,44 @@ def main(
             if isinstance(output, APIError):
                 api_error += 1
                 continue
-            fname = os.path.join(scenic_path, f'{index}-{attempt}.scenic')
+            if keep_filename:
+                fstub = file_list[index]
+            else:
+                fstub = f'{index}-{attempt}'
+            fstub = fstub[:-4] if fstub.endswith('.txt') else fstub
+            debug = f'{index} - {file_list[index]}'
+            fname = os.path.join(scenic_path, f'{fstub}.scenic')
+
             with open(fname, 'w') as f:
                 f.write(output)
             try:
                 scenic.scenarioFromFile(fname, mode2D=True)
-                fname_compile = os.path.join(result_path, f'{index}-{attempt}.scenic')
+                fname_compile = os.path.join(result_path, f'{fstub}.scenic')
                 with open(fname_compile, 'w') as f:
                     f.write(output)
-                print(f'No errors when compiling input {index}-{attempt}')
+                print(f'No errors when compiling input {debug}')
                 compile_pass += 1
             except Exception as e:
-                print(f'Error while compiling for input {index}-{attempt}: {e}')
+                print(f'Error while compiling for input {debug}: {e}')
                 compile_fail += 1
+                with open(scenic_error_path, 'a') as f:
+                    f.write(f'{index} - {fstub}: {e}\n')
             print('----------------\n\n')
 
-    print(f'API error rate: {round((100*api_error/(api_error+compile_pass+compile_fail)), 2)}%')
-    print(f'Compilation success rate: {round((100*compile_pass/(api_error+compile_pass+compile_fail)), 2)}%')
+    end_time = time.time()
+    total = api_error + compile_fail + compile_pass # assert(total == len(model_input_list))
+
+    api_error_rate = round((100*api_error/total), 2)
+    compile_rate = round((100*compile_pass/total), 2)
+    eval_rate = round((end_time-start_time)/total, 5)
+
+    print(f'API error rate: {api_error_rate}%')
+    print(f'Compilation success rate: {compile_rate}%')
+    print(scenic_metric_path)
+    with open(scenic_metric_path, 'w') as f:
+        f.write(f'Compile rate: {compile_rate}\n')
+        f.write(f'API error rate: {api_error_rate}\n')
+        f.write(f'Secs per program: {eval_rate}\n')
 
 def _launch():
     # to stop Click handling errors
