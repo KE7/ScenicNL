@@ -27,7 +27,7 @@ async def generate_scenic_code(example_prompt, towns, vehicles, weather):
     "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
 
     "## DEFINING SPATIAL RELATIONS\n"
-    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 400
     
     return {
         "CARLA_MAP_NAME_TODO" : CARLA_MAP_NAME,
@@ -50,28 +50,63 @@ def strip_other_constants(other_constants):
     return other_constants.lstrip(nonalpha)
     
 
-
-async def construct_scenic_program(example_prompt, nat_lang_scene_des):
+def construct_scenic_program(example_prompt, nat_lang_scene_des):
     """
-    constructs a scenic program using the template in lmql_template.scenic 
+    Constructs a scenic program using the template in lmql_template.scenic 
     """
 
-    #Load known variable sets from blueprints
+    # Load known variable sets from blueprints
     towns = list(np.load('src/scenicNL/constraints/blueprints/towns.npy'))
     vehicles = list(np.load('src/scenicNL/constraints/blueprints/vehicles.npy')) 
     weather = list(np.load('src/scenicNL/constraints/blueprints/weather.npy')) 
 
-    # #Load output template
+    # Load output template
     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
-    scenic_template = open(scenic_template_path, 'r').read()
+    with open(scenic_template_path, 'r') as file:
+        scenic_template = file.read()
 
-    #query lmql to get fill in blanks
-    lmql_outputs = await generate_scenic_code(example_prompt, towns, vehicles, weather)
+    # Query lmql to fill in blanks
+    def run_async_code():
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        result = loop.run_until_complete(generate_scenic_code(example_prompt, towns, vehicles, weather))
+        loop.close()
+        return result
+
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(run_async_code)
+        lmql_outputs = future.result()
 
     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
     lmql_outputs["TEXT_DESCRIPTION_TODO"] = nat_lang_scene_des
     
-    #complete the template using the lmql_outputs
+    # Complete the template using the lmql_outputs
     final_scenic = scenic_template.format_map(lmql_outputs)
 
     return final_scenic
+
+# async def construct_scenic_program(example_prompt, nat_lang_scene_des):
+#     """
+#     constructs a scenic program using the template in lmql_template.scenic 
+#     """
+
+#     #Load known variable sets from blueprints
+#     towns = list(np.load('src/scenicNL/constraints/blueprints/towns.npy'))
+#     vehicles = list(np.load('src/scenicNL/constraints/blueprints/vehicles.npy')) 
+#     weather = list(np.load('src/scenicNL/constraints/blueprints/weather.npy')) 
+
+#     # #Load output template
+#     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
+#     scenic_template = open(scenic_template_path, 'r').read()
+
+#     #query lmql to get fill in blanks
+#     lmql_outputs = await generate_scenic_code(example_prompt, towns, vehicles, weather)
+
+#     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
+#     lmql_outputs["TEXT_DESCRIPTION_TODO"] = nat_lang_scene_des
+    
+#     #complete the template using the lmql_outputs
+#     final_scenic = scenic_template.format_map(lmql_outputs)
+
+#     return final_scenic
