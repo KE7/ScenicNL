@@ -101,5 +101,3 @@ class LMQLAdapter(ModelAdapter):
         response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
         
         return response
-
-    
