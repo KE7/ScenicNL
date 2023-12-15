@@ -14,7 +14,6 @@ from scenicNL.common import LLMPromptType, ModelInput
 
 class OpenAIModel(Enum):
     GPT_35_TURBO = "gpt-3.5-turbo-0613"
-    GPT_35_INSTRUCT = "gpt-3.5-turbo-instruct"
     GPT_4 = "gpt-4-0613"
 
 
