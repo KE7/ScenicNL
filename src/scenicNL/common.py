@@ -260,16 +260,16 @@ class VectorDB():
 def few_shot_prompt_with_rag(
         vector_index: VectorDB,
         model_input: ModelInput,
-        few_shot_prompt_generator: Callable[[ModelInput], str | List[Dict[str, str]]],
+        few_shot_prompt_generator: Callable[[ModelInput, bool], List[Dict[str, str]]] | Callable[[ModelInput, bool], str],
         top_k: int = 3,
     ) -> str | List[Dict[str, str]]:
         examples = vector_index.query(model_input.first_attempt_scenic_program, top_k=top_k)
         if examples is None: # if the query fails, we just return the few shot prompt
-            return few_shot_prompt_generator(model_input, verbose=False)
+            return few_shot_prompt_generator(model_input, False)
         
         relevant_model_input = ModelInput(
             examples=[example for example in examples],
             nat_lang_scene_des=model_input.nat_lang_scene_des,
             first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
-        return few_shot_prompt_generator(relevant_model_input, verbose=False)
+        return few_shot_prompt_generator(relevant_model_input, False)

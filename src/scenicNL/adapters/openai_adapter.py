@@ -2,7 +2,7 @@ from scenicNL.adapters.api_adapter import Scenic3
 from scenicNL.adapters.model_adapter import ModelAdapter
 
 import json
-from typing import Dict, List
+from typing import Dict, List, cast
 from enum import Enum
 from tenacity import retry, stop_after_attempt, wait_exponential_jitter
 import os
@@ -156,6 +156,7 @@ class OpenAIAdapter(ModelAdapter):
             few_shot_prompt_generator=self._few_shot_prompt,
             top_k=top_k,
         )
+        prompt = cast(List[Dict[str, str]], prompt)
         if verbose:
             print(f"Few shot prompt with RAG: {prompt}")
         return prompt

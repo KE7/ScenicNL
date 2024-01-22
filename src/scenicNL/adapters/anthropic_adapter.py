@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+from typing import cast
 
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
@@ -76,6 +77,9 @@ class AnthropicAdapter(ModelAdapter):
         if verbose:
             print(f"Anthropic Model {self._model.value}\n"
                   f"_few_shot_prompt_with_rag: {prompt}")
+            
+        prompt = cast(str, prompt)
+        return prompt
         
 
     def _few_shot_reasoning_hyde(
