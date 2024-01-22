@@ -113,17 +113,31 @@ class AnthropicAdapter(ModelAdapter):
             expert_discussion=model_input.expert_discussion,
         )
 
-        prompt = get_discussion_to_program_prompt(model_input=relevant_model_input)
+        prompt = get_discussion_to_program_prompt()
+
+        task_and_others = prompt.split("{natural_language_description}")
+        task = task_and_others[0]
+        others = task_and_others[1].split("{example_1}")
+        example_1 = others[0]
+        others = others[1].split("{example_2}")
+        example_2 = others[0]
+        others = others[1].split("{example_3}")
+        example_3 = others[0]
+
+        prompt = (
+            f"{HUMAN_PROMPT}\n"
+            f"{task}{model_input.nat_lang_scene_des}\n"
+            f"{example_1}{relevant_model_input.examples[0]}\n"
+            f"{example_2}{relevant_model_input.examples[1]}\n"
+            f"{example_3}{relevant_model_input.examples[2]}\n"
+            f"{AI_PROMPT}"
+        )
 
         if verbose:
             print(f"Anthropic Model {self._model.value}\n"
                   f"_few_shot_reasoning_hyde: {prompt}")
 
-        return (
-            f"{HUMAN_PROMPT}\n"
-            f"{prompt}\n"
-            f"{AI_PROMPT}"
-        )
+        return prompt
 
     
     def _few_shot_prompt_with_hyde(

@@ -222,10 +222,32 @@ class OpenAIAdapter(ModelAdapter):
             expert_discussion=model_input.expert_discussion,
         )
 
-        prompt = get_discussion_to_program_prompt(model_input=relevant_model_input)
+        prompt = get_discussion_to_program_prompt()
+
+        task_and_others = prompt.split("{natural_language_description}")
+        task = task_and_others[0]
+        others = task_and_others[1].split("{example_1}")
+        example_1 = others[0]
+        others = others[1].split("{example_2}")
+        example_2 = others[0]
+        others = others[1].split("{example_3}")
+        example_3 = others[0]
+
+        prompt = [
+            {"role": "system", "content": task},
+            {"role": "user", "content": model_input.nat_lang_scene_des},
+            {"role": "system", "content": example_1},
+            {"role": "user", "content": relevant_model_input.examples[0]},
+            {"role": "system", "content": example_2},
+            {"role": "user", "content": relevant_model_input.examples[1]},
+            {"role": "system", "content": example_3},
+            {"role": "user", "content": relevant_model_input.examples[2]},
+        ]
+
         if verbose:
             print(f"Few shot prompt with ToT and HyDE: {prompt}")
-        return [{"role": "system", "content": prompt}]
+        
+        return prompt
     
 
     def _format_discussion_prompt(
@@ -233,7 +255,7 @@ class OpenAIAdapter(ModelAdapter):
         model_input: ModelInput,
         verbose: bool,
     ) -> List[Dict[str, str]]:
-        prompt = get_discussion_prompt(model_input=model_input)
+        prompt = get_discussion_prompt()
 
         task_and_others = prompt.split("{example_1}")
         task = task_and_others[0]
