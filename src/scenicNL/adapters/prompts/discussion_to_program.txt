@@ -1,0 +1,17 @@
+Your task is to construct your own Scenic program. Here are three examples of a Scenic program:
+{example_1}
+{example_2}
+{example_3}
+
+The following transcript is from an expert panel that identified and prepared everything that you need to construct your own Scenic program. Ensure that your program contains everything they said it should. 
+{expert_discussion}
+
+Structure your program into the following 5 sections:
+The first section is the parameter definitions and imports. All maps are located in ../../../assets/maps/CARLA/ with file extension .xodr. Use the map the experts picked.
+The second section is the scene setup and geometry. 
+The third section is the scenario dynamics. This is where you define the behaviors of the agents in the scene.
+The fourth section is the placement and spacial relationships of agents in the scene. 
+The last section is the last require and terminate statements. This is where the experts LTL formulas go.
+
+Use step-by-step reasoning as code comments to justify your program construction that represents the experts decisions.
+Do not output anything other than the Scenic program.

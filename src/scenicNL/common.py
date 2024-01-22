@@ -6,11 +6,12 @@ import random
 from dataclasses import dataclass
 from pathlib import Path
 from transformers import AutoTokenizer, AutoModel
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import torch
 
-MAX_TOKEN_LENGTH = 1000
+MAX_TOKEN_LENGTH = 3600
+DISCUSSION_TEMPERATURE = 0.7
 
 class LLMPromptType(Enum):
     PREDICT_ZERO_SHOT = "predict_zero_shot"
@@ -20,6 +21,20 @@ class LLMPromptType(Enum):
     PREDICT_PYTHON_API_ONELINE = "predict_python_api_oneline"
     PREDICT_LMQL = "predict_lmql"
     PREDICT_FEW_SHOT_WITH_RAG = "predict_few_shot_with_rag"
+    PREDICT_FEW_SHOT_WITH_HYDE = "predict_few_shot_hyde"
+    PREDICT_FEW_SHOT_WITH_HYDE_TOT = "predict_few_shot_hyde_tot"
+    PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
+    EXPERT_DISCUSSION = "expert_discussion"
+
+
+class PromptFiles(Enum):
+    PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
+    DISCUSSION_TO_PROGRAM = os.path.join(PROMPT_PATH, 'discussion_to_program.txt')
+    DYNAMIC_SCENARIOS = os.path.join(PROMPT_PATH, 'dynamic_scenarios_prompt.txt')
+    PYTHON_API = os.path.join(PROMPT_PATH, 'python_api_prompt.txt')
+    QUESTION_REASONING = os.path.join(PROMPT_PATH, 'question_reasoning.txt')
+    SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
+    TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
 
 
 @dataclass(frozen=True)
@@ -32,6 +47,7 @@ class ModelInput:
     examples: list[str]
     nat_lang_scene_des: str
     first_attempt_scenic_program: Optional[str] = None
+    expert_discussion: Optional[str] = None
 
 
 def load_jsonl(
@@ -71,14 +87,64 @@ def write_jsonl(
             json.dump(example, output_file)
 
 
-def format_scenic_tutorial_prompt(prompt_path: str) -> str:
+def format_scenic_tutorial_prompt() -> str:
         """
         Formats the message providing introduction to Scenic language and syntax.
         """
         st_prompt = ''
-        with open(prompt_path) as f:
+        with open(PromptFiles.SCENIC_TUTORIAL.value) as f:
             st_prompt = f.read()
         return st_prompt
+
+
+def format_reasoning_prompt(model_input: ModelInput) -> str:
+        """
+        Formats the message providing introduction to Scenic language and syntax.
+        """
+        st_prompt = ''
+        with open(PromptFiles.QUESTION_REASONING.value) as f:
+            st_prompt = f.read()
+        st_prompt = st_prompt.format(
+            example_1=model_input.examples[0],
+            example_2=model_input.examples[1],
+            example_3=model_input.examples[2],
+            natural_language_description=model_input.nat_lang_scene_des
+        )
+        return st_prompt
+
+
+def format_discussion_prompt(
+        model_input: ModelInput,
+        verbose: bool
+    ) -> str:
+        prompt = ""
+        with open(PromptFiles.TOT_EXPERT_DISCUSSION.value) as f:
+            prompt = f.read()
+
+        prompt.format(
+            example_1=model_input.examples[0],
+            natural_language_description=model_input.nat_lang_scene_des,
+        )
+
+        if verbose:
+            print(f"format_discussion_prompt: {prompt}")
+
+        return prompt
+
+
+def format_discussion_to_program_prompt(model_input: ModelInput) -> str:
+        prompt = ""
+        with open(PromptFiles.DISCUSSION_TO_PROGRAM.value) as f:
+            prompt = f.read()
+
+        prompt.format(
+            example_1=model_input.examples[0],
+            example_2=model_input.examples[1],
+            example_3=model_input.examples[2],
+            expert_discussion=model_input.expert_discussion,
+        )
+
+        return prompt
 
 
 class VectorDB():
@@ -189,3 +255,21 @@ class VectorDB():
         if len(passages) < top_k:
             return None
         return passages
+
+
+def few_shot_prompt_with_rag(
+        vector_index: VectorDB,
+        model_input: ModelInput,
+        few_shot_prompt_generator: Callable[[ModelInput], str | List[Dict[str, str]]],
+        top_k: int = 3,
+    ) -> str | List[Dict[str, str]]:
+        examples = vector_index.query(model_input.first_attempt_scenic_program, top_k=top_k)
+        if examples is None: # if the query fails, we just return the few shot prompt
+            return few_shot_prompt_generator(model_input, verbose=False)
+        
+        relevant_model_input = ModelInput(
+            examples=[example for example in examples],
+            nat_lang_scene_des=model_input.nat_lang_scene_des,
+            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+        )
+        return few_shot_prompt_generator(relevant_model_input, verbose=False)

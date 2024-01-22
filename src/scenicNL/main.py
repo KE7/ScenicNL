@@ -145,6 +145,22 @@ def main():
     help="Boolean condition to display or omit verbose output."
 )
 
+@click.option(
+    "--temperature",
+    type=click.FLOAT,
+    default=0.0,
+    show_default=True,
+    help="Temperature to use for sampling.",
+)
+
+@click.option(
+    "--num_workers",
+    type=click.INT,
+    default=1,
+    show_default=True,
+    help="Number of workers to use for parallel processing.",
+)
+
 def main(
     query_path: Path,
     output_path: Path,
@@ -158,8 +174,10 @@ def main(
     verbose: bool,
     model: str,
     llm_prompt_type: str,
+    num_workers: int,
     should_cache_retry_errors: bool,
-    keep_filename: bool
+    keep_filename: bool,
+    temperature: float,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
@@ -233,9 +251,17 @@ def main(
     compile_pass, compile_fail, api_error = 0, 0, 0
     for index, outputs in enumerate(adapter.predict_batch(
             model_inputs=model_input_list, 
-            cache_path=cache_path, num_predictions=1, 
-            temperature=0, max_tokens=MAX_TOKEN_LENGTH, prompt_type=prompt_type,
-            ignore_cache=ignore_cache, should_cache_retry_errors=should_cache_retry_errors)):
+            cache_path=cache_path, 
+            num_predictions=1,
+            temperature=temperature, 
+            max_tokens=MAX_TOKEN_LENGTH, 
+            prompt_type=prompt_type,
+            should_cache_retry_errors=should_cache_retry_errors,
+            verbose=verbose,
+            num_workers=num_workers,
+            ignore_cache=ignore_cache, 
+            )
+        ):
         for attempt, output in enumerate(outputs):
             if verbose:
                 print(f'Output for query {index} attempt {attempt}: {output}')

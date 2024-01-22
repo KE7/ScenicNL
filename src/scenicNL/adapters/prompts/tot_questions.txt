@@ -1,0 +1,81 @@
+Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+Here is one example of a Scenic program:
+{example_1}
+
+Let's start working towards having you create your own Scenic program based on the following natural language description:
+{natural_language_description}
+
+For the following questions, you are role playing as three different autonmous driving PhD researchers. Each expert must come up with their own answer using a step-by-step explanation. All experts must share their answers and the group must decide what will be their final answer using step-by-step reasoning before moving onto the next question.
+
+1. Based on the description, what are the main objects that need to be included in the scene? (e.g. car, pedestrian, etc.). Ignore any objects that are mentioned but not relevant to a reconstructing the scenario (e.g. bag of chips, leaves, etc.)
+
+2. What are the spacial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.
+
+3. What are the events that happened in the scene? (e.g. car stopped, pedestrian crossed the street, etc.). First describe the events then provide a Linear Temporal Logic (LTL) formula that captures the events. For example, if the car stopped and the pedestrian crossed the street, the LTL formula would be G(car.stopped -> F(pedestrian.crossed))
+
+4. What details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, what is the weather, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)
+
+5. For your answers to question 4, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors such as [red, blue, green, white, black, silver, gray]. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph. 
+
+6. Based on your answers to question 5, pick from the following list of distributions that are supported in Scenic: 
+Range(low, high) - Uniform distribution over the range [low, high]
+DiscreteRange(low, high) - Uniform distribution over the discret integer range [low, high]
+Normal(mean, std) - Normal distribution with mean and standard deviation
+TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [low, high]
+Uniform(value, …) - Uniform distribution over the values provided
+Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights
+
+7. Based on the scene description, pick a map from the list below that you think best matches the scene.
+Town07 - imitates a quiet rural community, a green landscape filled with cornfields, barns, grain silos and windmills.
+Town06 - is a low density town set into a coniferous landscape exhibiting a multitude of large, 4-6 lane roads and special junctions like the Michigan Left.
+Town05 - is an urban environment set into a backdrop of conifer-covered hills with a raised highway and large multilane roads and junctions.
+Town04 - is a small town with a backdrop of snow-capped mountains and conifers. A multi-lane road circumnavigates the town in a "figure of 8".
+Town03 - is a larger town with features of a downtown urban area. The map includes some interesting road network features such as a roundabout, underpasses and overpasses. The town also includes a raised metro track and a large building under construction.
+Town02 - is a small town with numerous T-junctions and a variety of buildings, there are patches of coniferous trees, a park and a residential and commercial area.
+Town01 - is a small town with numerous T-junctions and a variety of buildings, surrounded by coniferous trees and featuring several small bridges spanning across a river that divides the town into 2 halves.
+
+These maps are all in the directory ../../../assets/maps/CARLA/ and are of the format Town01, Town02, Town03, Town04, Town05, Town06, Town07 with file extension .xodr
+
+8. Here is a list of the supported behaviors in Scenic. Based on your answer to question 3, which behaviors do you think you will need to use in your Scenic program?
+Here are the only behaviors that are allowed for vehicles. Feel free to select more than one as they are composable:
+behavior ConstantThrottleBehavior(x : float):
+behavior DriveAvoidingCollisions(target_speed : float = 25, avoidance_threshold : float = 10):
+    # Drive at a target speed, avoiding collisions with other vehicles
+    # Throttle is off and braking is applied if the distance to the nearest vehicle is less 
+    # than the avoidance threshold
+behavior AccelerateForwardBehavior(): # Accelerate forward with throttle set to 0.5
+behavior FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False):
+    # Follow's the lane on which the vehicle is at, unless the laneToFollow is specified.
+    # Once the vehicle reaches an intersection, by default, the vehicle will take the straight route.
+    # If straight route is not available, then any availble turn route will be taken, uniformly randomly. 
+    # If turning at the intersection, the vehicle will slow down to make the turn, safely. 
+    # This behavior does not terminate. A recommended use of the behavior is to accompany it with condition,
+    # e.g. do FollowLaneBehavior() until ...
+    # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+    # :param laneToFollow: If the lane to follow is different from the lane that the vehicle is on, this parameter can be used to specify that lane. By default, this variable will be set to None, which means that the vehicle will follow the lane that it is currently on.
+behavior FollowTrajectoryBehavior(target_speed : float = 10, trajectory : List[Lane] = None, turn_speed : float = None):
+    # Follows the given trajectory. The behavior terminates once the end of the trajectory is reached.
+    # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+    # :param trajectory: It is a list of sequential lanes to track, from the lane that the vehicle is initially on to the lane it should end up on.
+behavior TurnBehavior(trajectory : List[Lane] = None, target_speed : float = 6):
+    # This behavior uses a controller specifically tuned for turning at an intersection.
+    # This behavior is only operational within an intersection, it will terminate if the vehicle is outside of an intersection.
+behavior LaneChangeBehavior(laneSectionToSwitchTo : Lane, is_oppositeTraffic : bool = False, target_speed : float = 10):
+    # is_oppositeTraffic should be specified as True only if the laneSectionToSwitch to has
+    # the opposite traffic direction to the initial lane from which the vehicle started LaneChangeBehavior
+
+Here are the only behaviors that are allowed for pedestrians. Feel free to select more than one as they are composable:
+behavior WalkForwardBehavior(speed=0.5):
+    take SetWalkingDirectionAction(self.heading), SetWalkingSpeedAction(speed)
+    # Walk forward behavior for pedestrians by uniformly sampling either side of the sidewalk for the pedestrian to walk on
+behavior WalkBehavior(maxSpeed=1.4):
+    take SetWalkAction(True, maxSpeed)
+behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_speed=None):
+    # This behavior dynamically controls the speed of an actor that will perpendicularly (or close to)
+    # cross the road, so that it arrives at a spot in the road at the same time as a reference actor.
+    # Args:
+    # min_speed (float): minimum speed of the crossing actor. As this is a type of "synchronization action",
+    # a minimum speed is needed, to allow the actor to keep moving even if the reference actor has stopped
+    # threshold (float): starting distance at which the crossing actor starts moving
+    # final_speed (float): speed of the crossing actor after the reference one surpasses it
