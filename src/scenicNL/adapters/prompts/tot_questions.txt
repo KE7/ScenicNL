@@ -79,3 +79,48 @@ behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_spee
     # a minimum speed is needed, to allow the actor to keep moving even if the reference actor has stopped
     # threshold (float): starting distance at which the crossing actor starts moving
     # final_speed (float): speed of the crossing actor after the reference one surpasses it
+
+9. For the relevant objects that you identified in question 1, please pick and justify why from the following list which ones most closely match: 
+carla_vehicles = {
+    "Audi - A2": "vehicle.audi.a2",
+    "Audi - E-Tron": "vehicle.audi.etron",
+    "Audi - TT": "vehicle.audi.tt",
+    "BMW - Gran Tourer": "vehicle.bmw.grandtourer",
+    "Chevrolet - Impala": "vehicle.chevrolet.impala",
+    "Citroen - C3": "vehicle.citroen.c3",
+    "Dodge - Charger 2020": "vehicle.dodge.charger_2020",
+    "Dodge - Police Charger": "vehicle.dodge.charger_police",
+    "Dodge - Police Charger 2020": "vehicle.dodge.charger_police_2020",
+    "Ford - Crown (taxi)": "vehicle.ford.crown",
+    "Ford - Mustang": "vehicle.ford.mustang",
+    "Jeep - Wrangler Rubicon": "vehicle.jeep.wrangler_rubicon",
+    "Lincoln - MKZ 2017": "vehicle.lincoln.mkz_2017",
+    "Lincoln - MKZ 2020": "vehicle.lincoln.mkz_2020",
+    "Mercedes - Coupe": "vehicle.mercedes.coupe",
+    "Mercedes - Coupe 2020": "vehicle.mercedes.coupe_2020",
+    "Micro - Microlino": "vehicle.micro.microlino",
+    "Mini - Cooper S": "vehicle.mini.cooper_s",
+    "Mini - Cooper S 2021": "vehicle.mini.cooper_s_2021",
+    "Nissan - Micra": "vehicle.nissan.micra",
+    "Nissan - Patrol": "vehicle.nissan.patrol",
+    "Nissan - Patrol 2021": "vehicle.nissan.patrol_2021",
+    "Seat - Leon": "vehicle.seat.leon",
+    "Tesla - Model 3": "vehicle.tesla.model3",
+    "Toyota - Prius": "vehicle.toyota.prius",
+    "CARLA Motors - CarlaCola": "vehicle.carlamotors.carlacola",
+    "CARLA Motors - European HGV (cab-over-engine type)": "vehicle.carlamotors.european_hgv",
+    "CARLA Motors - Firetruck": "vehicle.carlamotors.firetruck",
+    "Tesla - Cybertruck": "vehicle.tesla.cybertruck",
+    "Ford - Ambulance": "vehicle.ford.ambulance",
+    "Mercedes - Sprinter": "vehicle.mercedes.sprinter",
+    "Volkswagen - T2": "vehicle.volkswagen.t2",
+    "Volkswagen - T2 2021": "vehicle.volkswagen.t2_2021",
+    "Mitsubishi - Fusorosa": "vehicle.mitsubishi.fusorosa",
+    "Harley Davidson - Low Rider": "vehicle.harley-davidson.low_rider",
+    "Kawasaki - Ninja": "vehicle.kawasaki.ninja",
+    "Vespa - ZX 125": "vehicle.vespa.zx125",
+    "Yamaha - YZF": "vehicle.yamaha.yzf",
+    "BH - Crossbike": "vehicle.bh.crossbike",
+    "Diamondback - Century": "vehicle.diamondback.century",
+    "Gazelle - Omafiets": "vehicle.gazelle.omafiets"
+}

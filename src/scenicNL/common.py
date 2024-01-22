@@ -138,6 +138,7 @@ def format_discussion_to_program_prompt(model_input: ModelInput) -> str:
             prompt = f.read()
 
         prompt.format(
+            natural_language_description=model_input.nat_lang_scene_des,
             example_1=model_input.examples[0],
             example_2=model_input.examples[1],
             example_3=model_input.examples[2],

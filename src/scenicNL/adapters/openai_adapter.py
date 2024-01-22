@@ -296,6 +296,9 @@ class OpenAIAdapter(ModelAdapter):
                 messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
             )
             discussion = response.choices[0].message.content
+            if verbose:
+                print(f"GPT Model {self.model.value}, Temperature {DISCUSSION_TEMPERATURE}, Max Tokens {max_length_tokens}\n"
+                      f"Expert Discussion Results: {discussion}")
 
             # 2. Do a few shot predict on the natural language description
             response = openai.ChatCompletion.create(
