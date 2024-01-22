@@ -9,7 +9,7 @@ import os
 
 import openai
 
-from scenicNL.common import DISCUSSION_TEMPERATURE, LLMPromptType, ModelInput, PromptFiles, VectorDB, few_shot_prompt_with_rag, format_discussion_prompt, format_discussion_to_program_prompt
+from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, PromptFiles, VectorDB, few_shot_prompt_with_rag, get_discussion_prompt, get_discussion_to_program_prompt, get_expert_synthesis_prompt
 
 
 class OpenAIModel(Enum):
@@ -209,7 +209,11 @@ class OpenAIAdapter(ModelAdapter):
         if examples is None: # if the query fails, we will use the original examples
             if verbose:
                 print("Index query failed. Using original few shot prompt.")
-            examples = model_input.examples
+        else:
+            if verbose:
+                print(f"Index query successful. Using the following examples: {examples}")
+        
+        examples = model_input.examples # TODO: skip HyDE for now
         
         relevant_model_input = ModelInput(
             examples=[example for example in examples],
@@ -218,10 +222,69 @@ class OpenAIAdapter(ModelAdapter):
             expert_discussion=model_input.expert_discussion,
         )
 
-        prompt = format_discussion_to_program_prompt(model_input=relevant_model_input)
+        prompt = get_discussion_to_program_prompt(model_input=relevant_model_input)
         if verbose:
             print(f"Few shot prompt with ToT and HyDE: {prompt}")
         return [{"role": "system", "content": prompt}]
+    
+
+    def _format_discussion_prompt(
+        self,
+        model_input: ModelInput,
+        verbose: bool,
+    ) -> List[Dict[str, str]]:
+        prompt = get_discussion_prompt(model_input=model_input)
+
+        task_and_others = prompt.split("{example_1}")
+        task = task_and_others[0]
+        others = task_and_others[1].split("{natural_language_description}")
+        nl_prompt = others[0]
+        questions = others[1]
+
+        prompt = [
+            {"role": "system", "content": task},
+            {"role": "user", "content": model_input.examples[0]},
+            {"role": "system", "content": nl_prompt},
+            {"role": "user", "content": model_input.nat_lang_scene_des},
+            {"role": "system", "content": questions},
+        ]  
+
+        if verbose:
+            print(f"Expert discussion prompt: {prompt}")
+        return prompt
+    
+
+    def _format_expert_synthesis_prompt(
+        self,
+        model_input: ModelInput,
+        verbose: bool,
+    ) -> List[Dict[str, str]]:
+        prompt = get_expert_synthesis_prompt()
+
+        task_and_others = prompt.split("{natural_language_description}")
+        task = task_and_others[0]
+        others = task_and_others[1].split("{expert_1}")
+        expert_1 = others[0]
+        others = others[1].split("{expert_2}")
+        expert_2 = others[0]
+        others = others[1].split("{expert_3}")
+        expert_3 = others[0]
+
+        prompt = [
+            {"role": "system", "content": task},
+            {"role": "user", "content": model_input.nat_lang_scene_des},
+            {"role": "system", "content": expert_1},
+            {"role": "user", "content": model_input.panel_discussion[0]},
+            {"role": "system", "content": expert_2},
+            {"role": "user", "content": model_input.panel_discussion[1]},
+            {"role": "system", "content": expert_3},
+            {"role": "user", "content": model_input.panel_discussion[2]},
+        ]
+
+        if verbose:
+            print(f"Expert synthesis prompt: {prompt}")
+        
+        return prompt
 
 
     def _format_message(
@@ -253,7 +316,9 @@ class OpenAIAdapter(ModelAdapter):
         elif prompt_type == LLMPromptType.PREDICT_TOT_THEN_HYDE:
             return self._few_shot_reasoning_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.EXPERT_DISCUSSION:
-            return [{"role": "system", "content": format_discussion_prompt(model_input=model_input, verbose=verbose)}]
+            return self._format_discussion_prompt(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.EXPERT_SYNTHESIS:
+            return self._format_expert_synthesis_prompt(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -289,18 +354,44 @@ class OpenAIAdapter(ModelAdapter):
     ) -> str:
         if prompt_type == LLMPromptType.PREDICT_TOT_THEN_HYDE:
             # 1. Use tree of thought to answer all questions in the prompt
-            response = openai.ChatCompletion.create(
+            panel_answers = []
+            for _ in range(NUM_EXPERTS):
+                response = openai.ChatCompletion.create(
+                    temperature=DISCUSSION_TEMPERATURE,
+                    model=self.model.value,
+                    max_tokens=max_length_tokens,
+                    messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
+                )
+                panel_answers.append(response.choices[0].message.content)
+
+            if len(panel_answers) != NUM_EXPERTS:
+                raise ValueError(f"Expected {NUM_EXPERTS} answers from the panel, got {len(panel_answers)}")
+            
+            model_input = ModelInput(
+                examples=model_input.examples, 
+                nat_lang_scene_des=model_input.nat_lang_scene_des,
+                first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+                panel_discussion=panel_answers,
+                expert_discussion=None
+            )
+            
+            if verbose:
+                print(f"GPT model {self.model.value}\n"
+                      f"Tree of thought answers: {panel_answers}\n")
+
+            # 2. Ask an expert to synthesize the answers into a single program
+            expert_response = openai.ChatCompletion.create(
                 temperature=DISCUSSION_TEMPERATURE,
                 model=self.model.value,
                 max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
+                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_SYNTHESIS, verbose=verbose),
             )
-            discussion = response.choices[0].message.content
+            expert_synthesis = expert_response.choices[0].message.content
             if verbose:
-                print(f"GPT Model {self.model.value}, Temperature {DISCUSSION_TEMPERATURE}, Max Tokens {max_length_tokens}\n"
-                      f"Expert Discussion Results: {discussion}")
+                print(f"GPT model {self.model.value}\n"
+                      f"Expert synthesis: {expert_synthesis}\n")
 
-            # 2. Do a few shot predict on the natural language description
+            # 3. Do a few shot predict on the natural language description
             response = openai.ChatCompletion.create(
                 temperature=temperature,
                 model=self.model.value,
@@ -308,21 +399,25 @@ class OpenAIAdapter(ModelAdapter):
                 messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
             )
 
-            # 3. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
+            # 4. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
             new_model_input = ModelInput(
-                examples=[], # this will get overwritten by the search query
+                examples=model_input.examples, # this will get overwritten by the search query
                 nat_lang_scene_des=model_input.nat_lang_scene_des,
                 first_attempt_scenic_program=response.choices[0].message.content,
-                expert_discussion=discussion,
+                expert_discussion=expert_synthesis,
+                panel_discussion=panel_answers,
             )
 
-            # 4. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
+            # 5. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
             response = openai.ChatCompletion.create(
                 temperature=temperature,
                 model=self.model.value,
                 max_tokens=max_length_tokens,
                 messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
             )
+
+            # TODO: 6. Compile the program and loop feedback to GPT until the program compiles
+
             return response.choices[0].message.content
         elif prompt_type != LLMPromptType.PREDICT_FEW_SHOT_WITH_HYDE:
             messages = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)

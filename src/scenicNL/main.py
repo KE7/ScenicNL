@@ -148,7 +148,7 @@ def main():
 @click.option(
     "--temperature",
     type=click.FLOAT,
-    default=0.0,
+    default=0.7,
     show_default=True,
     help="Temperature to use for sampling.",
 )

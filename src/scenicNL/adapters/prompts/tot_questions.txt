@@ -6,13 +6,21 @@ Here is one example of a Scenic program:
 Let's start working towards having you create your own Scenic program based on the following natural language description:
 {natural_language_description}
 
-For the following questions, you are role playing as three different autonmous driving PhD researchers. Each expert must come up with their own answer using a step-by-step explanation. All experts must share their answers and the group must decide what will be their final answer using step-by-step reasoning before moving onto the next question.
+For the following questions,imagine that you are an autonomous driving expert. For every question, provide a step-by-step explanation for how you came up with your answer. Please answer in the following format as a Python comment:
+# <Summarize the question here>
+# <Provide your answer here with a full step-by-step explanation>
 
 1. Based on the description, what are the main objects that need to be included in the scene? (e.g. car, pedestrian, etc.). Ignore any objects that are mentioned but not relevant to a reconstructing the scenario (e.g. bag of chips, leaves, etc.)
 
 2. What are the spacial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.
 
-3. What are the events that happened in the scene? (e.g. car stopped, pedestrian crossed the street, etc.). First describe the events then provide a Linear Temporal Logic (LTL) formula that captures the events. For example, if the car stopped and the pedestrian crossed the street, the LTL formula would be G(car.stopped -> F(pedestrian.crossed))
+3. What are the events that happened in the scene? (e.g. car stopped, pedestrian crossed the street, etc.). First describe the events. Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula. So for the events that we can, describe the LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic: 
+car2 not in intersection until car1 in intersection
+eventually car2 in intersection
+eventually ego in intersection
+(always car.speed < 30) implies (always distance to car > 10)
+always not ((ego can see car1) and (ego can see car2))
+
 
 4. What details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, what is the weather, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)
 
@@ -20,13 +28,13 @@ For the following questions, you are role playing as three different autonmous d
 
 6. Based on your answers to question 5, pick from the following list of distributions that are supported in Scenic: 
 Range(low, high) - Uniform distribution over the range [low, high]
-DiscreteRange(low, high) - Uniform distribution over the discret integer range [low, high]
+DiscreteRange(low, high) - Uniform distribution over the discreet integer range [low, high]
 Normal(mean, std) - Normal distribution with mean and standard deviation
 TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [low, high]
 Uniform(value, …) - Uniform distribution over the values provided
 Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights
 
-7. Based on the scene description, pick a map from the list below that you think best matches the scene.
+7. Based on the scene description, first pick 3 maps that could match then scenario then from the three, pick the best matching one.
 Town07 - imitates a quiet rural community, a green landscape filled with cornfields, barns, grain silos and windmills.
 Town06 - is a low density town set into a coniferous landscape exhibiting a multitude of large, 4-6 lane roads and special junctions like the Michigan Left.
 Town05 - is an urban environment set into a backdrop of conifer-covered hills with a raised highway and large multilane roads and junctions.
@@ -48,7 +56,7 @@ behavior AccelerateForwardBehavior(): # Accelerate forward with throttle set to 
 behavior FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False):
     # Follow's the lane on which the vehicle is at, unless the laneToFollow is specified.
     # Once the vehicle reaches an intersection, by default, the vehicle will take the straight route.
-    # If straight route is not available, then any availble turn route will be taken, uniformly randomly. 
+    # If straight route is not available, then any available turn route will be taken, uniformly randomly. 
     # If turning at the intersection, the vehicle will slow down to make the turn, safely. 
     # This behavior does not terminate. A recommended use of the behavior is to accompany it with condition,
     # e.g. do FollowLaneBehavior() until ...
@@ -81,8 +89,8 @@ behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_spee
     # final_speed (float): speed of the crossing actor after the reference one surpasses it
 
 9. For the relevant objects that you identified in question 1, please pick and justify why from the following list which ones most closely match: 
-carla_vehicles = {
-    "Audi - A2": "vehicle.audi.a2",
+carla_vehicles = [
+    "Audi - A2": "vehicle.audi.a2", 
     "Audi - E-Tron": "vehicle.audi.etron",
     "Audi - TT": "vehicle.audi.tt",
     "BMW - Gran Tourer": "vehicle.bmw.grandtourer",
@@ -123,4 +131,4 @@ carla_vehicles = {
     "BH - Crossbike": "vehicle.bh.crossbike",
     "Diamondback - Century": "vehicle.diamondback.century",
     "Gazelle - Omafiets": "vehicle.gazelle.omafiets"
-}
+]

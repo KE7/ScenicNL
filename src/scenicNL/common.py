@@ -11,7 +11,8 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 import torch
 
 MAX_TOKEN_LENGTH = 3600
-DISCUSSION_TEMPERATURE = 0.7
+DISCUSSION_TEMPERATURE = 0.8
+NUM_EXPERTS = 3
 
 class LLMPromptType(Enum):
     PREDICT_ZERO_SHOT = "predict_zero_shot"
@@ -25,6 +26,7 @@ class LLMPromptType(Enum):
     PREDICT_FEW_SHOT_WITH_HYDE_TOT = "predict_few_shot_hyde_tot"
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
+    EXPERT_SYNTHESIS = "expert_synthesis"
 
 
 class PromptFiles(Enum):
@@ -35,6 +37,7 @@ class PromptFiles(Enum):
     QUESTION_REASONING = os.path.join(PROMPT_PATH, 'question_reasoning.txt')
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
+    EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
 
 
 @dataclass(frozen=True)
@@ -48,6 +51,7 @@ class ModelInput:
     nat_lang_scene_des: str
     first_attempt_scenic_program: Optional[str] = None
     expert_discussion: Optional[str] = None
+    panel_discussion: Optional[List[str]] = None
 
 
 def load_jsonl(
@@ -113,37 +117,46 @@ def format_reasoning_prompt(model_input: ModelInput) -> str:
         return st_prompt
 
 
-def format_discussion_prompt(
-        model_input: ModelInput,
-        verbose: bool
-    ) -> str:
+def get_discussion_prompt() -> str:
         prompt = ""
         with open(PromptFiles.TOT_EXPERT_DISCUSSION.value) as f:
             prompt = f.read()
 
-        prompt.format(
-            example_1=model_input.examples[0],
-            natural_language_description=model_input.nat_lang_scene_des,
-        )
-
-        if verbose:
-            print(f"format_discussion_prompt: {prompt}")
+        # prompt = prompt.format(
+        #     example_1=model_input.examples[0],
+        #     natural_language_description=model_input.nat_lang_scene_des,
+        # )
 
         return prompt
 
 
-def format_discussion_to_program_prompt(model_input: ModelInput) -> str:
+def get_expert_synthesis_prompt() -> str:
+        prompt = ""
+        with open(PromptFiles.EXPERT_SYNTHESIS.value) as f:
+            prompt = f.read()
+
+        # prompt = prompt.format(
+        #     natural_language_description=model_input.nat_lang_scene_des,
+        #     expert_1=model_input.panel_discussion[0],
+        #     expert_2=model_input.panel_discussion[1],
+        #     expert_3=model_input.panel_discussion[2],
+        # )
+
+        return prompt
+
+
+def get_discussion_to_program_prompt() -> str:
         prompt = ""
         with open(PromptFiles.DISCUSSION_TO_PROGRAM.value) as f:
             prompt = f.read()
 
-        prompt.format(
-            natural_language_description=model_input.nat_lang_scene_des,
-            example_1=model_input.examples[0],
-            example_2=model_input.examples[1],
-            example_3=model_input.examples[2],
-            expert_discussion=model_input.expert_discussion,
-        )
+        # prompt = prompt.format(
+        #     natural_language_description=model_input.nat_lang_scene_des,
+        #     example_1=model_input.examples[0],
+        #     example_2=model_input.examples[1],
+        #     example_3=model_input.examples[2],
+        #     expert_discussion=model_input.expert_discussion,
+        # )
 
         return prompt
 
