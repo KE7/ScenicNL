@@ -1,0 +1,27 @@
+Your task is to construct a Scenic program from a natural language description of a scenario.
+Here is a natural language description of a scenario:
+{natural_language_description}
+
+An expert has already identified everything that you need to construct your own Scenic program. 
+{expert_discussion}
+
+Your task is to construct your own Scenic program. Here are three examples of a Scenic program:
+Example 1:
+{example_1}
+Example 2:
+{example_2}
+Example 3:
+{example_3}
+Notice how all the examples contained the natural language description of the scenario as comment and the Scenic program and nothing else. You are to do the same.
+Some things to note about Scenic:
+Do not access direct street names or intersections as that is not supported in Scenic. For example, if you want to find a lane that has a lane to its left in the opposite direction, refer to the example programs. Do something similar for other scenarios.
+This is a driving simulator so minor details about pedestrian actions and descriptions are not supported in Scenic.
+
+Structure your program into the following 5 sections:
+The first section is the parameter definitions and imports. All maps are located in ../../../assets/maps/CARLA/ with file extension .xodr. Use the map the experts picked.
+The second section is the scene setup and geometry. 
+The third section is the scenario dynamics. This is where you define the behaviors of the agents in the scene.
+The fourth section is the placement and spacial relationships of agents in the scene. 
+The last section is the last require and terminate statements. This is where the expert's LTL formulas go.
+
+Output only the natural language description of the scenario as a comment at the top of the file and your proposed Scenic program. Do not output anything else so I can run your program and see the results. 

@@ -1,3 +1,5 @@
+Now that you have seen a few example Scenic programs. Let's talk about them. 
+
 Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents; sampling from this distribution yields concrete scenes which can be simulated to produce training or testing data. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
 
 # Specifiers
@@ -85,7 +87,7 @@ behavior DriveWithRandomStops():
         delay = Range(15, 30) seconds
         last_stop = simulation().currentTime
 
-Scenic provides a rich set of built-in behaviors which can be used as is or as building blocks for more complex behaviors. Here is a list of some of the built-in behaviors:
+Scenic provides a rich set of built-in behaviors which can be used as is or as building blocks for more complex behaviors. Here is a list of all known built-in behaviors. Do not assume that any other behavior exists. If you need a behavior that is not listed here, you can define it using the built-in behaviors as building blocks.
 behavior ConstantThrottleBehavior(x : float):
     # Constant throttle, no reverse, no handbrake
 
@@ -216,27 +218,47 @@ require (distance from blockingCar to intersection) > DIST_TO_INTERSECTION
 
 Scenic scripts are typically divided into three sections: parameter definitions, scene setup, behaviors, and post-conditions.
 
-Now please write your own scenic program to model the scenario given by the user. Order your program as follows:
 
-1. Parameter Definitions:
-In the parameter definitions section, you handle imports and define any parameters your scenario will use.
-Like Python, a Scenic script begins with importing necessary libraries.
-The first lines could be: "param map = localPath('../../../assets/maps/CARLA/Town05.xodr')
+Your task is to write a Scenic program that controls a CARLA simulation which models the scenario given by the user. This is so that we can perform crash reconstruction. In order to do so, you will use step-by-step reasoning to write the Scenic program. I will also help you by telling you that Scenic programs can be written in sections. The first section is the parameter definitions. The second section is the scene setup and geometry. The third section is the dynamic aspects of the scenario. The fourth section is the placement and spacial relationships of agents in the scene. The last section is the last require and terminate statements which can be used to enforce post-conditions that determine that certain events occured or terminate the program after certain conditions are met thus satisfying the requirements of the scenario. Furthermore, we will use a deliberation protocol to write the Scenic program. Imagine that three different experts are tasked to write their own scenic program to model the scenario given by the user. Show your step-by-step work for everything. Each expert must write down 1 step of their thinking and code proposal, then share it with the group. Things that the experts should consider are if the approach if the code is syntactically correct, based on the primitive behaviors available in Scenic what events in the scene should be captured vs ignored, and does the code maximize opportunites for using distributions/ranges to model uncertainty in the orginal scenario.
+Only after all experts have shared their idea for the current section of code, can they then examine the steps written by themselves and others to see who has the best reasoning and most correct steps. Experts can adopt the ideas of others if they find someone has a better approach but only if they think they can improve upon the idea at the next step. Then they can proceed to the next section. After all sections are complete, the experts should agree on the steps written by the expert with the best reasoning and most syntactically correct program. When they have come to an agreement write a line starting with "# Deliberation complete" followed by a new line with exactly 40 dashes.
+Then rewrite the full Scenic program with all sections. 
+
+I will now describe the steps for each section of the Scenic program.
+The first section will be the parameter definitions. The experts should decide which which imports are necessary and which parameters are needed to model the scenario. Like Python, a Scenic script begins with importing necessary libraries. 
+The first lines could be: 
+"param map = localPath('../../../assets/maps/CARLA/Town05.xodr')
 param carla_map = 'Town05'
-model scenic.simulators.carla.model" to import the simulator library.
-The set of maps allowed is only of the format ../../../assets/maps/CARLA/Town01.xodr for Town01, Town02, Town03, Town04, Town05, Town06, Town07.
-No other map can be accessed. Please do not access exact streets or lanes as a result.
-Then define any scene parameters, for example: "speed = Range(15, 25)" defines a parameter speed with values ranging from 15 to 25.
+model scenic.simulators.carla.model # import the simulator library
+The only maps allowed are in the directory ../../../assets/maps/CARLA/ and are of the format Town01, Town02, Town03, Town04, Town05, Town06, Town07 with file extension .xodr.
+Here is a description of the maps: 
+Town07 - Town 7 imitates a quiet rural community, a green landscape filled with cornfields, barns, grain silos and windmills.
+Town06 - Town 6 is a low density town set into a coniferous landscape exhibiting a multitude of large, 4-6 lane roads and special junctions like the Michigan Left.
+Town05 - Town 5 is an urban environment set into a backdrop of conifer-covered hills with a raised highway and large multilane roads and junctions.
+Town04 - Town 4 is a small town with a backdrop of snow-capped mountains and conifers. A multi-lane road circumnavigates the town in a "figure of 8".
+Town03 - Town 3 is a larger town with features of a downtown urban area. The map includes some interesting road network features such as a roundabout, underpasses and overpasses. The town also includes a raised metro track and a large building under construction.
+Town02 - Town 2 is a small town with numerous T-junctions and a variety of buildings, there are patches of coniferous trees, a park and a residential and commercial area.
+Town01 - Town 1 is a small town with numerous T-junctions and a variety of buildings, surrounded by coniferous trees and featuring several small bridges spanning across a river that divides the town into 2 halves.
+No other map can be accessed. Please do not access exact street names or lanes as a result.
+The experts should also decide on the range of values for each parameter.
+Then define any scene parameters, for example: "speed = Range(15, 25)" defines a parameter speed with values ranging from 15 to 25. 
 
-2. Scene Setup and Geometry:
-In the scene setup section, you describe the static aspects of the scenario. 
-If you need certain objects to be placed in the scene, you can define them here.
-For example, "lane = Uniform(*network.lanes)
+
+Next the experts will reason about the scene setup and geometry. Here they will define the static aspects of the scenario. If they determine that certain objects need to be placed in the scene, they can define them here. 
+For example: 
+lane = Uniform(*network.lanes)
 spawnPt = new OrientedPoint on lane.centerline
-obstacle = new Trash at spawnPt offset by Range(1, -1) @ 0" creates a Trash obstacle offset from the centerline of a random lane.
+obstacle = new Trash at spawnPt offset by Range(1, -1) @ 0
 
-If you need certain properties of objects in the scene, you must search for them yourself.
-For example, to find lanes that have a lane to their left in the opposite direction
+The above code, places a Trash obstacle offset from the centerline of a random lane.
+
+Also, for any values that are not specified in the description, the experts should define a probability distribution over the possible range of values.
+For example, if a car is braking with unknown strength, they can use a truncated normal distribution like so:
+strength = TruncatedNormal(0.8, 0.02, 0.5, 1) # 0.8 mean, 0.02 standard deviation, 0.5 lower bound, 1 upper bound
+take SetBrakeAction(strength), SetThrottleAction(0)
+
+
+The experts should also reason about the geometry of the scene. For example, if they need to place a car in a lane, they should reason about which lanes are valid for the car to be in.
+For example, if they determine that the car should be in a lane with a lane to its left in the opposite direction because the car in the scenario is turning left, they can write:
 laneSecsWithLeftLane = []
 for lane in network.lanes:
     for laneSec in lane.sections:
@@ -253,13 +275,15 @@ leftLaneSec = initLaneSec._laneToLeft
 
 spawnPt = new OrientedPoint on initLaneSec.centerline
 
-3. Behaviors:
-In the behavior section, you describe the dynamic aspects of the scenario.
 
-4. Placement
-After defining the behaviors, you can place the agents in the scene. 
-If needed, you can use syntax such as "A can see B" to make sure agent B is visible to agent A.
-You can also use syntax like "distance from A to B" to make sure the distance between A and B is within a certain range. 
+Next, the experts will reason about the dynamic aspects of the scenario. They will define the behaviors of the agents in the scene. The experts must use the built-in behaviors to define the behaviors of the agents. If no built-in behavior exists, the experts can define their own behavior using the built-in behaviors as building blocks since behaviors can be composed. For example, if the experts need to define a behavior for a car to follow a lane, they can use the built-in FollowLaneBehavior. If they need to define a behavior for a car to turn left, they can use the built-in TurnBehavior. If they need to define a behavior for a car to turn left after following a lane, they can use the built-in FollowLaneBehavior and TurnBehavior as building blocks to define a new behavior or they can list the behaviors one after the other breaking out of the first using an appropriate until statement. Either way, they should reason about the order of the behaviors and the conditions under which the behaviors should be executed and justify their reasoning. If a behavior in the description does not exist and cannot be constructed from the built-in behaviors, the experts should not include it in the Scenic program. For example, Scenic only supports pedestrians walking. If the scenario says they are eating, this detail should not be included in the Scenic program and the pedestrian should just stand still.
+
+
+Next, the experts should reason about placement and spacial relationships of agents in the scene. For example, in a scenario where one agent is visible to another, the experts should reason about the spacial relationship between the two agents. They can use the built-in syntax "A can see B" to make sure agent B is visible to agent A. They can also use syntax like "distance from A to B" to make sure the distance between A and B is within a certain range. This range can be fixed if it was specified in the natural language description or it can be bounded within a range if it was not specified in the natural language description. For example, if the natural language description says that the distance between the two agents is 10 meters, the experts can write:
+require distance from A to B == 10
+If the natural language description does not specify the distance between the two agents, the experts can write:
+require distance from A to B > 5 and distance from A to B < 15
+Example of placing a car:
 oncomingCar = new Car on leftLaneSec.centerline,
     with behavior OncomingCarBehavior()
 
@@ -269,11 +293,5 @@ ego = new Car at spawnPt,
 blockingCar = new Car following roadDirection from ego for BLOCKING_CAR_DIST,
                 with viewAngle 90 deg
 
-5. Post-Conditions:
-After all behaviors and agents are defined, the last require and terminate statements can be used to enforce post-conditions that determine that certain events occured or terminate the program after certain conditions are met thus satisfying the requirements of the scenario. 
 
-The output should be a Scenic script that sets up a scene that models the given natural language description.
-For any values that are not specified in the description, you should define a probability distribution over the possible range of values.
-For example, if a car is braking with unknown strength, you can use a truncated normal distribution like so:
-strength = TruncatedNormal(0.8, 0.02, 0.5, 1) # 0.8 mean, 0.02 standard deviation, 0.5 lower bound, 1 upper bound
-take SetBrakeAction(strength), SetThrottleAction(0)
+Lastly, after all behaviors and agents are defined, the experts should reason about the last require and terminate statements which can be used to enforce post-conditions that determine that certain events occured or terminate the program after certain conditions are met thus satisfying the requirements of the scenario. 
