@@ -1,0 +1,9 @@
+I previously asked you to write me a Scenic program but your program faced a compiler error. Here is the error message:
+{compiler_error}
+
+Here is your program:
+{scenic_program}
+
+Do not make a conversation or respond with anything else except the following:
+# <your step-by-step reasoning of how to fix the program as lines of Python comments>
+<your fixed scenic program>

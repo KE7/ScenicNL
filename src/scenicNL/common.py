@@ -1,6 +1,8 @@
 from enum import Enum
 import json
 import os
+import subprocess
+import tempfile
 import pinecone
 import random
 from dataclasses import dataclass
@@ -27,6 +29,7 @@ class LLMPromptType(Enum):
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
+    FIX_COMPILER_ERROR = "fix_compiler_error"
 
 
 class PromptFiles(Enum):
@@ -38,6 +41,7 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
+    FIX_COMPILER_ERROR = os.path.join(PROMPT_PATH, 'fix_compiler_error.txt')
 
 
 @dataclass(frozen=True)
@@ -52,6 +56,7 @@ class ModelInput:
     first_attempt_scenic_program: Optional[str] = None
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
+    compiler_error: Optional[str] = None
 
 
 def load_jsonl(
@@ -159,6 +164,47 @@ def get_discussion_to_program_prompt() -> str:
         # )
 
         return prompt
+
+
+def get_compiler_feedback_prompt() -> str:
+        prompt = ""
+        with open(PromptFiles.FIX_COMPILER_ERROR.value) as f:
+            prompt = f.read()
+
+        return prompt
+
+
+def run_scenic_program(scenic_program : str,) -> (bool, str): # (success, output)
+    # Step 1: Write the Scenic program to a temporary file
+    with tempfile.NamedTemporaryFile(suffix='.scenic', delete=False) as temp_file:
+        temp_file_name = temp_file.name
+        temp_file.write(scenic_program.encode())
+
+    # Step 2: Execute the Scenic command
+    try:
+        # Using subprocess.run to execute the command
+        # The command will run for up to 10 seconds
+        result = subprocess.run(['scenic', temp_file_name, '--2d'], 
+                                stdout=subprocess.PIPE, 
+                                stderr=subprocess.STDOUT, 
+                                timeout=10)
+
+        # If the command is successful, return a success message
+        if result.returncode == 0:
+            return True, scenic_program
+
+        # If there's an error, return the compiler output
+        else:
+            return False, result.stdout.decode()
+
+    except subprocess.TimeoutExpired:
+        # If the command times out after 10 seconds
+        # We assume that the simulation was actually ran so we return a success message
+            return True, scenic_program
+
+    finally:
+        # Clean up: Delete the temporary file
+        os.remove(temp_file_name)
 
 
 class VectorDB():

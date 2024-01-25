@@ -5,7 +5,7 @@ from typing import cast
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
 from scenicNL.adapters.model_adapter import ModelAdapter
-from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
+from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_compiler_feedback_prompt, get_expert_synthesis_prompt
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt
 
 
@@ -255,6 +255,34 @@ class AnthropicAdapter(ModelAdapter):
                   f"_format_expert_synthesis_prompt: {prompt}")
             
         return prompt
+    
+    def _format_compiler_error_prompt(
+        self,
+        model_input: ModelInput,
+        verbose: bool,
+    ) -> str:
+        prompt = get_compiler_feedback_prompt()
+
+        task_and_others = prompt.split("{compiler_error}")
+        task = task_and_others[0]
+        program_and_others = task_and_others[1].split("{scenic_program}")
+        program = program_and_others[0]
+        others = program_and_others[1]
+
+        prompt = (
+            f"{HUMAN_PROMPT}\n"
+            f"{task}{model_input.compiler_error}\n"
+            f"{program}{model_input.first_attempt_scenic_program}\n"
+            f"{others}"
+            f"{AI_PROMPT}"
+        )
+
+        if verbose:
+            print(f"Anthropic Model {self._model.value}\n"
+                  f"_format_compiler_error_prompt: {prompt}")
+            
+        return prompt
+
 
     def _format_message(
         self,
@@ -281,6 +309,8 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_reasoning_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.EXPERT_SYNTHESIS:
             msg = self._format_expert_synthesis_prompt(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.FIX_COMPILER_ERROR:
+            msg = self._format_compiler_error_prompt(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -289,6 +319,7 @@ class AnthropicAdapter(ModelAdapter):
         
         return msg
 
+
     def _predict(
         self, 
         *, 
@@ -296,7 +327,8 @@ class AnthropicAdapter(ModelAdapter):
         temperature: float, 
         max_length_tokens: int, 
         prompt_type: LLMPromptType,
-        verbose: bool
+        verbose: bool,
+        max_compiler_errors: int = 10,
     ) -> str:
         # to prevent misuse of file handlers
         limits = httpx.Limits(max_keepalive_connections=1, max_connections=1)
@@ -391,6 +423,32 @@ class AnthropicAdapter(ModelAdapter):
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
                 )
+
+        # Finally, for any prompt type, before we return the completion, 
+        # let's run the proposed scenic program up to 10 times to see if it works
+        # if it does, we return it, otherwise we take the compilation error and 
+        #give it back to the LLM to try again
+        scenic_program = claude_response.completion
+        for _ in range(max_compiler_errors):
+            success, output = self.run_scenic_program(scenic_program)
+            if success:
+                return output
+            else:
+                model_input = ModelInput(
+                    examples=model_input.examples,
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=scenic_program,
+                    expert_discussion=model_input.expert_discussion,
+                    panel_discussion=model_input.panel_discussion,
+                    compiler_error=output
+                )
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.FIX_COMPILER_ERROR, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+                scenic_program = claude_response.completion
         
         return claude_response.completion
         
