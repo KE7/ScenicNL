@@ -6,8 +6,8 @@ from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
-from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt
-
+from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt
+import scenic
 
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
@@ -51,6 +51,7 @@ class AnthropicAdapter(ModelAdapter):
             f"{format_scenic_tutorial_prompt()}\n\n"
             f"Here is the natural language description from the user: \n"
             f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
+            f"\n\nWrite a scenic program that models the natural language description. Provide NO additional commentary before or after. Only output the code."
             f"\n\n{AI_PROMPT}"
         )
 
@@ -176,6 +177,21 @@ class AnthropicAdapter(ModelAdapter):
             
         return prompt
 
+    def _few_shot_ast_prompt_(
+        self,
+        model_input: ModelInput,
+        verbose: bool,
+        top_k: int = 3,
+    ) -> str:
+        prompt = get_few_shot_ast_prompt()
+
+        if verbose:
+            print(f"Anthropic Model {self._model.value}\n"
+                  f"_few_shot_ast_prompt: {prompt}")
+            
+        prompt = cast(str, prompt)
+        return prompt
+
     def _zero_shot_prompt(
         self,
         model_input: ModelInput,
@@ -281,6 +297,8 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_reasoning_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.EXPERT_SYNTHESIS:
             msg = self._format_expert_synthesis_prompt(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT_AST:
+            msg = self._few_shot_ast_prompt_(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -384,6 +402,49 @@ class AnthropicAdapter(ModelAdapter):
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
                 )
+            elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT_AST:
+                # Start with a standard few shot
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+                # Up to {retries} retries - depending on compiler feedback
+                retries = 1
+                while retries:
+                    print(f'Retrying... {retries}')
+                    print('\n\n\n^^^^^^^^\n\n\n')
+                    print(claude_response.completion)
+                    with open('_temp.txt', 'w') as f:
+                        f.write(claude_response.completion)
+                    print('\n\n\n^^^^^^^^\n\n\n')
+                    try:
+                        scenic.syntax.parser.parse_file('_temp.txt')
+                        print('No error!')
+                        retries = 0 # If this statement is reached program worked -> terminates loop
+                    except Exception as e:
+                        error_message = str(e)
+                        print(f'Error: {e}')
+
+                        # Constructing correcting claude call
+                        new_model_input = ModelInput(
+                            examples=model_input.examples, # this will get overwritten by the search query
+                            nat_lang_scene_des=model_input.nat_lang_scene_des,
+                            first_attempt_scenic_program=str(claude_response.completion),
+                            compiler_error=error_message
+                        )
+                        # Call claude with few_shot_ast function call type
+                        print(f'\n\n\n%%%%%%%%')
+                        print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
+                        print(f'%%%%%%%%\n\n\n')
+                        claude_response = claude.completions.create(
+                            prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                            temperature=temperature,
+                            max_tokens_to_sample=max_length_tokens,
+                            model=self._model.value,
+                        )
+                        retries -= 1
             else:
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),

@@ -27,7 +27,7 @@ class LLMPromptType(Enum):
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
-
+    PREDICT_FEW_SHOT_AST = "predict_few_shot_ast"
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
@@ -38,7 +38,7 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
-
+    FEW_SHOT_AST = os.path.join(PROMPT_PATH, 'few_shot_ast.txt')
 
 @dataclass(frozen=True)
 class ModelInput:
@@ -50,6 +50,7 @@ class ModelInput:
     examples: list[str]
     nat_lang_scene_des: str
     first_attempt_scenic_program: Optional[str] = None
+    compiler_error: Optional[str] = None
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
 
@@ -149,6 +150,21 @@ def get_discussion_to_program_prompt() -> str:
         prompt = ""
         with open(PromptFiles.DISCUSSION_TO_PROGRAM.value) as f:
             prompt = f.read()
+
+        # prompt = prompt.format(
+        #     natural_language_description=model_input.nat_lang_scene_des,
+        #     example_1=model_input.examples[0],
+        #     example_2=model_input.examples[1],
+        #     example_3=model_input.examples[2],
+        #     expert_discussion=model_input.expert_discussion,
+        # )
+
+        return prompt
+
+def get_few_shot_ast_prompt() -> str:
+    prompt = ""
+    with open(PromptFiles.FEW_SHOT_AST.value) as f:
+        prompt = f.read()
 
         # prompt = prompt.format(
         #     natural_language_description=model_input.nat_lang_scene_des,
