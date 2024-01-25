@@ -161,18 +161,20 @@ def get_discussion_to_program_prompt() -> str:
 
         return prompt
 
-def get_few_shot_ast_prompt() -> str:
+def get_few_shot_ast_prompt(model_input) -> str:
     prompt = ""
     with open(PromptFiles.FEW_SHOT_AST.value) as f:
         prompt = f.read()
 
-        # prompt = prompt.format(
-        #     natural_language_description=model_input.nat_lang_scene_des,
-        #     example_1=model_input.examples[0],
-        #     example_2=model_input.examples[1],
-        #     example_3=model_input.examples[2],
-        #     expert_discussion=model_input.expert_discussion,
-        # )
+        prompt = prompt.format(
+            natural_language_description=model_input.nat_lang_scene_des,
+            example_1=model_input.examples[0],
+            example_2=model_input.examples[1],
+            example_3=model_input.examples[2],
+            expert_discussion=model_input.expert_discussion,
+            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+            compiler_error=model_input.compiler_error
+        )
 
         return prompt
 

@@ -183,7 +183,7 @@ class AnthropicAdapter(ModelAdapter):
         verbose: bool,
         top_k: int = 3,
     ) -> str:
-        prompt = get_few_shot_ast_prompt()
+        prompt = get_few_shot_ast_prompt(model_input=model_input)
 
         if verbose:
             print(f"Anthropic Model {self._model.value}\n"
@@ -411,9 +411,8 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
                 # Up to {retries} retries - depending on compiler feedback
-                retries = 1
+                retries = 6
                 while retries:
-                    print(f'Retrying... {retries}')
                     print('\n\n\n^^^^^^^^\n\n\n')
                     print(claude_response.completion)
                     with open('_temp.txt', 'w') as f:
@@ -424,6 +423,7 @@ class AnthropicAdapter(ModelAdapter):
                         print('No error!')
                         retries = 0 # If this statement is reached program worked -> terminates loop
                     except Exception as e:
+                        print(f'Retrying... {retries}')
                         error_message = str(e)
                         print(f'Error: {e}')
 
@@ -445,6 +445,7 @@ class AnthropicAdapter(ModelAdapter):
                             model=self._model.value,
                         )
                         retries -= 1
+                print(claude_response.completion)
             else:
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),

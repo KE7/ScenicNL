@@ -1,0 +1,120 @@
+
+
+Human:
+Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+Here is one example of a fully compiling Scenic program:
+{example_1}
+
+Create a fully compiling Scenic program that models the description based on:
+
+1. The following natural language description:
+{natural_language_description}
+
+2. The following scenic program with compiler errors that models the description:
+{first_attempt_scenic_program}
+
+3. The first compiler error raised with the scenic program:
+{compiler_error}
+
+Please output a modified version of scenic_program modified so the compiler error does not appear.
+
+OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.
+
+Scenic references:
+
+Here is the list of distributions that are supported in Scenic: 
+Range(low, high) - Uniform distribution over the range [low, high]
+DiscreteRange(low, high) - Uniform distribution over the discreet integer range [low, high]
+Normal(mean, std) - Normal distribution with mean and standard deviation
+TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [low, high]
+Uniform(value, …) - Uniform distribution over the values provided
+Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights
+
+Here are the only behaviors that are allowed for vehicles. Feel free to select more than one as they are composable:
+behavior ConstantThrottleBehavior(x : float):
+behavior DriveAvoidingCollisions(target_speed : float = 25, avoidance_threshold : float = 10):
+    # Drive at a target speed, avoiding collisions with other vehicles
+    # Throttle is off and braking is applied if the distance to the nearest vehicle is less 
+    # than the avoidance threshold
+behavior AccelerateForwardBehavior(): # Accelerate forward with throttle set to 0.5
+behavior FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False):
+    # Follow's the lane on which the vehicle is at, unless the laneToFollow is specified.
+    # Once the vehicle reaches an intersection, by default, the vehicle will take the straight route.
+    # If straight route is not available, then any available turn route will be taken, uniformly randomly. 
+    # If turning at the intersection, the vehicle will slow down to make the turn, safely. 
+    # This behavior does not terminate. A recommended use of the behavior is to accompany it with condition,
+    # e.g. do FollowLaneBehavior() until ...
+    # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+    # :param laneToFollow: If the lane to follow is different from the lane that the vehicle is on, this parameter can be used to specify that lane. By default, this variable will be set to None, which means that the vehicle will follow the lane that it is currently on.
+behavior FollowTrajectoryBehavior(target_speed : float = 10, trajectory : List[Lane] = None, turn_speed : float = None):
+    # Follows the given trajectory. The behavior terminates once the end of the trajectory is reached.
+    # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+    # :param trajectory: It is a list of sequential lanes to track, from the lane that the vehicle is initially on to the lane it should end up on.
+behavior TurnBehavior(trajectory : List[Lane] = None, target_speed : float = 6):
+    # This behavior uses a controller specifically tuned for turning at an intersection.
+    # This behavior is only operational within an intersection, it will terminate if the vehicle is outside of an intersection.
+behavior LaneChangeBehavior(laneSectionToSwitchTo : Lane, is_oppositeTraffic : bool = False, target_speed : float = 10):
+    # is_oppositeTraffic should be specified as True only if the laneSectionToSwitch to has
+    # the opposite traffic direction to the initial lane from which the vehicle started LaneChangeBehavior
+
+Here are the only behaviors that are allowed for pedestrians. Feel free to select more than one as they are composable:
+behavior WalkForwardBehavior(speed=0.5):
+    take SetWalkingDirectionAction(self.heading), SetWalkingSpeedAction(speed)
+    # Walk forward behavior for pedestrians by uniformly sampling either side of the sidewalk for the pedestrian to walk on
+behavior WalkBehavior(maxSpeed=1.4):
+    take SetWalkAction(True, maxSpeed)
+behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_speed=None):
+    # This behavior dynamically controls the speed of an actor that will perpendicularly (or close to)
+    # cross the road, so that it arrives at a spot in the road at the same time as a reference actor.
+    # Args:
+    # min_speed (float): minimum speed of the crossing actor. As this is a type of "synchronization action",
+    # a minimum speed is needed, to allow the actor to keep moving even if the reference actor has stopped
+    # threshold (float): starting distance at which the crossing actor starts moving
+    # final_speed (float): speed of the crossing actor after the reference one surpasses it
+
+Here is the full set of vehicles supported in Scenic.
+"Audi - A2": "vehicle.audi.a2", 
+"Audi - E-Tron": "vehicle.audi.etron",
+"Audi - TT": "vehicle.audi.tt",
+"BMW - Gran Tourer": "vehicle.bmw.grandtourer",
+"Chevrolet - Impala": "vehicle.chevrolet.impala",
+"Citroen - C3": "vehicle.citroen.c3",
+"Dodge - Charger 2020": "vehicle.dodge.charger_2020",
+"Dodge - Police Charger": "vehicle.dodge.charger_police",
+"Dodge - Police Charger 2020": "vehicle.dodge.charger_police_2020",
+"Ford - Crown (taxi)": "vehicle.ford.crown",
+"Ford - Mustang": "vehicle.ford.mustang",
+"Jeep - Wrangler Rubicon": "vehicle.jeep.wrangler_rubicon",
+"Lincoln - MKZ 2017": "vehicle.lincoln.mkz_2017",
+"Lincoln - MKZ 2020": "vehicle.lincoln.mkz_2020",
+"Mercedes - Coupe": "vehicle.mercedes.coupe",
+"Mercedes - Coupe 2020": "vehicle.mercedes.coupe_2020",
+"Micro - Microlino": "vehicle.micro.microlino",
+"Mini - Cooper S": "vehicle.mini.cooper_s",
+"Mini - Cooper S 2021": "vehicle.mini.cooper_s_2021",
+"Nissan - Micra": "vehicle.nissan.micra",
+"Nissan - Patrol": "vehicle.nissan.patrol",
+"Nissan - Patrol 2021": "vehicle.nissan.patrol_2021",
+"Seat - Leon": "vehicle.seat.leon",
+"Tesla - Model 3": "vehicle.tesla.model3",
+"Toyota - Prius": "vehicle.toyota.prius",
+"CARLA Motors - CarlaCola": "vehicle.carlamotors.carlacola",
+"CARLA Motors - European HGV (cab-over-engine type)": "vehicle.carlamotors.european_hgv",
+"CARLA Motors - Firetruck": "vehicle.carlamotors.firetruck",
+"Tesla - Cybertruck": "vehicle.tesla.cybertruck",
+"Ford - Ambulance": "vehicle.ford.ambulance",
+"Mercedes - Sprinter": "vehicle.mercedes.sprinter",
+"Volkswagen - T2": "vehicle.volkswagen.t2",
+"Volkswagen - T2 2021": "vehicle.volkswagen.t2_2021",
+"Mitsubishi - Fusorosa": "vehicle.mitsubishi.fusorosa",
+"Harley Davidson - Low Rider": "vehicle.harley-davidson.low_rider",
+"Kawasaki - Ninja": "vehicle.kawasaki.ninja",
+"Vespa - ZX 125": "vehicle.vespa.zx125",
+"Yamaha - YZF": "vehicle.yamaha.yzf",
+"BH - Crossbike": "vehicle.bh.crossbike",
+"Diamondback - Century": "vehicle.diamondback.century",
+"Gazelle - Omafiets": "vehicle.gazelle.omafiets"
+
+
+Assistant:
