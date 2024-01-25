@@ -323,8 +323,8 @@ def few_shot_prompt_with_rag(
         few_shot_prompt_generator: Callable[[ModelInput, bool], List[Dict[str, str]]] | Callable[[ModelInput, bool], str],
         top_k: int = 3,
     ) -> str | List[Dict[str, str]]:
-        examples = vector_index.query(model_input.first_attempt_scenic_program, top_k=top_k)
-        if examples is None: # if the query fails, we just return the few shot prompt
+        examples = vector_index.query(model_input.nat_lang_scene_des, top_k=top_k)
+        if examples is None: # if the query fails, we just return the few shot prompt with default examples
             return few_shot_prompt_generator(model_input, False)
         
         relevant_model_input = ModelInput(
