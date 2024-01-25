@@ -280,8 +280,8 @@ def main(
             with open(fname, 'w') as f:
                 f.write(output)
             try:
-                scenic.scenarioFromFile(fname, mode2D=True)
-                fname_compile = os.path.join(result_path, f'{fstub}.scenic')
+                ast = scenic.syntax.parser.parse_file(fname)
+                print(f'Compiled AST object: {ast}')
                 with open(fname_compile, 'w') as f:
                     f.write(output)
                 print(f'No errors when compiling input {debug}')
