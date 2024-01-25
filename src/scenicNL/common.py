@@ -20,6 +20,7 @@ class LLMPromptType(Enum):
     PREDICT_PYTHON_API_ONELINE = "predict_python_api_oneline"
     PREDICT_LMQL = "predict_lmql"
     PREDICT_FEW_SHOT_WITH_RAG = "predict_few_shot_with_rag"
+    PREDICT_FEW_SHOT_WITH_HYDE = "predict_few_shot_with_hyde"
 
 
 @dataclass(frozen=True)
@@ -31,7 +32,7 @@ class ModelInput:
     """
     examples: list[str]
     nat_lang_scene_des: str
-    first_attempt_scenic_program: Optional[str] = None
+    retrieval_query: Optional[str] = None
 
 
 def load_jsonl(
