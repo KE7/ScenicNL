@@ -20,6 +20,7 @@ Create a fully compiling Scenic program that models the description based on:
 Please output a modified version of scenic_program modified so the compiler error does not appear.
 
 OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.
+Output only the natural language description of the scenario as a comment at the top of the file and your proposed Scenic program. DO NOT output any other text or whitespace so I can run your program and see the results. 
 
 Scenic references:
 

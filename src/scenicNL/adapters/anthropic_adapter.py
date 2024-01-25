@@ -413,11 +413,11 @@ class AnthropicAdapter(ModelAdapter):
                 # Up to {retries} retries - depending on compiler feedback
                 retries = 6
                 while retries:
-                    print('\n\n\n^^^^^^^^\n\n\n')
-                    print(claude_response.completion)
+                    # print('\n\n\n^^^^^^^^\n\n\n')
+                    # print(claude_response.completion)
+                    # print('\n\n\n^^^^^^^^\n\n\n')
                     with open('_temp.txt', 'w') as f:
                         f.write(claude_response.completion)
-                    print('\n\n\n^^^^^^^^\n\n\n')
                     try:
                         scenic.syntax.parser.parse_file('_temp.txt')
                         print('No error!')
@@ -425,7 +425,10 @@ class AnthropicAdapter(ModelAdapter):
                     except Exception as e:
                         print(f'Retrying... {retries}')
                         error_message = str(e)
+                        print(error_message)
+                        error_message = f"""Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"""
                         print(f'Error: {e}')
+                        print(error_message)
 
                         # Constructing correcting claude call
                         new_model_input = ModelInput(
@@ -435,9 +438,9 @@ class AnthropicAdapter(ModelAdapter):
                             compiler_error=error_message
                         )
                         # Call claude with few_shot_ast function call type
-                        print(f'\n\n\n%%%%%%%%')
-                        print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
-                        print(f'%%%%%%%%\n\n\n')
+                        # print(f'\n\n\n%%%%%%%%')
+                        # print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
+                        # print(f'%%%%%%%%\n\n\n')
                         claude_response = claude.completions.create(
                             prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
                             temperature=temperature,
