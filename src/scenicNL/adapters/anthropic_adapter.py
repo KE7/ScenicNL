@@ -5,6 +5,7 @@ from typing import cast
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
 import os
+from pathlib import Path
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt
@@ -413,18 +414,24 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
 
-            retries = max_retries
+            retries, retries_dir, fstub = max_retries, os.path.join(os.curdir, 'retries', 'retries'), 'temp.scenic'
+            Path(retries_dir).mkdir(parents=True, exist_ok=True)
+            fname = os.path.join(retries_dir, fstub)
             while retries:
-                with open('_temp.txt', 'w') as f:
+                with open(fname, 'w') as f:
                     f.write(claude_response.completion)
                 try:
-                    scenic.syntax.parser.parse_file('_temp.txt')
+                    ast = scenic.syntax.parser.parse_file(fname)
+                    scenario = scenic.scenarioFromFile(fname, mode2D=True)
                     if verbose_retry: print('No error!')
                     retries = 0 # If this statement is reached program worked -> terminates loop
                 except Exception as e:
                     if verbose_retry: print(f'Retrying... {retries}')
-                    error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
-                    if verbose_retry: print(error_message)
+                    try:
+                        error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                        if verbose_retry: print(error_message)
+                    except:
+                        error_message = f'Error details below..\n'
 
                     # Constructing correcting claude call
                     new_model_input = ModelInput(
@@ -441,7 +448,7 @@ class AnthropicAdapter(ModelAdapter):
                         model=self._model.value,
                     )
                     retries -= 1
-            if os.path.exists('_temp.txt'): os.remove('_temp.txt')
+            if os.path.exists(fname): os.remove(fname)
         if verbose_retry: print(claude_response.completion)
         return claude_response.completion
         
