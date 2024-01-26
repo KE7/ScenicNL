@@ -4,6 +4,7 @@ from typing import cast
 
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
+import os
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt
@@ -314,7 +315,7 @@ class AnthropicAdapter(ModelAdapter):
         temperature: float, 
         max_length_tokens: int, 
         prompt_type: LLMPromptType,
-        verbose: bool
+        verbose: bool,
     ) -> str:
         # to prevent misuse of file handlers
         limits = httpx.Limits(max_keepalive_connections=1, max_connections=1)
@@ -411,44 +412,42 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
                 # Up to {retries} retries - depending on compiler feedback
-                retries = 6
-                while retries:
-                    # print('\n\n\n^^^^^^^^\n\n\n')
-                    # print(claude_response.completion)
-                    # print('\n\n\n^^^^^^^^\n\n\n')
-                    with open('_temp.txt', 'w') as f:
-                        f.write(claude_response.completion)
-                    try:
-                        scenic.syntax.parser.parse_file('_temp.txt')
-                        print('No error!')
-                        retries = 0 # If this statement is reached program worked -> terminates loop
-                    except Exception as e:
-                        print(f'Retrying... {retries}')
-                        error_message = str(e)
-                        print(error_message)
-                        error_message = f"""Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"""
-                        print(f'Error: {e}')
-                        print(error_message)
+                if False:
+                    retries = 0
+                    while retries:
+                        # print('\n\n\n^^^^^^^^\n\n\n')
+                        # print(claude_response.completion)
+                        # print('\n\n\n^^^^^^^^\n\n\n')
+                        with open('_temp.txt', 'w') as f:
+                            f.write(claude_response.completion)
+                        try:
+                            scenic.syntax.parser.parse_file('_temp.txt')
+                            print('No error!')
+                            retries = 0 # If this statement is reached program worked -> terminates loop
+                        except Exception as e:
+                            print(f'Retrying... {retries}')
+                            error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                            print(error_message)
 
-                        # Constructing correcting claude call
-                        new_model_input = ModelInput(
-                            examples=model_input.examples, # this will get overwritten by the search query
-                            nat_lang_scene_des=model_input.nat_lang_scene_des,
-                            first_attempt_scenic_program=str(claude_response.completion),
-                            compiler_error=error_message
-                        )
-                        # Call claude with few_shot_ast function call type
-                        # print(f'\n\n\n%%%%%%%%')
-                        # print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
-                        # print(f'%%%%%%%%\n\n\n')
-                        claude_response = claude.completions.create(
-                            prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
-                            temperature=temperature,
-                            max_tokens_to_sample=max_length_tokens,
-                            model=self._model.value,
-                        )
-                        retries -= 1
-                print(claude_response.completion)
+                            # Constructing correcting claude call
+                            new_model_input = ModelInput(
+                                examples=model_input.examples, # this will get overwritten by the search query
+                                nat_lang_scene_des=model_input.nat_lang_scene_des,
+                                first_attempt_scenic_program=str(claude_response.completion),
+                                compiler_error=error_message
+                            )
+                            # Call claude with few_shot_ast function call type
+                            # print(f'\n\n\n%%%%%%%%')
+                            # print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
+                            # print(f'%%%%%%%%\n\n\n')
+                            claude_response = claude.completions.create(
+                                prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                                temperature=temperature,
+                                max_tokens_to_sample=max_length_tokens,
+                                model=self._model.value,
+                            )
+                            retries -= 1
+                    print(claude_response.completion)
             else:
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),
@@ -456,6 +455,42 @@ class AnthropicAdapter(ModelAdapter):
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
                 )
-        
+
+            retries = 6
+            while retries:
+                # print('\n\n\n^^^^^^^^\n\n\n')
+                # print(claude_response.completion)
+                # print('\n\n\n^^^^^^^^\n\n\n')
+                with open('_temp.txt', 'w') as f:
+                    f.write(claude_response.completion)
+                try:
+                    scenic.syntax.parser.parse_file('_temp.txt')
+                    print('No error!')
+                    retries = 0 # If this statement is reached program worked -> terminates loop
+                except Exception as e:
+                    print(f'Retrying... {retries}')
+                    error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                    print(error_message)
+
+                    # Constructing correcting claude call
+                    new_model_input = ModelInput(
+                        examples=model_input.examples, # this will get overwritten by the search query
+                        nat_lang_scene_des=model_input.nat_lang_scene_des,
+                        first_attempt_scenic_program=str(claude_response.completion),
+                        compiler_error=error_message
+                    )
+                    # Call claude with few_shot_ast function call type
+                    # print(f'\n\n\n%%%%%%%%')
+                    # print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
+                    # print(f'%%%%%%%%\n\n\n')
+                    claude_response = claude.completions.create(
+                        prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                        temperature=temperature,
+                        max_tokens_to_sample=max_length_tokens,
+                        model=self._model.value,
+                    )
+                    retries -= 1
+            # os.remove('_temp.txt')
+        print(claude_response.completion)
         return claude_response.completion
         
