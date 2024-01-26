@@ -24,6 +24,8 @@ if __name__ == '__main__':
     """
     Adds data a pinecone DB from the speicified directory
     """
-    docs = get_docs('merged_prompt_outputs')
-    db = VectorDB(index_name='scenic-programs-reverseprompt')
+    index_name = 'scenic-programs-reverseprompt'
+    doc_dir = 'merged_prompt_outputs'
+    docs = get_docs(doc_dir)
+    db = VectorDB(index_name=index_name)
     db.upsert(docs, index=db.index)
