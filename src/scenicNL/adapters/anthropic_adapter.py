@@ -431,7 +431,8 @@ class AnthropicAdapter(ModelAdapter):
                         error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
                         if verbose_retry: print(error_message)
                     except:
-                        error_message = f'Error details below..\n'
+                        error_message = f'Error details below..\nmessage: {str(e)}'
+                        if verbose_retry: print(error_message)
 
                     # Constructing correcting claude call
                     new_model_input = ModelInput(

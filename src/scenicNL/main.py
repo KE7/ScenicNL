@@ -309,7 +309,7 @@ def main(
                     f.write(output)
                 # print(f'No errors when compiling input {debug}')
             except Exception as e:
-                print(f'Error while compiling for input {debug}: {e}')
+                print(f'Error while executing for input {debug}: {e}')
                 execute_fail += 1
                 with open(scenic_error_path, 'a') as f:
                     f.write(f'{index} - {fstub} execute error: {e}\n')
