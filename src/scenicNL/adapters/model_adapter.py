@@ -49,6 +49,7 @@ class ModelAdapter(abc.ABC):
         max_length_tokens: int,
         prompt_type: LLMPromptType,
         verbose: bool,
+        max_retries: int,
     ) -> str:
         """Perform a single prediction. Must be overriden by subclasses."""
         raise NotImplementedError
@@ -80,7 +81,8 @@ class ModelAdapter(abc.ABC):
         cache: Cache,
         prompt_type: LLMPromptType,
         ignore_cache: bool,
-        verbose: bool = False,
+        verbose: bool,
+        max_retries: int,
     ) -> Callable[[ModelInput], list[str | APIError]]:
         """
         Return a function that takes a list of model inputs and returns a
@@ -114,6 +116,7 @@ class ModelAdapter(abc.ABC):
                             max_length_tokens=max_tokens,
                             prompt_type=prompt_type,
                             verbose=verbose,
+                            max_retries=max_retries,
                         )
                         if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
                             api_input = ModelInput(model_input.examples, prediction)
@@ -146,6 +149,7 @@ class ModelAdapter(abc.ABC):
         verbose: bool = False,
         num_workers: int = 10,
         ignore_cache: bool = False,
+        max_retries: int = 0,
     ) -> Iterable[list[str | APIError]]:
         """
         Given a stream of model inputs, return a stream of predictions. This
@@ -168,6 +172,7 @@ class ModelAdapter(abc.ABC):
                 prompt_type=prompt_type,
                 ignore_cache=ignore_cache,
                 verbose=verbose,
+                max_retries=max_retries,
             )
 
             with ThreadPool(num_workers) as pool:

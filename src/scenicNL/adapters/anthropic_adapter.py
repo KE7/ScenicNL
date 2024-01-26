@@ -316,7 +316,9 @@ class AnthropicAdapter(ModelAdapter):
         max_length_tokens: int, 
         prompt_type: LLMPromptType,
         verbose: bool,
+        max_retries: int
     ) -> str:
+        verbose_retry = True
         # to prevent misuse of file handlers
         limits = httpx.Limits(max_keepalive_connections=1, max_connections=1)
         with Anthropic(connection_pool_limits=limits, max_retries=10) as claude:
@@ -403,51 +405,6 @@ class AnthropicAdapter(ModelAdapter):
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
                 )
-            elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT_AST:
-                # Start with a standard few shot
-                claude_response = claude.completions.create(
-                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
-                    temperature=temperature,
-                    max_tokens_to_sample=max_length_tokens,
-                    model=self._model.value,
-                )
-                # Up to {retries} retries - depending on compiler feedback
-                if False:
-                    retries = 0
-                    while retries:
-                        # print('\n\n\n^^^^^^^^\n\n\n')
-                        # print(claude_response.completion)
-                        # print('\n\n\n^^^^^^^^\n\n\n')
-                        with open('_temp.txt', 'w') as f:
-                            f.write(claude_response.completion)
-                        try:
-                            scenic.syntax.parser.parse_file('_temp.txt')
-                            print('No error!')
-                            retries = 0 # If this statement is reached program worked -> terminates loop
-                        except Exception as e:
-                            print(f'Retrying... {retries}')
-                            error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
-                            print(error_message)
-
-                            # Constructing correcting claude call
-                            new_model_input = ModelInput(
-                                examples=model_input.examples, # this will get overwritten by the search query
-                                nat_lang_scene_des=model_input.nat_lang_scene_des,
-                                first_attempt_scenic_program=str(claude_response.completion),
-                                compiler_error=error_message
-                            )
-                            # Call claude with few_shot_ast function call type
-                            # print(f'\n\n\n%%%%%%%%')
-                            # print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
-                            # print(f'%%%%%%%%\n\n\n')
-                            claude_response = claude.completions.create(
-                                prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
-                                temperature=temperature,
-                                max_tokens_to_sample=max_length_tokens,
-                                model=self._model.value,
-                            )
-                            retries -= 1
-                    print(claude_response.completion)
             else:
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),
@@ -456,21 +413,18 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
 
-            retries = 6
+            retries = max_retries
             while retries:
-                # print('\n\n\n^^^^^^^^\n\n\n')
-                # print(claude_response.completion)
-                # print('\n\n\n^^^^^^^^\n\n\n')
                 with open('_temp.txt', 'w') as f:
                     f.write(claude_response.completion)
                 try:
                     scenic.syntax.parser.parse_file('_temp.txt')
-                    print('No error!')
+                    if verbose_retry: print('No error!')
                     retries = 0 # If this statement is reached program worked -> terminates loop
                 except Exception as e:
-                    print(f'Retrying... {retries}')
+                    if verbose_retry: print(f'Retrying... {retries}')
                     error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
-                    print(error_message)
+                    if verbose_retry: print(error_message)
 
                     # Constructing correcting claude call
                     new_model_input = ModelInput(
@@ -479,10 +433,7 @@ class AnthropicAdapter(ModelAdapter):
                         first_attempt_scenic_program=str(claude_response.completion),
                         compiler_error=error_message
                     )
-                    # Call claude with few_shot_ast function call type
-                    # print(f'\n\n\n%%%%%%%%')
-                    # print(self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
-                    # print(f'%%%%%%%%\n\n\n')
+
                     claude_response = claude.completions.create(
                         prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
                         temperature=temperature,
@@ -490,7 +441,7 @@ class AnthropicAdapter(ModelAdapter):
                         model=self._model.value,
                     )
                     retries -= 1
-            # os.remove('_temp.txt')
-        print(claude_response.completion)
+            if os.path.exists('_temp.txt'): os.remove('_temp.txt')
+        if verbose_retry: print(claude_response.completion)
         return claude_response.completion
         
