@@ -161,6 +161,14 @@ def main():
     help="Number of workers to use for parallel processing.",
 )
 
+@click.option(
+    "--retry_compiler_errors",
+    type=click.INT,
+    default=1,
+    show_default=True,
+    help="Number of times to retry compilation on errors.",
+)
+
 def main(
     query_path: Path,
     output_path: Path,
@@ -178,6 +186,7 @@ def main(
     should_cache_retry_errors: bool,
     keep_filename: bool,
     temperature: float,
+    retry_compiler_errors: int,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
@@ -259,12 +268,13 @@ def main(
             should_cache_retry_errors=should_cache_retry_errors,
             verbose=verbose,
             num_workers=num_workers,
-            ignore_cache=ignore_cache, 
+            ignore_cache=ignore_cache,
+            retry_compiler_errors=retry_compiler_errors,
             )
         ):
         for attempt, output in enumerate(outputs):
             if verbose:
-                print(f'Output for query {index} attempt {attempt}: {output}')
+                print(f'Output for query {index} attempt {attempt}: \n{output}')
             output = cast((str | APIError), output)
             if isinstance(output, APIError):
                 api_error += 1

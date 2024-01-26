@@ -1,6 +1,8 @@
 from enum import Enum
 import json
 import os
+import subprocess
+import tempfile
 import pinecone
 import random
 from dataclasses import dataclass
@@ -10,9 +12,10 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import torch
 
+import scenic
+
 MAX_TOKEN_LENGTH = 3600
 DISCUSSION_TEMPERATURE = 0.8
-NUM_EXPERTS = 3
 
 class LLMPromptType(Enum):
     PREDICT_ZERO_SHOT = "predict_zero_shot"
@@ -27,17 +30,19 @@ class LLMPromptType(Enum):
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
+    FIX_COMPILER_ERROR = "fix_compiler_error"
 
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
-    DISCUSSION_TO_PROGRAM = os.path.join(PROMPT_PATH, 'discussion_to_program.txt')
+    DISCUSSION_TO_PROGRAM = os.path.join(PROMPT_PATH, 'discussion_to_program_copy.txt')
     DYNAMIC_SCENARIOS = os.path.join(PROMPT_PATH, 'dynamic_scenarios_prompt.txt')
     PYTHON_API = os.path.join(PROMPT_PATH, 'python_api_prompt.txt')
     QUESTION_REASONING = os.path.join(PROMPT_PATH, 'question_reasoning.txt')
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
+    FIX_COMPILER_ERROR = os.path.join(PROMPT_PATH, 'fix_compiler_error.txt')
 
 
 @dataclass(frozen=True)
@@ -52,6 +57,7 @@ class ModelInput:
     first_attempt_scenic_program: Optional[str] = None
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
+    compiler_error: Optional[str] = None
 
 
 def load_jsonl(
@@ -159,6 +165,66 @@ def get_discussion_to_program_prompt() -> str:
         # )
 
         return prompt
+
+
+def get_compiler_feedback_prompt() -> str:
+        prompt = ""
+        with open(PromptFiles.FIX_COMPILER_ERROR.value) as f:
+            prompt = f.read()
+
+        return prompt
+
+
+def run_scenic_program(scenic_program : str,) -> (bool, str): # (success, output)
+    # Step 1: Write the Scenic program to a temporary file
+    with tempfile.NamedTemporaryFile(suffix='.scenic', delete=False) as temp_file:
+        temp_file_name = temp_file.name
+        temp_file.write(scenic_program.encode())
+
+    # Step 2: Execute the Scenic command
+    try:
+        # Using subprocess.run to execute the command
+        # The command will run for up to 10 seconds
+        # result = subprocess.run(['scenic', temp_file_name, '--2d', '--count', '0', '--verbosity', '3', '--time', '10'], 
+        #                         stdout=subprocess.PIPE, 
+        #                         stderr=subprocess.STDOUT, 
+        #                         timeout=10)
+        result = scenic.scenarioFromFile(temp_file_name, mode2D=True)
+
+        # # If the command is successful, return a success message
+        # if result.returncode == 0:
+        #     return True, scenic_program
+
+        # # If there's an error, return the compiler output
+        # else:
+        #     return False, result.stdout.decode()
+
+        return True, scenic_program
+
+    except Exception as e:
+        # If the command times out after 10 seconds
+        # We assume that the simulation was actually ran so we return a success message
+            return False, str(e)
+
+    finally:
+        # Clean up: Delete the temporary file
+        os.remove(temp_file_name)
+
+
+def remove_llm_prose(
+        llm_output: str, 
+        verbose: bool,
+    ) -> str:
+    index_of_comment = llm_output.find("#")
+    if index_of_comment != -1:
+        scenic_program = llm_output[index_of_comment - 1:] # -1 to include the #
+    else:
+        scenic_program = llm_output
+
+    if verbose:
+        print(f"Scenic program before checking for compiler errors:\n{scenic_program}\n")
+
+    return scenic_program
 
 
 class VectorDB():
@@ -277,8 +343,8 @@ def few_shot_prompt_with_rag(
         few_shot_prompt_generator: Callable[[ModelInput, bool], List[Dict[str, str]]] | Callable[[ModelInput, bool], str],
         top_k: int = 3,
     ) -> str | List[Dict[str, str]]:
-        examples = vector_index.query(model_input.first_attempt_scenic_program, top_k=top_k)
-        if examples is None: # if the query fails, we just return the few shot prompt
+        examples = vector_index.query(model_input.nat_lang_scene_des, top_k=top_k)
+        if examples is None: # if the query fails, we just return the few shot prompt with default examples
             return few_shot_prompt_generator(model_input, False)
         
         relevant_model_input = ModelInput(

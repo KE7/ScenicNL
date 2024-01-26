@@ -9,7 +9,7 @@ import os
 
 import openai
 
-from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, PromptFiles, VectorDB, few_shot_prompt_with_rag, get_discussion_prompt, get_discussion_to_program_prompt, get_expert_synthesis_prompt
+from scenicNL.common import DISCUSSION_TEMPERATURE, LLMPromptType, ModelInput, PromptFiles, VectorDB, few_shot_prompt_with_rag, get_discussion_prompt, get_discussion_to_program_prompt, get_expert_synthesis_prompt, remove_llm_prose
 
 
 class OpenAIModel(Enum):
@@ -376,44 +376,26 @@ class OpenAIAdapter(ModelAdapter):
     ) -> str:
         if prompt_type == LLMPromptType.PREDICT_TOT_THEN_HYDE:
             # 1. Use tree of thought to answer all questions in the prompt
-            panel_answers = []
-            for _ in range(NUM_EXPERTS):
-                response = openai.ChatCompletion.create(
-                    temperature=DISCUSSION_TEMPERATURE,
-                    model=self.model.value,
-                    max_tokens=max_length_tokens,
-                    messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
-                )
-                panel_answers.append(response.choices[0].message.content)
-
-            if len(panel_answers) != NUM_EXPERTS:
-                raise ValueError(f"Expected {NUM_EXPERTS} answers from the panel, got {len(panel_answers)}")
+            response = openai.ChatCompletion.create(
+                temperature=DISCUSSION_TEMPERATURE,
+                model=self.model.value,
+                max_tokens=max_length_tokens,
+                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
+            )
+            panel_answer = response.choices[0].message.content
             
             model_input = ModelInput(
                 examples=model_input.examples, 
                 nat_lang_scene_des=model_input.nat_lang_scene_des,
                 first_attempt_scenic_program=model_input.first_attempt_scenic_program,
-                panel_discussion=panel_answers,
+                panel_discussion=panel_answer,
                 expert_discussion=None
             )
             
             if verbose:
-                print(f"GPT model {self.model.value}\n"
-                      f"Tree of thought answers: {panel_answers}\n")
+                print(f"Tree of thought:\n{panel_answer}\n")
 
-            # 2. Ask an expert to synthesize the answers into a single program
-            expert_response = openai.ChatCompletion.create(
-                temperature=DISCUSSION_TEMPERATURE,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_SYNTHESIS, verbose=verbose),
-            )
-            expert_synthesis = expert_response.choices[0].message.content
-            if verbose:
-                print(f"GPT model {self.model.value}\n"
-                      f"Expert synthesis: {expert_synthesis}\n")
-
-            # 3. Do a few shot predict on the natural language description
+            # 2. Do a few shot predict on the natural language description
             response = openai.ChatCompletion.create(
                 temperature=temperature,
                 model=self.model.value,
@@ -421,16 +403,16 @@ class OpenAIAdapter(ModelAdapter):
                 messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
             )
 
-            # 4. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
+            # 3. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
             new_model_input = ModelInput(
                 examples=model_input.examples, # this will get overwritten by the search query
                 nat_lang_scene_des=model_input.nat_lang_scene_des,
                 first_attempt_scenic_program=response.choices[0].message.content,
-                expert_discussion=expert_synthesis,
-                panel_discussion=panel_answers,
+                expert_discussion=panel_answer,
+                panel_discussion=panel_answer,
             )
 
-            # 5. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
+            # 4. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
             response = openai.ChatCompletion.create(
                 temperature=temperature,
                 model=self.model.value,
@@ -438,9 +420,6 @@ class OpenAIAdapter(ModelAdapter):
                 messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
             )
 
-            # TODO: 6. Compile the program and loop feedback to GPT until the program compiles
-
-            return response.choices[0].message.content
         elif prompt_type != LLMPromptType.PREDICT_FEW_SHOT_WITH_HYDE:
             messages = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
             response = openai.ChatCompletion.create(
@@ -449,7 +428,7 @@ class OpenAIAdapter(ModelAdapter):
                 max_tokens=max_length_tokens,
                 messages=messages
             )
-            return response.choices[0].message.content
+
         else: # HyDE
             response = openai.ChatCompletion.create(
                 temperature=temperature,
@@ -469,7 +448,12 @@ class OpenAIAdapter(ModelAdapter):
                 max_tokens=max_length_tokens,
                 messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose)
             )
-            return response.choices[0].message.content
+
+        # Before we return the completion, let's clean out any "helpful LLM comments"
+        scenic_program = remove_llm_prose(response.choices[0].message.content, verbose)
+        # TODO: Check for compiler errors
+
+        return scenic_program
 
     def _format_scenic_tutorial_prompt(
         self,
