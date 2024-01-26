@@ -6,9 +6,12 @@ Here is one example of a Scenic program:
 Let's start working towards having you create your own Scenic program based on the following natural language description:
 {natural_language_description}
 
-For the following questions,imagine that you are an autonomous driving expert. For every question, provide a step-by-step explanation for how you came up with your answer. Please answer in the following format as a Python comment:
-# <Summarize the question here>
-# <Provide your answer here with a full step-by-step explanation>
+For the following questions, imagine that there are three autonomous driving experts answering each question. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. Please answer in the following format:
+<Summarize the question>
+Expert 1: <Answer with a full step-by-step explanation>
+Expert 2: <Answer with a full step-by-step explanation>
+Expert 3: <Answer with a full step-by-step explanation>
+FINAL ANSWER: <The best and agreed upon answer with a full step-by-step explanation>
 
 1. Based on the description, what are the main objects that need to be included in the scene? (e.g. car, pedestrian, etc.). Ignore any objects that are mentioned but not relevant to a reconstructing the scenario (e.g. bag of chips, leaves, etc.)
 
@@ -20,7 +23,6 @@ eventually car2 in intersection
 eventually ego in intersection
 (always car.speed < 30) implies (always distance to car > 10)
 always not ((ego can see car1) and (ego can see car2))
-
 
 4. What details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, what is the weather, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)
 
@@ -88,7 +90,7 @@ behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_spee
     # threshold (float): starting distance at which the crossing actor starts moving
     # final_speed (float): speed of the crossing actor after the reference one surpasses it
 
-9. For the relevant objects that you identified in question 1, please pick and justify why from the following list which ones most closely match: 
+9. For the relevant objects that you identified in question 1, please pick from the following list of supported vehicles. Do not pick something outside of this list. If you do not see a vehicle that matches the description, pick the closest one and justify why you picked it: 
 carla_vehicles = [
     "Audi - A2": "vehicle.audi.a2", 
     "Audi - E-Tron": "vehicle.audi.etron",

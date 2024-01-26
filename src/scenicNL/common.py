@@ -12,9 +12,10 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 import torch
 
+import scenic
+
 MAX_TOKEN_LENGTH = 3600
 DISCUSSION_TEMPERATURE = 0.8
-NUM_EXPERTS = 3
 
 class LLMPromptType(Enum):
     PREDICT_ZERO_SHOT = "predict_zero_shot"
@@ -34,7 +35,7 @@ class LLMPromptType(Enum):
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
-    DISCUSSION_TO_PROGRAM = os.path.join(PROMPT_PATH, 'discussion_to_program.txt')
+    DISCUSSION_TO_PROGRAM = os.path.join(PROMPT_PATH, 'discussion_to_program_copy.txt')
     DYNAMIC_SCENARIOS = os.path.join(PROMPT_PATH, 'dynamic_scenarios_prompt.txt')
     PYTHON_API = os.path.join(PROMPT_PATH, 'python_api_prompt.txt')
     QUESTION_REASONING = os.path.join(PROMPT_PATH, 'question_reasoning.txt')
@@ -184,27 +185,46 @@ def run_scenic_program(scenic_program : str,) -> (bool, str): # (success, output
     try:
         # Using subprocess.run to execute the command
         # The command will run for up to 10 seconds
-        result = subprocess.run(['scenic', temp_file_name, '--2d'], 
-                                stdout=subprocess.PIPE, 
-                                stderr=subprocess.STDOUT, 
-                                timeout=10)
+        # result = subprocess.run(['scenic', temp_file_name, '--2d', '--count', '0', '--verbosity', '3', '--time', '10'], 
+        #                         stdout=subprocess.PIPE, 
+        #                         stderr=subprocess.STDOUT, 
+        #                         timeout=10)
+        result = scenic.scenarioFromFile(temp_file_name, mode2D=True)
 
-        # If the command is successful, return a success message
-        if result.returncode == 0:
-            return True, scenic_program
+        # # If the command is successful, return a success message
+        # if result.returncode == 0:
+        #     return True, scenic_program
 
-        # If there's an error, return the compiler output
-        else:
-            return False, result.stdout.decode()
+        # # If there's an error, return the compiler output
+        # else:
+        #     return False, result.stdout.decode()
 
-    except subprocess.TimeoutExpired:
+        return True, scenic_program
+
+    except Exception as e:
         # If the command times out after 10 seconds
         # We assume that the simulation was actually ran so we return a success message
-            return True, scenic_program
+            return False, str(e)
 
     finally:
         # Clean up: Delete the temporary file
         os.remove(temp_file_name)
+
+
+def remove_llm_prose(
+        llm_output: str, 
+        verbose: bool,
+    ) -> str:
+    index_of_comment = llm_output.find("#")
+    if index_of_comment != -1:
+        scenic_program = llm_output[index_of_comment - 1:] # -1 to include the #
+    else:
+        scenic_program = llm_output
+
+    if verbose:
+        print(f"Scenic program before checking for compiler errors:\n{scenic_program}\n")
+
+    return scenic_program
 
 
 class VectorDB():

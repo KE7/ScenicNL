@@ -49,6 +49,7 @@ class ModelAdapter(abc.ABC):
         max_length_tokens: int,
         prompt_type: LLMPromptType,
         verbose: bool,
+        retry_compiler_errors: int,
     ) -> str:
         """Perform a single prediction. Must be overriden by subclasses."""
         raise NotImplementedError
@@ -80,6 +81,7 @@ class ModelAdapter(abc.ABC):
         cache: Cache,
         prompt_type: LLMPromptType,
         ignore_cache: bool,
+        retry_compiler_errors: int,
         verbose: bool = False,
     ) -> Callable[[ModelInput], list[str | APIError]]:
         """
@@ -114,6 +116,7 @@ class ModelAdapter(abc.ABC):
                             max_length_tokens=max_tokens,
                             prompt_type=prompt_type,
                             verbose=verbose,
+                            retry_compiler_errors=retry_compiler_errors,
                         )
                         if prompt_type.value == LLMPromptType.PREDICT_PYTHON_API.value:
                             api_input = ModelInput(model_input.examples, prediction)
@@ -142,6 +145,7 @@ class ModelAdapter(abc.ABC):
         temperature: float,
         max_tokens: int,
         prompt_type: LLMPromptType,
+        retry_compiler_errors: int,
         should_cache_retry_errors: bool = True,
         verbose: bool = False,
         num_workers: int = 10,
@@ -155,8 +159,8 @@ class ModelAdapter(abc.ABC):
         start_time = time.time()
 
         if verbose:
-            print(f"Starting batch prediction using {self.__class__.__name__} " + 
-                  "with {num_workers} workers")
+            print(f"Starting batch prediction using {self.__class__.__name__} "
+                  f"with {num_workers} workers")
             
         with Cache(cache_path) as cache:
             processor = self._batch_processor(
@@ -168,6 +172,7 @@ class ModelAdapter(abc.ABC):
                 prompt_type=prompt_type,
                 ignore_cache=ignore_cache,
                 verbose=verbose,
+                retry_compiler_errors=retry_compiler_errors,
             )
 
             with ThreadPool(num_workers) as pool:
