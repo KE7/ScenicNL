@@ -179,7 +179,7 @@ class AnthropicAdapter(ModelAdapter):
             
         return prompt
 
-    def _few_shot_ast_prompt_(
+    def _ast_feedback_prompt(
         self,
         model_input: ModelInput,
         verbose: bool,
@@ -299,8 +299,8 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_reasoning_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.EXPERT_SYNTHESIS:
             msg = self._format_expert_synthesis_prompt(model_input=model_input, verbose=verbose)
-        elif prompt_type == LLMPromptType.PREDICT_FEW_SHOT_AST:
-            msg = self._few_shot_ast_prompt_(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.AST_FEEDBACK:
+            msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
