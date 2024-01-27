@@ -27,7 +27,7 @@ class LLMPromptType(Enum):
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
-    PREDICT_FEW_SHOT_AST = "predict_few_shot_ast"
+    AST_FEEDBACK = "ast_feedback"
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
@@ -38,7 +38,7 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
-    FEW_SHOT_AST = os.path.join(PROMPT_PATH, 'few_shot_ast.txt')
+    AST_FEEDBACK_CLAUDE = os.path.join(PROMPT_PATH, 'few_shot_ast.txt')
 
 @dataclass(frozen=True)
 class ModelInput:
@@ -163,7 +163,7 @@ def get_discussion_to_program_prompt() -> str:
 
 def get_few_shot_ast_prompt(model_input) -> str:
     prompt = ""
-    with open(PromptFiles.FEW_SHOT_AST.value) as f:
+    with open(PromptFiles.AST_FEEDBACK_CLAUDE.value) as f:
         prompt = f.read()
 
         prompt = prompt.format(
