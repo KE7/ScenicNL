@@ -10,6 +10,7 @@ from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt
 import scenic
+import tempfile
 
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
@@ -414,42 +415,48 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
 
-            retries, retries_dir, fstub = max_retries, os.path.join(os.curdir, 'retries', 'retries'), 'temp.scenic'
-            Path(retries_dir).mkdir(parents=True, exist_ok=True)
-            fname = os.path.join(retries_dir, fstub)
-            while retries:
-                with open(fname, 'w') as f:
-                    f.write(claude_response.completion)
-                try:
-                    ast = scenic.syntax.parser.parse_file(fname)
-                    scenario = scenic.scenarioFromFile(fname, mode2D=True)
-                    if verbose_retry: print('No error!')
-                    retries = 0 # If this statement is reached program worked -> terminates loop
-                except Exception as e:
-                    if verbose_retry: print(f'Retrying... {retries}')
-                    try:
-                        error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
-                        if verbose_retry: print(error_message)
-                    except:
-                        error_message = f'Error details below..\nmessage: {str(e)}'
-                        if verbose_retry: print(error_message)
+            with tempfile.TemporaryDirectory(dir=os.curdir) as temp_dir:
+                retries = max_retries
+                retries_dir = os.path.join(temp_dir, 'temp_dir')
+                print(f'^^^: {temp_dir}')
+                os.makedirs(retries_dir)
 
-                    # Constructing correcting claude call
-                    new_model_input = ModelInput(
-                        examples=model_input.examples, # this will get overwritten by the search query
-                        nat_lang_scene_des=model_input.nat_lang_scene_des,
-                        first_attempt_scenic_program=str(claude_response.completion),
-                        compiler_error=error_message
-                    )
+                with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
+                    fname = temp_file.name
+                    print(f'$$$: {fname}')
 
-                    claude_response = claude.completions.create(
-                        prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
-                        temperature=temperature,
-                        max_tokens_to_sample=max_length_tokens,
-                        model=self._model.value,
-                    )
-                    retries -= 1
-            if os.path.exists(fname): os.remove(fname)
+                    while retries:
+                        with open(fname, 'w') as f:
+                            f.write(claude_response.completion)
+                        try:
+                            ast = scenic.syntax.parser.parse_file(fname)
+                            scenario = scenic.scenarioFromFile(fname, mode2D=True)
+                            if verbose_retry: print('No error!')
+                            retries = 0 # If this statement is reached program worked -> terminates loop
+                        except Exception as e:
+                            if verbose_retry: print(f'Retrying... {retries}')
+                            try:
+                                error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                                if verbose_retry: print(error_message)
+                            except:
+                                error_message = f'Error details below..\nmessage: {str(e)}'
+                                if verbose_retry: print(error_message)
+
+                            # Constructing correcting claude call
+                            new_model_input = ModelInput(
+                                examples=model_input.examples, # this will get overwritten by the search query
+                                nat_lang_scene_des=model_input.nat_lang_scene_des,
+                                first_attempt_scenic_program=str(claude_response.completion),
+                                compiler_error=error_message
+                            )
+
+                            claude_response = claude.completions.create(
+                                prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                                temperature=temperature,
+                                max_tokens_to_sample=max_length_tokens,
+                                model=self._model.value,
+                            )
+                            retries -= 1
         if verbose_retry: print(claude_response.completion)
         return claude_response.completion
         
