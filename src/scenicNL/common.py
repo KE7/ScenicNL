@@ -25,6 +25,8 @@ class LLMPromptType(Enum):
     PREDICT_FEW_SHOT_WITH_HYDE = "predict_few_shot_hyde"
     PREDICT_FEW_SHOT_WITH_HYDE_TOT = "predict_few_shot_hyde_tot"
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
+    PREDICT_TOT_THEN_SPLIT = "predict_tot_then_split"
+    PREDICT_TOT_INTO_NL = "predict_tot_into_nl"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
     AST_FEEDBACK = "ast_feedback"
@@ -39,6 +41,8 @@ class PromptFiles(Enum):
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
     AST_FEEDBACK_CLAUDE = os.path.join(PROMPT_PATH, 'few_shot_ast.txt')
+    TOT_SPLIT = os.path.join(PROMPT_PATH, 'tot_split.txt')
+    TOT_NL = os.path.join(PROMPT_PATH, 'tot_nl.txt')
 
 @dataclass(frozen=True)
 class ModelInput:
@@ -178,6 +182,16 @@ def get_few_shot_ast_prompt(model_input) -> str:
 
         return prompt
 
+def get_tot_nl_prompt(model_input) -> str:
+    prompt = ""
+    with open(PromptFiles.TOT_NL.value) as f:
+         prompt = f.read()
+         prompt = prompt.format(
+              natural_language_description=model_input.nat_lang_scene_des,
+              expert_discussion=model_input.expert_discussion,
+              panel_discussion=model_input.panel_discussion
+         )
+         return prompt
 
 class VectorDB():
     def __init__(

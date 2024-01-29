@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
-from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt
+from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt, get_tot_nl_prompt
 import re
 import scenic
 import tempfile
@@ -144,7 +144,63 @@ class AnthropicAdapter(ModelAdapter):
 
         return prompt
 
-    
+    def _few_shot_reasoning_nl(
+        self,
+        model_input: ModelInput,
+        verbose: bool,
+        top_k: int = 3,
+    ) -> str:
+        if model_input.first_attempt_scenic_program is None:
+            if verbose:
+                print(f"Anthropic Model {self._model.value}\n"
+                      f"_few_shot_reasoning_split: no first attempt scenic program, using original examples\n")
+            return self._few_shot_prompt(model_input=model_input, verbose=verbose)
+
+        examples = self.index.query(model_input.first_attempt_scenic_program, top_k=top_k)
+        if examples is None: # if the query fails, we will use the original examples
+            if verbose:
+                print(f"Anthropic Model {self._model.value}\n"
+                      f"_few_shot_reasoning_hyde: query into index for HyDE failed, using original examples\n")
+        else:
+            if verbose:
+                print(f"Anthropic Model {self._model.value}\n"
+                      f"_few_shot_reasoning_hyde: query into index for HyDE successful, using examples {examples}\n")
+                
+        examples = model_input.examples # TODO: ignore HyDE for now
+        
+        relevant_model_input = ModelInput(
+            examples=[example for example in examples],
+            nat_lang_scene_des=model_input.nat_lang_scene_des,
+            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+            expert_discussion=model_input.expert_discussion,
+        )
+
+        prompt = get_discussion_to_program_prompt()
+
+        task_and_others = prompt.split("{natural_language_description}")
+        task = task_and_others[0]
+        others = task_and_others[1].split("{example_1}")
+        example_1 = others[0]
+        others = others[1].split("{example_2}")
+        example_2 = others[0]
+        others = others[1].split("{example_3}")
+        example_3 = others[0]
+
+        prompt = (
+            f"{HUMAN_PROMPT}\n"
+            f"{task}{model_input.nat_lang_scene_des}\n"
+            f"{example_1}{relevant_model_input.examples[0]}\n"
+            f"{example_2}{relevant_model_input.examples[1]}\n"
+            f"{example_3}{relevant_model_input.examples[2]}\n"
+            f"{AI_PROMPT}"
+        )
+
+        if verbose:
+            print(f"Anthropic Model {self._model.value}\n"
+                  f"_few_shot_reasoning_split: {prompt}")
+
+        return prompt
+
     def _few_shot_prompt_with_hyde(
         self,
         model_input: ModelInput,
@@ -299,6 +355,10 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_prompt_with_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.PREDICT_TOT_THEN_HYDE:
             msg = self._few_shot_reasoning_hyde(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.PREDICT_TOT_THEN_SPLIT:
+            msg = self._few_shot_reasoning_split(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.PREDICT_TOT_INTO_NL:
+            msg = self._few_shot_reasoning_nl(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.EXPERT_SYNTHESIS:
             msg = self._format_expert_synthesis_prompt(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.AST_FEEDBACK:
@@ -404,6 +464,143 @@ class AnthropicAdapter(ModelAdapter):
                 # 5. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            elif prompt_type == LLMPromptType.PREDICT_TOT_THEN_SPLIT:
+                # 1. Use tree of thought to answer all questions in the prompt
+                panel_answers = []
+                for _ in range(NUM_EXPERTS):
+                    claude_response = claude.completions.create(
+                        prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
+                        temperature=DISCUSSION_TEMPERATURE,
+                        max_tokens_to_sample=max_length_tokens,
+                        model=self._model.value,
+                    )
+                    panel_answers.append(claude_response.completion)
+
+                if len(panel_answers) != NUM_EXPERTS:
+                    raise ValueError(f"Expected {NUM_EXPERTS} panel answers, but got {len(panel_answers)}")
+
+                model_input = ModelInput(
+                    examples=model_input.examples,
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+                    panel_discussion=panel_answers,
+                    expert_discussion=None # 
+                )
+                if verbose:
+                    print(f"Anthropic Model {self._model.value}\n"
+                          f"Tree of Thought: {panel_answers}\n")
+                
+                # 2. Ask an expert to synthesize the answers into a single answer
+                expert_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_SYNTHESIS, verbose=verbose),
+                    temperature=DISCUSSION_TEMPERATURE,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+                expert_synthesis = expert_response.completion
+                
+                if verbose:
+                    print(f"Anthropic Model {self._model.value}\n"
+                          f"Expert Synthesis: {expert_synthesis}\n")
+
+                # 3. Do a few shot predict on the natural language description
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+
+                # 4. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
+                # We need to call Claude again
+                new_model_input = ModelInput(
+                    examples=model_input.examples, # this will get overwritten by the search query
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=claude_response.completion, # this is ONLY used for the query search in HyDE/RAG
+                    expert_discussion=expert_synthesis,
+                    panel_discussion=panel_answers
+                )
+
+                # 5. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            elif prompt_type == LLMPromptType.PREDICT_TOT_INTO_NL:
+                # 1. Use tree of thought to answer all questions in the prompt
+                panel_answers = []
+                for _ in range(NUM_EXPERTS):
+                    claude_response = claude.completions.create(
+                        prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
+                        temperature=DISCUSSION_TEMPERATURE,
+                        max_tokens_to_sample=max_length_tokens,
+                        model=self._model.value,
+                    )
+                    panel_answers.append(claude_response.completion)
+
+                if len(panel_answers) != NUM_EXPERTS:
+                    raise ValueError(f"Expected {NUM_EXPERTS} panel answers, but got {len(panel_answers)}")
+
+                model_input = ModelInput(
+                    examples=model_input.examples,
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+                    panel_discussion=panel_answers,
+                    expert_discussion=None # 
+                )
+                if verbose:
+                    print(f"Anthropic Model {self._model.value}\n"
+                          f"Tree of Thought: {panel_answers}\n")
+                
+                # 2. Ask an expert to synthesize the answers into a single answer
+                expert_response = claude.completions.create(
+                    prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_SYNTHESIS, verbose=verbose),
+                    temperature=DISCUSSION_TEMPERATURE,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+                expert_synthesis = expert_response.completion
+                
+                if verbose:
+                    print(f"Anthropic Model {self._model.value}\n"
+                          f"Expert Synthesis: {expert_synthesis}\n")
+
+                # 3. Create a new model input
+                new_model_input = ModelInput(
+                    examples=model_input.examples, # this will get overwritten by the search query
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=claude_response.completion, # this is ONLY used for the query search in HyDE/RAG
+                    expert_discussion=expert_synthesis,
+                    panel_discussion=panel_answers
+                )
+
+                # 3. Add the expert_synthesis directly into the natural language description
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=new_model_input, prompt_type=LLMPromptType.PREDICT_TOT_INTO_NL, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+
+                # 4. Final new model input
+                final_model_input = ModelInput(
+                    examples=model_input.examples, # this will get overwritten by the search query
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=claude_response.completion, # this is ONLY used for the query search in HyDE/RAG
+                    # expert_discussion=expert_synthesis,
+                    # panel_discussion=panel_answers
+                )
+                
+
+                # 4. Do a few shot predict on the natural language description
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=final_model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
                     temperature=temperature,
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
