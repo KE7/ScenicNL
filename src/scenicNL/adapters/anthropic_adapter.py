@@ -9,6 +9,7 @@ from pathlib import Path
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt
+import re
 import scenic
 import tempfile
 
@@ -415,6 +416,8 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
 
+            model_result = str(claude_response.completion)
+
             with tempfile.TemporaryDirectory(dir=os.curdir) as temp_dir:
                 retries = max_retries
                 retries_dir = os.path.join(temp_dir, 'temp_dir')
@@ -427,9 +430,12 @@ class AnthropicAdapter(ModelAdapter):
 
                     while retries:
                         with open(fname, 'w') as f:
-                            f.write(claude_response.completion)
+                            pattern = r'\s+param map'
+                            replacement = r'\nparam map'
+                            model_result = re.sub(pattern, replacement, model_result)
+                            f.write(model_result)
                         try:
-                            ast = scenic.syntax.parser.parse_file(fname)
+                            # ast = scenic.syntax.parser.parse_file(fname)
                             scenario = scenic.scenarioFromFile(fname, mode2D=True)
                             if verbose_retry: print('No error!')
                             retries = 0 # If this statement is reached program worked -> terminates loop
@@ -446,7 +452,7 @@ class AnthropicAdapter(ModelAdapter):
                             new_model_input = ModelInput(
                                 examples=model_input.examples, # this will get overwritten by the search query
                                 nat_lang_scene_des=model_input.nat_lang_scene_des,
-                                first_attempt_scenic_program=str(claude_response.completion),
+                                first_attempt_scenic_program=str(model_result),
                                 compiler_error=error_message
                             )
 
@@ -456,7 +462,8 @@ class AnthropicAdapter(ModelAdapter):
                                 max_tokens_to_sample=max_length_tokens,
                                 model=self._model.value,
                             )
+                            model_result = str(claude_response.completion)
                             retries -= 1
-        if verbose_retry: print(claude_response.completion)
-        return claude_response.completion
+        if verbose_retry: print(model_result)
+        return model_result
         
