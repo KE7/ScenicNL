@@ -2,7 +2,7 @@ Here is a quick tutorial about the Scenic language.
 Scenic scripts are typically divided into three sections: parameter definitions, scene setup, and behaviors.
 
 1. Parameter Definitions:
- In the parameter definitions section, you handle imports and define any parameters your scenario will use.
+In the parameter definitions section, you handle imports and define any parameters your scenario will use.
 A Scenic script begins with importing necessary libraries.
 The first lines could be: "param map = localPath('../../../assets/maps/CARLA/Town05.xodr')
 param carla_map = 'Town05'

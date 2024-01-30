@@ -169,6 +169,12 @@ def main():
     help="Maximum number of compiler-in-the-loop retries.",
 )
 
+@click.option(
+    "--verbose_retries",
+    is_flag=True,
+    help="Boolean condition to display or omit verbose retries."
+)
+
 def main(
     query_path: Path,
     output_path: Path,
@@ -187,6 +193,7 @@ def main(
     keep_filename: bool,
     temperature: float,
     max_retries: int,
+    verbose_retries: bool,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
@@ -270,6 +277,7 @@ def main(
             num_workers=num_workers,
             ignore_cache=ignore_cache, 
             max_retries=max_retries,
+            verbose_retries=verbose_retries,
             )
         ):
         for attempt, output in enumerate(outputs):

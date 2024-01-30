@@ -165,6 +165,12 @@ def get_discussion_to_program_prompt() -> str:
 
         return prompt
 
+def get_discussion_to_split_prompt() -> str:
+    prompt = ""
+    with open(PromptFiles.TOT_SPLIT.value) as f:
+        prompt = f.read()
+    return prompt
+
 def get_few_shot_ast_prompt(model_input) -> str:
     prompt = ""
     with open(PromptFiles.AST_FEEDBACK_CLAUDE.value) as f:
