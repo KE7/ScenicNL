@@ -1,17 +1,21 @@
 Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
 
-Here is one example of a Scenic program:
+** Here is one example of a Scenic program **
 {example_1}
 
-Let's start working towards having you create your own Scenic program based on the following natural language description:
+** Let's start working towards having you create your own Scenic program based on the following natural language description **
 {natural_language_description}
 
-Continue writing the 
+** From this natural language description a collection of excerpts have compiled the following reasoning information **
+{reasoning_summary}
 
+** TASK **
+Continue writing the partial Scenic program below.
+Given the partial Scenic program and the reasoning excerpt, please continue and write only the next section of the Scenic program. I will APPEND your output directly to my code.scenic file so do not add any extra text or whitespace.
+
+## PARTIAL SCENIC PROGRAM ##
 {partial_scenic_program}
 # continue writing from here
-
-Given the partial Scenic program, please continue and write only the next section of the Scenic program. I will APPEND your output directly to my code.scenic file so do not add any extra text or whitespace.
 
 **
 

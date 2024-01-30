@@ -545,9 +545,31 @@ class AnthropicAdapter(ModelAdapter):
 
                 # 3. Do a few shot predict on the natural language description
                 for rest_prompt in split_prompt[1:]:
+                    reasoning_prompt = "Please concisely output the expert discussion answers most relevant to the requested task of writing part of a Scenic Program. Include NO OTHER input or references to question numbers as we are reading this out loud to a big crowd."
+                    reasoning_prompt = (
+                        f"{HUMAN_PROMPT}\n"
+                        f"\n** Natural Language Scene Description **\n"
+                        f"{model_input.nat_lang_scene_des}"
+                        f"\n**Expert Discussion**\n"
+                        f"{expert_synthesis}"
+                        f"\n**Reasoning Prompt **\n"
+                        f"{reasoning_prompt}"
+                        f""
+                        f"{AI_PROMPT}"
+                    )
+
+                    reasoning_summary = claude.completions.create(
+                        prompt=reasoning_prompt, 
+                        temperature=temperature,
+                        max_tokens_to_sample=max_length_tokens,
+                        model=self._model.value,
+                    )
+                    print(f'$$$$\n{reasoning_summary.completion}')
+
                     head_prompt = split_prompt[0].format(
                         example_1=model_input.examples[0],
                         natural_language_description=model_input.nat_lang_scene_des,
+                        reasoning_summary=reasoning_summary.completion,
                         partial_scenic_program=incremental_scenic_program)
                     combo_prompt = head_prompt + rest_prompt
 
