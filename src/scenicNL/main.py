@@ -321,6 +321,7 @@ def main(
                 execute_fail += 1
                 with open(scenic_error_path, 'a') as f:
                     f.write(f'{index} - {fstub} execute error: {e}\n')
+            print(f'Output path {debug} at: {fname}')
             print('----------------\n\n')
 
     end_time = time.time()

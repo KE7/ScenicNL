@@ -6,7 +6,7 @@ Scenic is a probabilistic programming language for modeling the environments of 
 Here is one example of a fully compiling Scenic program:
 {example_1}
 
-Create a fully compiling Scenic program that models the description based on:
+Modify the Scenic program you wrote that models the description based on:
 
 1. The following natural language description:
 {natural_language_description}
@@ -17,7 +17,7 @@ Create a fully compiling Scenic program that models the description based on:
 3. The first compiler error raised with the scenic program:
 {compiler_error}
 
-Please output a modified version of scenic_program modified so the compiler error does not appear.
+Please output a modified version of your scenic_program modified so the compiler error does not appear.
 
 OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.
 Output only the natural language description of the scenario as a comment at the top of the file and your proposed Scenic program. DO NOT output any other text or whitespace so I can run your program and see the results. 

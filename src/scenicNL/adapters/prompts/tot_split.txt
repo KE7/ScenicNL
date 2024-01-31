@@ -43,8 +43,8 @@ Start this section with ## SCENE SETUP
 
 **
 
-3. Behaviors:
-In the behavior section, you define the dynamic behaviors involved in the scenario.
+3. Behavior Definitions:
+In the behavior definition section, you define the dynamic behaviors involved in the scenario.
 Objects which can take actions over time are called agents. We specifiy their dynamic behavior using the built-in property, `behavior`. A behavior defines a sequence of actions for the agent to take, which need not be fixed but can be probabilistic and depend on the state of the agent or other objects. In Scenic, an action is an instantaneous operation executed by an agent, like setting the steering angle of a car or turning on its headlights. 
 To define a behavior, we write a function which runs over the course of the scenario, periodically issuing actions. Scenic uses a discrete notion of time, so at each time step the function specifies zero or more actions for the agent to take. The function can also access the current state of the agent and other objects in the scene, and use this information to determine which actions to take. 
 

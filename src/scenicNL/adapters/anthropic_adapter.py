@@ -542,9 +542,10 @@ class AnthropicAdapter(ModelAdapter):
                 
                 split_prompt = get_discussion_to_split_prompt()
                 split_prompt = split_prompt.split('\n**\n')
+                sections = ["## 1. Parameter Definitions:", "## 2. Scene Setup:", "## 3. Behavior Definitions:", "## 4. Assignments:", "## 5. Constraints"]
 
                 # 3. Do a few shot predict on the natural language description
-                for rest_prompt in split_prompt[1:]:
+                for rest_index, rest_prompt in enumerate(split_prompt[1:]):
                     reasoning_prompt = "Please concisely output the expert discussion answers most relevant to the requested task of writing part of a Scenic Program. Include NO OTHER input or references to question numbers as we are reading this out loud to a big crowd."
                     reasoning_prompt = (
                         f"{HUMAN_PROMPT}\n"
@@ -564,7 +565,7 @@ class AnthropicAdapter(ModelAdapter):
                         max_tokens_to_sample=max_length_tokens,
                         model=self._model.value,
                     )
-                    print(f'$$$$\n{reasoning_summary.completion}')
+                    print(f'<<<<\n{reasoning_summary.completion}\n>>>>')
 
                     head_prompt = split_prompt[0].format(
                         example_1=model_input.examples[0],
@@ -585,12 +586,18 @@ class AnthropicAdapter(ModelAdapter):
                         max_tokens_to_sample=max_length_tokens,
                         model=self._model.value,
                     )
+                    incremental_scenic_program += sections[rest_index]
                     incremental_scenic_program += claude_response.completion
+
+                print('¡¡¡¡')
+                print(incremental_scenic_program)
+                print('!!!!')
 
                 stitch_prompt = (
                     f"{HUMAN_PROMPT}\n"
-                    f"Please connect together the following program snippets by deleting any redundant lines of text. You CANNOT make any other changes. The final output will be executed directly so please do not output any leading or trailing text. Thanks honey.\n"
-                    f"{incremental_scenic_program}"
+                    # f"Please connect together the following program snippets by deleting any redundant lines of text. You CANNOT make any other changes. The final output will be executed directly so please do not output any leading or trailing text. I will be beheaded if any program segment is missing. Thanks honey.\n"
+                    f"Please delete any lines of code that are redundant between sections. You CANNOT make any other changes. The final output will be executed directly so please do not output any leading or trailing text. I will be beheaded if any program segment is missing. Thanks honey love you.\n"
+                    f"\n{incremental_scenic_program}\n"
                     f"{AI_PROMPT}"
                 )
 
@@ -600,8 +607,9 @@ class AnthropicAdapter(ModelAdapter):
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
                 )
-                print('$$$$')
+                print('((((')
                 print(claude_response.completion)
+                print('))))')
                 # 4. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
                 # We need to call Claude again
                 # new_model_input = ModelInput(
@@ -701,6 +709,9 @@ class AnthropicAdapter(ModelAdapter):
                 )
 
             model_result = str(claude_response.completion)
+            print('¿¿¿¿')
+            print(model_result)
+            print('????')
 
             with tempfile.TemporaryDirectory(dir=os.curdir) as temp_dir:
                 retries = max_retries
@@ -745,7 +756,11 @@ class AnthropicAdapter(ModelAdapter):
                                 model=self._model.value,
                             )
                             model_result = str(claude_response.completion)
+                            print('°°°°')
+                            print(model_result)
+                            print('^^^^')
                             retries -= 1
         if verbose_retries: print(model_result)
+        print(f'[[[[\n{model_result}\n]]]]')
         return model_result
         
