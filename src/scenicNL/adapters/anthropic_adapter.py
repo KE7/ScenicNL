@@ -7,11 +7,13 @@ import httpx
 import os
 from pathlib import Path
 from scenicNL.adapters.model_adapter import ModelAdapter
+from scenicNL.adapters.lmql_adapter import LMQLAdapter, LMQLModel
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt, get_tot_nl_prompt
 import re
 import scenic
 import tempfile
+
 
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
@@ -363,6 +365,10 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._format_expert_synthesis_prompt(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.AST_FEEDBACK:
             msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.PREDICT_LMQL_TO_HYDE:
+            msg = self._few_shot_prompt_with_hyde(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
+            msg = self._few_shot_prompt(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -371,6 +377,126 @@ class AnthropicAdapter(ModelAdapter):
         
         return msg
 
+    def _format_street_prompt(
+        self,
+        model_input: ModelInput,
+        temperature,
+        max_length_tokens,
+        verbose: bool
+        ) -> str:
+        
+        street_prompt = (
+            f"{HUMAN_PROMPT} Please edit this description such that"
+            f"it does not contain any specific street names."
+            f"You can replace the name with a more generic term like 'a street'."
+            f"You can paraphrase the sentence to make it more coherent"
+            f"\n-- Here is the description. --\n "
+            f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
+            f"Do not include any other text."
+            f"{AI_PROMPT}"
+        )
+        
+        return street_prompt
+
+    def _format_obstacle_prompt(
+        self,
+        model_input: ModelInput,
+        temperature,
+        max_length_tokens,
+        verbose: bool
+        ) -> str:
+        
+        obstacle_prompt = (
+            f"{HUMAN_PROMPT} Please edit this description such that"
+            f"it only contains non-moving obstacles within this following list: "
+            f"Trash, Cone, Debris, Prop, Box"
+            f"If another non-moving obstacle appears, please replace it with the closest match from the list."
+            f"You can paraphrase the sentence to make it more coherent."
+            f"\n-- Here is the description. --\n "
+            f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
+            f"Do not include any other text."
+            f"{AI_PROMPT}"
+        )
+     
+        return obstacle_prompt
+    
+    def _format_vehicle_prompt(
+        self,
+        model_input: ModelInput,
+        temperature,
+        max_length_tokens,
+        verbose: bool
+        ) -> str:
+        vehicle_models = """
+        "Audi - A2": "vehicle.audi.a2", 
+        "Audi - TT": "vehicle.audi.tt",
+        "BMW - Gran Tourer": "vehicle.bmw.grandtourer",
+        "Chevrolet - Impala": "vehicle.chevrolet.impala",
+        "Citroen - C3": "vehicle.citroen.c3",
+        "Dodge - Charger 2020": "vehicle.dodge.charger_2020",
+        "Dodge - Police Charger": "vehicle.dodge.charger_police",
+        "Ford - Crown (taxi)": "vehicle.ford.crown",
+        "Ford - Mustang": "vehicle.ford.mustang",
+        "Jeep - Wrangler Rubicon": "vehicle.jeep.wrangler_rubicon",
+        "Lincoln - MKZ 2017": "vehicle.lincoln.mkz_2017",
+        "Mercedes - Coupe": "vehicle.mercedes.coupe",
+        "Mini - Cooper S": "vehicle.mini.cooper_s",
+        "Nissan - Micra": "vehicle.nissan.micra",
+        "Nissan - Patrol": "vehicle.nissan.patrol",
+        "Tesla - Model 3": "vehicle.tesla.model3",
+        "Toyota - Prius": "vehicle.toyota.prius",
+        "CARLA Motors - Firetruck": "vehicle.carlamotors.firetruck",
+        "Tesla - Cybertruck": "vehicle.tesla.cybertruck",
+        "Ford - Ambulance": "vehicle.ford.ambulance",
+        "Mercedes - Sprinter": "vehicle.mercedes.sprinter",
+        "Volkswagen - T2": "vehicle.volkswagen.t2",
+        "Mitsubishi - Fusorosa": "vehicle.mitsubishi.fusorosa",
+        "Harley Davidson - Low Rider": "vehicle.harley-davidson.low_rider",
+        "Kawasaki - Ninja": "vehicle.kawasaki.ninja",
+        "Vespa - ZX 125": "vehicle.vespa.zx125",
+        "Yamaha - YZF": "vehicle.yamaha.yzf",
+        """
+        vehicle_prompt = (
+            f"{HUMAN_PROMPT}\nPlease edit this description such that"
+            f"it only contains moving vehicles within this following list: "
+            f"Car, Bicycle, Pedestrian."
+            f"If another moving vehicle appears, please replace it with the closest match from the list."
+            f"You can paraphrase the sentence to make it more coherent."
+            # f"If the vehicle is marked as Car (this includes motorcycles and scooters), "
+            # f"please output in parenthesis the best match vehicle model to the named vehicle."
+            # f"\nExample: Car (Tesla - Model 3)\n"
+            f"\n-- Collection of valid vehicles. --\n"
+            f"{vehicle_models}"
+            f"If there is an autonomous vehicle present, please replace it with Tesla Model 3."
+            f"\n-- Here is the description. --\n "
+            f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
+            f"Do not include any other text."
+            f"{AI_PROMPT}"
+        )
+     
+        return vehicle_prompt
+
+    def _format_sidequest_prompt(
+        self,
+        model_input: ModelInput,
+        temperature,
+        max_length_tokens,
+        verbose: bool
+        ) -> str:
+        
+        sidequest_prompt = (
+            f"{HUMAN_PROMPT} Please edit this description such that"
+            f"any descriptions of non-traffic actions are removed."
+            f"Examples: calling the police, contacting emergency services, injuries."
+            f"You can paraphrase the sentence to make it more coherent."
+            f"\n-- Here is the description. --\n "
+            f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input>"
+            f"Do not include any other text."
+            f"{AI_PROMPT}"
+        )
+     
+        return sidequest_prompt
+    
     def _predict(
         self, 
         *, 
@@ -385,6 +511,44 @@ class AnthropicAdapter(ModelAdapter):
         # to prevent misuse of file handlers
         limits = httpx.Limits(max_keepalive_connections=1, max_connections=1)
         with Anthropic(connection_pool_limits=limits, max_retries=10) as claude:
+            # print('original', model_input.nat_lang_scene_des, '\n')
+
+            street_prompt = self._format_street_prompt(model_input=model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+            street_response = claude.completions.create(
+                    prompt=street_prompt,
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            model_input.set_nl(street_response.completion)
+           
+            obstacle_prompt = self._format_obstacle_prompt(model_input=model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+            obstacle_response = claude.completions.create(
+                    prompt=obstacle_prompt,
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            model_input.set_nl(obstacle_response.completion)
+
+            vehicle_prompt = self._format_vehicle_prompt(model_input=model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+            vehicle_response = claude.completions.create(
+                    prompt=vehicle_prompt,
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            model_input.set_nl(vehicle_response.completion)
+
+            sidequest_prompt = self._format_sidequest_prompt(model_input=model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+            sidequest_response = claude.completions.create(
+                    prompt=vehicle_prompt,
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+            model_input.set_nl(sidequest_response.completion)
+
             if prompt_type == LLMPromptType.PREDICT_FEW_SHOT_WITH_HYDE or prompt_type == LLMPromptType.PREDICT_FEW_SHOT_WITH_HYDE_TOT:
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
@@ -605,6 +769,24 @@ class AnthropicAdapter(ModelAdapter):
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
                 )
+            elif prompt_type == LLMPromptType.PREDICT_LMQL_TO_HYDE:
+                #get initial response from LMQL
+                lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
+                response  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+
+                #use response in HYDE - We need to call Claude again
+                new_model_input = ModelInput(
+                    examples=model_input.examples, # this will get overwritten by the search query
+                    nat_lang_scene_des=model_input.nat_lang_scene_des,
+                    first_attempt_scenic_program=response, # this is used for the query search
+                )
+                claude_response = claude.completions.create(
+                    prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                    temperature=temperature,
+                    max_tokens_to_sample=max_length_tokens,
+                    model=self._model.value,
+                )
+
             else:
                 claude_response = claude.completions.create(
                     prompt=self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose),
@@ -613,7 +795,12 @@ class AnthropicAdapter(ModelAdapter):
                     model=self._model.value,
                 )
 
-            model_result = str(claude_response.completion)
+            if prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
+                #get initial response from LMQL
+                lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
+                model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+            else:
+                model_result = str(claude_response.completion)
 
             with tempfile.TemporaryDirectory(dir=os.curdir) as temp_dir:
                 retries = max_retries
@@ -653,6 +840,10 @@ class AnthropicAdapter(ModelAdapter):
                                 compiler_error=error_message
                             )
 
+                            # if prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
+                            #     lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
+                            #     model_result  = lmql_adapter._correct_prediction(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+                            # else:
                             claude_response = claude.completions.create(
                                 prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
                                 temperature=temperature,

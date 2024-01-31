@@ -42,6 +42,21 @@ class LMQLAdapter(ModelAdapter):
             f"\n\n"
         )
     
+    def _lmql_correction_prompt(
+        self,
+        model_input: ModelInput
+    ) -> str:
+         
+         return (
+            f"Please generate a scenic program for a CARLA "
+            f"simulation to replicate the input natural language description below."
+            f"Here are some examples scenic programs.\n{model_input.examples[1]}\n"
+            f"Given the following report, write a scenic program that models it: \n"
+            f"\n\n<user_input>{model_input.nat_lang_scene_des}\n\n</user_input> "
+            f"Ouput the scenic program. Do not include any other text."
+            f"\n\n"
+        )
+    
     def _format_message(
         self,
         *,
@@ -52,9 +67,8 @@ class LMQLAdapter(ModelAdapter):
         """
         Formats the message to be sent to the API.
         """
-        msg = None
-        if prompt_type == LLMPromptType.PREDICT_LMQL:
-            msg = self._lmql_prompt(model_input=model_input)
+        
+        msg = self._lmql_prompt(model_input=model_input)
         
         if verbose:
             print(f"Message formatted using {LLMPromptType(prompt_type).name}")
@@ -88,6 +102,24 @@ class LMQLAdapter(ModelAdapter):
         wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
     )
     def _predict(
+        self, 
+        *, 
+        model_input: ModelInput, 
+        temperature: float, 
+        max_length_tokens: int,
+        prompt_type: LLMPromptType,
+        verbose: bool,
+    ) -> str:
+        
+        example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
+        response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
+        
+        return response
+    
+    @retry(
+        wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    )
+    def _correct_prediction(
         self, 
         *, 
         model_input: ModelInput, 

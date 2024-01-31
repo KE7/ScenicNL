@@ -30,6 +30,8 @@ class LLMPromptType(Enum):
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
     AST_FEEDBACK = "ast_feedback"
+    PREDICT_LMQL_TO_HYDE = 'predict_lmql_to_hyde'
+    PREDICT_LMQL_RETRY = 'predict_lmql_retry'
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
@@ -57,6 +59,12 @@ class ModelInput:
     compiler_error: Optional[str] = None
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
+
+    # @nat_lang_scene_des.setter
+    def set_nl(self, nat_lang_scene_des):
+        # self.nat_lang_scene_des = nat_lang_scene_des
+        object.__setattr__(self, 'nat_lang_scene_des', nat_lang_scene_des)
+
 
 
 def load_jsonl(
@@ -193,6 +201,7 @@ def get_tot_nl_prompt(model_input) -> str:
          )
          return prompt
 
+
 class VectorDB():
     def __init__(
             self,
@@ -309,13 +318,12 @@ def few_shot_prompt_with_rag(
         few_shot_prompt_generator: Callable[[ModelInput, bool], List[Dict[str, str]]] | Callable[[ModelInput, bool], str],
         top_k: int = 3,
     ) -> str | List[Dict[str, str]]:
-        examples = vector_index.query(model_input.first_attempt_scenic_program, top_k=top_k)
+        examples = vector_index.query(model_input.nat_lang_scene_des, top_k=top_k)
         if examples is None: # if the query fails, we just return the few shot prompt
             return few_shot_prompt_generator(model_input, False)
         
         relevant_model_input = ModelInput(
             examples=[example for example in examples],
             nat_lang_scene_des=model_input.nat_lang_scene_des,
-            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
         return few_shot_prompt_generator(relevant_model_input, False)
