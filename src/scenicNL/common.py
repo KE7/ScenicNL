@@ -65,6 +65,9 @@ class ModelInput:
         # self.nat_lang_scene_des = nat_lang_scene_des
         object.__setattr__(self, 'nat_lang_scene_des', nat_lang_scene_des)
 
+    def set_exs(self, examples):
+        object.__setattr__(self, 'examples', examples)
+
 
 
 def load_jsonl(
@@ -327,3 +330,11 @@ def few_shot_prompt_with_rag(
             nat_lang_scene_des=model_input.nat_lang_scene_des,
         )
         return few_shot_prompt_generator(relevant_model_input, False)
+
+def query_with_rag(
+        vector_index: VectorDB,
+        nat_lang_scene_des: str,
+        top_k: int = 3,
+) -> List[Dict[str, str]]:
+    examples = vector_index.query(nat_lang_scene_des, top_k=top_k)
+    return examples

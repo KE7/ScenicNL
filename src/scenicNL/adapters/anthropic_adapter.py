@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.adapters.lmql_adapter import LMQLAdapter, LMQLModel
-from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
+from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt, query_with_rag
 from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt, get_tot_nl_prompt
 import re
 import scenic
@@ -368,7 +368,7 @@ class AnthropicAdapter(ModelAdapter):
         elif prompt_type == LLMPromptType.PREDICT_LMQL_TO_HYDE:
             msg = self._few_shot_prompt_with_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
-            msg = self._few_shot_prompt(model_input=model_input, verbose=verbose)
+            msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -497,6 +497,26 @@ class AnthropicAdapter(ModelAdapter):
      
         return sidequest_prompt
     
+    # def _remove_whitespace(
+    #     self,
+    #     model_input: ModelInput,
+    #     temperature,
+    #     max_length_tokens,
+    #     verbose: bool
+    #     ) -> str:
+        
+    #     whitespace_prompt = (
+    #         f"{HUMAN_PROMPT} Please edit this text such that"
+    #         f"any whitespace appearing before the word 'param' is removed."
+    #         f"\n-- Here is the text. --\n "
+    #         f"\n\n<user_input>{model_input.first_attempt_scenic_program}\n\n</user_input>"
+    #         f"Do not include anything in your output aside from the edited texted."
+    #         f"Follow these instructions very attentively."
+    #         f"{AI_PROMPT}"
+    #     )
+     
+    #     return whitespace_prompt
+
     def _predict(
         self, 
         *, 
@@ -542,7 +562,7 @@ class AnthropicAdapter(ModelAdapter):
 
             sidequest_prompt = self._format_sidequest_prompt(model_input=model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
             sidequest_response = claude.completions.create(
-                    prompt=vehicle_prompt,
+                    prompt=sidequest_prompt,
                     temperature=temperature,
                     max_tokens_to_sample=max_length_tokens,
                     model=self._model.value,
@@ -798,6 +818,8 @@ class AnthropicAdapter(ModelAdapter):
             if prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
                 #get initial response from LMQL
                 lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
+                # model_input.set_exs(query_with_rag(vector_index=self.index,
+                #                                     nat_lang_scene_des=model_input.nat_lang_scene_des))
                 model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
             else:
                 model_result = str(claude_response.completion)
@@ -840,10 +862,6 @@ class AnthropicAdapter(ModelAdapter):
                                 compiler_error=error_message
                             )
 
-                            # if prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
-                            #     lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
-                            #     model_result  = lmql_adapter._correct_prediction(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
-                            # else:
                             claude_response = claude.completions.create(
                                 prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
                                 temperature=temperature,
@@ -851,6 +869,25 @@ class AnthropicAdapter(ModelAdapter):
                                 model=self._model.value,
                             )
                             model_result = str(claude_response.completion)
+
+                            # #clean output
+                            # new_model_input = ModelInput(
+                            #     examples=model_input.examples, # this will get overwritten by the search query
+                            #     nat_lang_scene_des=model_input.nat_lang_scene_des,
+                            #     first_attempt_scenic_program=str(model_result),
+                            #     compiler_error=error_message
+                            # )
+
+                            # claude_response = claude.completions.create(
+                            #     prompt=self._remove_whitespace(model_input=new_model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose),
+                            #     temperature=temperature,
+                            #     max_tokens_to_sample=max_length_tokens,
+                            #     model=self._model.value,
+                            # )
+                            # model_result = str(claude_response.completion)
+
+
+
                             retries -= 1
         if verbose_retry: print(model_result)
         return model_result
