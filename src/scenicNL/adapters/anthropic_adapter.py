@@ -553,6 +553,8 @@ class AnthropicAdapter(ModelAdapter):
                         f"{model_input.nat_lang_scene_des}"
                         f"\n**Expert Discussion**\n"
                         f"{expert_synthesis}"
+                        f"\n**Task Description**\n"
+                        f"{rest_prompt}"
                         f"\n**Reasoning Prompt **\n"
                         f"{reasoning_prompt}"
                         f""
