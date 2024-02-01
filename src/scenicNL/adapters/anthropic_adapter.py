@@ -9,11 +9,28 @@ from pathlib import Path
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.adapters.lmql_adapter import LMQLAdapter, LMQLModel
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, VectorDB, few_shot_prompt_with_rag, get_expert_synthesis_prompt
-from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt, get_tot_nl_prompt
+from scenicNL.common import get_discussion_prompt, get_discussion_to_program_prompt, format_scenic_tutorial_prompt, get_few_shot_ast_prompt, get_tot_nl_prompt, query_with_rag
 import re
 import scenic
 import tempfile
 
+behavior_string = """
+Vehicles:
+ConstantThrottleBehavior(x : float)
+DriveAvoidingCollisions(target_speed : float = 25, avoidance_threshold : float = 10):
+AccelerateForwardBehavior()
+FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False)
+FollowTrajectoryBehavior(target_speed : float = 10, trajectory : List[Lane] = None, turn_speed : float = None)
+TurnBehavior(trajectory : List[Lane] = None, target_speed : float = 6):
+LaneChangeBehavior(laneSectionToSwitchTo : Lane, is_oppositeTraffic : bool = False, target_speed : float = 10):
+
+Pedestrians only:
+behavior WalkForwardBehavior(speed=0.5):
+take SetWalkingDirectionAction(self.heading), SetWalkingSpeedAction(speed)
+behavior WalkBehavior(maxSpeed=1.4):
+take SetWalkAction(True, maxSpeed)
+behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_speed=None):
+"""
 
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
@@ -496,7 +513,28 @@ class AnthropicAdapter(ModelAdapter):
         )
      
         return sidequest_prompt
-    
+
+    def _format_exception(
+        self,
+        exception: Exception,
+    ) -> str:
+        try:
+            error_message = f"Error details below..\nmessage: {str(exception)}\ntext: {exception.text}\n"
+        except:
+            error_message = f"Error details below..\nmessage: {str(exception)}\n"
+        finally:
+            if ' param' in error_message:
+                error_message += f'suggestion: remove the leading whitespace'
+            elif 'OrientedPoint' in error_message:
+                error_message += f'suggestion: find a simpler alternative to OrientedPoint\n'
+                error_message += f'example: start = new OrientedPoint on lane.centerline'
+            elif 'Behavior' in error_message:
+                error_message += f'suggestion: make sure the behavior_string are included in the inbuilt behavior strings below\n'
+                # error_message += behavior_string
+            elif 'terminate' in error_message:
+                error_message += f'suggestion: terminate and kill statements can safely be removed from program'
+            return error_message
+
     def _predict(
         self, 
         *, 
@@ -833,19 +871,30 @@ class AnthropicAdapter(ModelAdapter):
                                 if verbose_retry: print(error_message)
 
                             # Constructing correcting claude call
+                            # if rag:
+                            #     examples = query_with_rag(self.index, model_input.nat_lang_scene_des, )
+                            # else:
+                            #     examples = model_input.examples
+                            error_message = self._format_exception(error_message)
                             new_model_input = ModelInput(
                                 examples=model_input.examples, # this will get overwritten by the search query
                                 nat_lang_scene_des=model_input.nat_lang_scene_des,
                                 first_attempt_scenic_program=str(model_result),
                                 compiler_error=error_message
                             )
+                            if False:
+                                query_examples = query_with_rag(self.index, model_input.nat_lang_scene_des, k=3)
+                                new_model_input.set_exs(query_examples)
 
                             # if prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
                             #     lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
                             #     model_result  = lmql_adapter._correct_prediction(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
                             # else:
+                            message = self._format_message(model_input=new_model_input, prompt_type=LLMPromptType.AST_FEEDBACK, verbose=verbose)
+                            print(message)
                             claude_response = claude.completions.create(
-                                prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                                # prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                                prompt=message,
                                 temperature=temperature,
                                 max_tokens_to_sample=max_length_tokens,
                                 model=self._model.value,

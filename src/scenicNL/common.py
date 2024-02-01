@@ -42,7 +42,7 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
-    AST_FEEDBACK_CLAUDE = os.path.join(PROMPT_PATH, 'few_shot_ast.txt')
+    AST_FEEDBACK_CLAUDE = os.path.join(PROMPT_PATH, 'ast_feedback.txt') # change
     TOT_SPLIT = os.path.join(PROMPT_PATH, 'tot_split.txt')
     TOT_NL = os.path.join(PROMPT_PATH, 'tot_nl.txt')
 
@@ -60,10 +60,12 @@ class ModelInput:
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
 
-    # @nat_lang_scene_des.setter
     def set_nl(self, nat_lang_scene_des):
         # self.nat_lang_scene_des = nat_lang_scene_des
         object.__setattr__(self, 'nat_lang_scene_des', nat_lang_scene_des)
+
+    def set_exs(self, examples):
+        object.__setattr__(self, 'examples', examples)
 
 
 
@@ -311,6 +313,13 @@ class VectorDB():
             return None
         return passages
 
+def query_with_rag(
+        vector_index: VectorDB,
+        nat_lang_scene_des: str,
+        top_k: int = 3,
+) -> List[Dict[str, str]]:
+    examples = vector_index.query(nat_lang_scene_des, top_k=top_k)
+    return examples
 
 def few_shot_prompt_with_rag(
         vector_index: VectorDB,
