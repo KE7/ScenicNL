@@ -1,0 +1,145 @@
+Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+** Here is one example of a Scenic program **
+{example_1}
+
+** Let's start working towards having you create your own Scenic program based on the following natural language description **
+{natural_language_description}
+
+** From this natural language description a collection of excerpts have compiled the following reasoning information **
+{reasoning_summary}
+
+** TASK **
+Continue writing the partial Scenic program below.
+Given the partial Scenic program and the reasoning excerpt, please continue and write only the next section of the Scenic program. I will APPEND your output directly to my code.scenic file so do not add any extra text or whitespace.
+
+## PARTIAL SCENIC PROGRAM ##
+{partial_scenic_program}
+# continue writing from here
+
+**
+
+1. Parameter Definitions:
+In the parameter definitions section, you handle imports and define any parameters your scenario will use.
+A Scenic script begins with importing necessary libraries.
+The first lines could be: "param map = localPath('../../../assets/maps/CARLA/Town05.xodr')
+param carla_map = 'Town05'
+model scenic.simulators.carla.model" to import the simulator library.
+The set of maps allowed is only of the format ../../../assets/maps/CARLA/Town01.xodr for Town01, Town02, Town03, Town04, Town05, Town06, Town07.
+No other map can be accessed. Please do not access exact streets or lanes as a result.
+Then define any scene parameters, for example: "speed = Range(15, 25)" defines a parameter speed with values ranging from 15 to 25.
+
+Start this section with ## PARAMETER DEFINITIONS
+
+**
+
+2. Scene Setup:
+In the scene setup section, you describe the static aspects of the scenario.
+For example, "lane = Uniform(*network.lanes)
+spawnPt = new OrientedPoint on lane.centerline
+obstacle = new Trash at spawnPt offset by Range(1, -1) @ 0" creates a Trash obstacle offset from the centerline of a random lane.
+
+Start this section with ## SCENE SETUP
+
+**
+
+3. Behavior Definitions:
+In the behavior definition section, you define the dynamic behaviors involved in the scenario.
+Objects which can take actions over time are called agents. We specifiy their dynamic behavior using the built-in property, `behavior`. A behavior defines a sequence of actions for the agent to take, which need not be fixed but can be probabilistic and depend on the state of the agent or other objects. In Scenic, an action is an instantaneous operation executed by an agent, like setting the steering angle of a car or turning on its headlights. 
+To define a behavior, we write a function which runs over the course of the scenario, periodically issuing actions. Scenic uses a discrete notion of time, so at each time step the function specifies zero or more actions for the agent to take. The function can also access the current state of the agent and other objects in the scene, and use this information to determine which actions to take. 
+
+Here is an example of a behavior where a car is waiting for an ego car to be a certain distance away before it starts moving:
+behavior WaitUntilClose(threshold=15):
+    while (distance from self to ego) > threshold:
+        wait
+    do FollowLaneBehavior()
+Here, we repeatedly query the distance from the agent running the behavior (self) to the ego car; as long as it is above a threshold, we wait, which means take no actions. Once the threshold is met, we start driving by invoking the built in, FollowLaneBehavior. Since FollowLaneBehavior runs forever, we will never return to the WaitUntilClose behavior.
+
+Unlike ordinary Scenic code, control flow constructs such as if and while are allowed to depend on random variables inside a behavior. Any distributions defined inside a behavior are sampled at simulation time, not during scene sampling. Consider the following behavior:
+behavior Foo():
+    threshold = Range(4, 7)
+    while True:
+        if self.distanceToClosest(Pedestrian) < threshold:
+            strength = TruncatedNormal(0.8, 0.02, 0.5, 1)
+            take SetBrakeAction(strength), SetThrottleAction(0)
+        else:
+            take SetThrottleAction(0.5), SetBrakeAction(0)
+Here, the value of threshold is sampled only once, at the beginning of the scenario when the behavior starts running. The value strength, on the other hand, is sampled every time step when the car is braking we use a slightly different braking strength (0.8 on average, but with 0 mean Gaussian noise added with standard deviation 0.02, truncated to the range [0.5, 1]). The behavior also uses the built-in function distanceToClosest, which returns the distance to the closest object of a given type (here, Pedestrian). This function is evaluated at each time step, so the car will always brake if a pedestrian is within the threshold distance.
+
+Suppose we want a car that follows a lane, stopping whenever it encounters an obstacle. Scenic provides a concept of interrupts.
+behavior FollowAvoidingObstacles():
+    try:
+        do FollowLaneBehavior()
+    interrupt when self.distanceToClosest(Object) < 5:
+        take SetBrakeAction(1)
+This try-interrupt statement has similar syntax to the Python try statement (and in fact allows except clauses just as in Python), and begins in the same way: at first, the code block after the try: (the body) is executed. At the start of every time step during its execution, the condition from each interrupt clause is checked; if any are true, execution of the body is suspended and we instead begin to execute the corresponding interrupt handler. In the example above, there is only one interrupt, which fires when we come within 5 meters of any object. When that happens, FollowLaneBehavior is paused and we instead apply full braking for one time step. In the next step, we will resume FollowLaneBehavior wherever it left off, unless we are still within 5 meters of an object, in which case the interrupt will fire again.
+If there are multiple interrupt clauses, successive clauses take precedence over those which precede them. Furthermore, such higher-priority interrupts can fire even during the execution of an earlier interrupt handler. This makes it easy to model a hierarchy of behaviors with different priorities; for example, we could implement a car which drives along a lane, passing slow cars and avoiding collisions, along the following lines:
+behavior Drive():
+    try:
+        do FollowLaneBehavior()
+    interrupt when self.distanceToNextObstacle() < 20:
+        do PassingBehavior()
+    interrupt when self.timeToCollision() < 5:
+        do CollisionAvoidance()
+Alternatively, we can use `until` to specify a condition that must be met before the behavior can complete.
+behavior ApproachAndTurnLeft():
+    do FollowLaneBehavior() until (distance from self to intersection) < 10
+    do WaitForTrafficLightBehavior()
+    do TurnLeftBehavior()
+Or we can do it by time:
+behavior DriveForAWhile():
+    do FollowLaneBehavior() for 30 seconds
+The alternative form `do behavior for n steps` uses time steps instead of real simulation time.
+
+Start this section with ## BEHAVIORS
+
+**
+
+4. Assignments:
+In the assignments section, you assign the behaviors to initialized vehicle, bicyclist, and pedestrian objects now that behaviors have been defined.
+
+If needed, you can use syntax such as "A can see B" to make sure agent B is visible to agent A.
+You can also use syntax like "distance from A to B" to make sure the distance between A and B is within a certain range. 
+oncomingCar = new Car on leftLaneSec.centerline,
+    with behavior OncomingCarBehavior()
+
+ego = new Car at spawnPt,
+    with behavior EgoBehavior(leftLaneSec)
+
+After this, "ego = new Car following roadDirection from spawnPt for Range(-50, -30),
+	with blueprint EGO_MODEL,
+	with behavior EgoBehavior(EGO_SPEED)" defines a dynamic agent with this behavior and other properties. All scenes must have an ego vehicle.
+    
+blockingCar = new Car following roadDirection from ego for BLOCKING_CAR_DIST,
+                with viewAngle 90 deg
+
+Start this section with ## ASSIGNMENTS
+
+**
+
+5. Constraints:
+In the constraints section, you define require statements to enforce initial and termination conditions.
+Just as you can declare spatial constraints on scenes using the require statement, you can also impose constraints on dynamic scenarios. For example, if we don’t want to generate any simulations where car1 and car2 are simultaneously visible from the ego car, we could write:
+require always not ((ego can see car1) and (ego can see car2))
+Here, `always condition` is a linear temporal (LTL) operator which can only be used inside a requirement, and which evaluates to true if and only if the condition is true at every time step of the scenario. So if the condition above is ever false during a simulation, the requirement will be violated, causing Scenic to reject that simulation and sample a new one. Similarly, we can require that a condition hold at some time during the scenario using the eventually operator:
+require eventually ego in intersection
+
+So, if you need to include to include temporal aspects in your behavior, you use a require statement like so to model that no pedestrian comes close to self until the ego does (after which we place no further restrictions)
+behavior WaitUntilClose(threshold=15):
+    while distance from self to ego > threshold:
+        require self.distanceToClosest(Pedestrian) > threshold
+        wait
+    do FollowLaneBehavior()
+
+Temporal operators can be combined with Boolean operators in a manner similar to LTL to build up more complex requirements:
+require (always car.speed < 30) implies (always distance to car > 10)
+Or relational:
+require car2 not in intersection until car1 in intersection
+require eventually car2 in intersection
+
+Require and terminate statements can be used to enforce post-conditions that determine that certain events occured or terminate the program after certain conditions are met thus satisfying the requirements of the scenario. Any require or terminate statement should not be about time and should be about events in the scene. For example, to make sure an oncoming Car is at a visible section of the lane:
+require blockingCar can see oncomingCar
+require (distance from blockingCar to oncomingCar) < DIST_BTW_BLOCKING_ONCOMING_CARS
+require (distance from blockingCar to intersection) > DIST_TO_INTERSECTION
+
+Start this section with ## CONSTRAINTS
