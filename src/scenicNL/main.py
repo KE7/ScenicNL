@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import scenic
 from scenicNL.adapters.anthropic_adapter import AnthropicAdapter, AnthropicModel
+from scenicNL.adapters.local_adapter import LocalModel, LocalAdapter
 from scenicNL.adapters.openai_adapter import OpenAIAdapter, OpenAIModel
 from scenicNL.adapters.lmql_adapter import LMQLAdapter, LMQLModel
 from scenicNL.cache import APIError
@@ -30,7 +31,7 @@ def main():
 @click.option(
     '-m', '--model',
     type=click.Choice(
-        [m.value for m in OpenAIModel] + [m.value for m in AnthropicModel] + [m.value for m in LMQLModel],
+        [m.value for m in OpenAIModel] + [m.value for m in AnthropicModel] + [m.value for m in LMQLModel] + [m.value for m in LocalModel],
         case_sensitive=False
     ),
     default=OpenAIModel.GPT_35_TURBO.value,
@@ -192,6 +193,9 @@ def main(
     elif model in set(m.value for m in LMQLModel):
         print('Using LMQL model')
         adapter = LMQLAdapter(LMQLModel(model))
+    elif model in set(m.value for m in LocalModel):
+        print('Using Local model: ', model)
+        adapter = LocalAdapter(LocalModel(model))
     else:
         raise ValueError(f'Invalid model {model}')
     query_list = []
