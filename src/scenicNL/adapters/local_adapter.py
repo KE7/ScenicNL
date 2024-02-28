@@ -101,7 +101,7 @@ class LocalAdapter(ModelAdapter):
 
         response = requests.post(self.ENDPOINT, json=data)
         if response.status_code != 200:
-            raise ValueError(f"Request failed with status code {response.status_code}: {response.text}")
+            raise ValueError(f"Local model {self._model} returned status code {response.status_code}") 
         response_body = response.json()
         content = response_body["content"]
         if verbose:
