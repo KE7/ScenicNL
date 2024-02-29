@@ -66,7 +66,7 @@ def main():
         file_okay=False,
         dir_okay=True,
     ),
-    default="report_txts",
+    default="Scenic-CA-AV-Crash/crash_reports/uncategorized",
     show_default=True,
     help="Path to text directory for report text.",
 )
