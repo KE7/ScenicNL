@@ -19,10 +19,10 @@ OpenAI API key if you have not already:
 One good option for a local model, is the Mixtral Mixture of Experts model from Mistral AI.
 While you can run mixtral just fine through `llama.cpp`, we found in our experience, that it's just a bit faster
 to use [Mozilla's Llamafile](https://github.com/Mozilla-Ocho/llamafile). Our code does not make any assumption 
-on which local model you choose to run from there but we found the Mixtral-8x7B-Instruct to work great for us.
+on which local model you choose to run from there but we found the Mixtral-8x7B-Instruct works great for our use case.
 Once you have picked which model to download from there list of supported models, follow the first 4 step's 
 [quick start guide](https://github.com/Mozilla-Ocho/llamafile) to almost get running.
-For step 5 when you are about to run the `llamafile`, also add the arugments: `--server -np 10` where `np` is the 
+For step 5 when you are about to run the `llamafile`, also add the arguments: `--server -np 10` where `np` is the 
 number of server threads (so 10 in this case) which should be **greater than or equal to** the number of worker threads you will use 
 in ScenicNL.
 
