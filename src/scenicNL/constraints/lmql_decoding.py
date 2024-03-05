@@ -155,8 +155,8 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_retry
 
 def check_compile(scenic_program):
     with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
-            fname = temp_file.name
-            print(f'$$$: {fname}')
+        fname = temp_file.name
+        print(f'$$$: {fname}')
         try:
             # ast = scenic.syntax.parser.parse_file(fname)
             scenario = scenic.scenarioFromFile(fname, mode2D=True)
