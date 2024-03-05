@@ -26,7 +26,7 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
     "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
     
     "## DEFINING BEHAVIORS\n"
-    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") 
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
 
     "## DEFINING SPATIAL RELATIONS\n"
     "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
@@ -69,13 +69,23 @@ def regenerate_scenic(uncompiled_scenic, error_message, lmql_outputs):
 
     "{working_scenic}\n"   
 
-    "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
+    if "OTHER_CONSTANTS_TODO" in lmql_outputs:
+        "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
+    else:
+        OTHER_CONSTANTS = None
     
-    "## DEFINING BEHAVIORS\n"
-    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+    if "VEHICLE_BEHAVIORS_TODO" in lmql_outputs:
+        "## DEFINING BEHAVIORS\n"
+        "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+    else:
+        BEHAVIORS = None
+    
 
-    "## DEFINING SPATIAL RELATIONS\n"
-    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    if "SPATIAL_RELATIONS_TODO" in lmql_outputs:
+        "## DEFINING SPATIAL RELATIONS\n"
+        "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    else:
+        SPATIAL_RELATIONS = None
     
     return {
         "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
@@ -139,15 +149,18 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=
             if not compiles:
                 print(f'DID NOT COMPILE: {uncompiled_scenic}')
                 #regenerate this section and next
-                lmql_outputs = regenerate_lmql(uncompiled_scenic, error_message, lmql_outputs)
+                print(f"ERROR {error_message}")
+                lmql_outputs = regenerate_scenic(uncompiled_scenic, error_message, lmql_outputs)
+                lmql_outputs = {k: v for k, v in lmql_outputs.items() if v is not None}
                 max_retries -= 1
             else:
-                print(f'DID COMPILE: {uncompiled_scenic}')
                 final_scenic = uncompiled_scenic
                 working_key = section_keys.pop(0)
                 lmql_outputs.pop(working_key, None)
                 i += 1
                 max_retries = 3
+        if max_retries == 0:
+            print("RAN OUT OF RETRIES RIP")
 
     return final_scenic
 
