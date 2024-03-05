@@ -4,6 +4,7 @@ import string
 import time
 import tempfile
 import scenic
+import os
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_scenic_code(example_prompt, towns, vehicles, weather):
@@ -126,9 +127,9 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=
         template_sections = scenic_template.split("##")
         template_sections = ["##" + section for section in template_sections]
         print(template_sections)
-        final_scenic = template_sections[0].format_map(lmql_outputs) #this should compile everytime
+        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
 
-        for i in range(1, len(template_sections)):
+        for i in range(2, len(template_sections)):
             uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs)
             #check if compiles
             compiles, error_message = check_compile(uncompiled_scenic)
@@ -146,6 +147,7 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=
 
 def check_compile(scenic_program):
     retries_dir = os.path.join(os.curdir, 'temp_dir')
+    os.makedirs(retries_dir, exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
         fname = temp_file.name
         print(f'$$$: {fname}')
