@@ -161,26 +161,40 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=
                 max_retries = 3
         if max_retries == 0:
             print("RAN OUT OF RETRIES RIP")
+        print('CHECKING FINAL SCENIC')
+        compiles, message = check_compile(final_scenic)
+        print(f'compiles: {compiles}, message: {message}')
 
     return final_scenic
 
 def check_compile(scenic_program):
     retries_dir = os.path.join(os.curdir, 'temp_dir')
     os.makedirs(retries_dir, exist_ok=True)
+    works, error_message = True, ""
     with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
         fname = temp_file.name
+        with open(fname, 'w') as f:
+            f.write(scenic_program)
         try:
-            # ast = scenic.syntax.parser.parse_file(fname)
             scenario = scenic.scenarioFromFile(fname, mode2D=True)
-            print('No error!')
-            retries = 0 # If this statement is reached program worked -> terminates loop
-            return True, ""
+            print('No execution error!')
         except Exception as e:
-            print(f'Retrying... {retries}')
             try:
                 error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
                 print(error_message)
             except:
                 error_message = f'Error details below..\nmessage: {str(e)}'
                 print(error_message)
-            return False, error_message
+            works = False
+        try:
+            if works: ast = scenic.syntax.parser.parse_file(fname)
+            print('No execution error!')
+        except Exception as e:
+            try:
+                error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                print(error_message)
+            except:
+                error_message = f'Error details below..\nmessage: {str(e)}'
+                print(error_message)
+            works = False
+    return works, error_message
