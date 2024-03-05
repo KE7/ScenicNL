@@ -109,6 +109,7 @@ class LMQLAdapter(ModelAdapter):
         max_length_tokens: int,
         prompt_type: LLMPromptType,
         verbose: bool,
+        max_retries: int,
     ) -> str:
         
         example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)

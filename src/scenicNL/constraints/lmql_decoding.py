@@ -2,6 +2,8 @@ import lmql
 import numpy as np
 import string
 import time
+import scenic
+
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_scenic_code(example_prompt, towns, vehicles, weather):
@@ -40,6 +42,68 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
 
     '''
 
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def fix_starting_other_constants(fix_prompt, working_scenic):
+    '''lmql
+    
+    {fix_prompt}
+
+    {working_scenic}   
+    "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
+    
+    "## DEFINING BEHAVIORS\n"
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+
+    "## DEFINING SPATIAL RELATIONS\n"
+    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    
+    return {
+        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
+        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+    }
+
+    '''
+
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def fix_starting_behaviors(fix_prompt, working_scenic):
+    '''lmql
+    
+    {fix_prompt}
+
+    {working_scenic}   
+   
+    "## DEFINING BEHAVIORS\n"
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+
+    "## DEFINING SPATIAL RELATIONS\n"
+    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    
+    return {
+        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+    }
+
+    '''
+
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def fix_starting_spatial_relations(fix_prompt, working_scenic):
+    '''lmql
+    
+    {fix_prompt}
+
+    {working_scenic}   
+   
+    "## DEFINING SPATIAL RELATIONS\n"
+    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    
+    return {
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+    }
+
+    '''
+
+
 
 def strip_other_constants(other_constants):
     """
@@ -50,7 +114,7 @@ def strip_other_constants(other_constants):
     
 
 
-def construct_scenic_program(example_prompt, nat_lang_scene_des):
+def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_retry=True):
     """
     constructs a scenic program using the template in lmql_template.scenic 
     """
@@ -71,6 +135,42 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
     lmql_outputs["TEXT_DESCRIPTION_TODO"] = nat_lang_scene_des
     
     #complete the template using the lmql_outputs
-    final_scenic = scenic_template.format_map(lmql_outputs)
+    if not segmented_retry:
+        final_scenic = scenic_template.format_map(lmql_outputs)
+    else:
+        template_sections = scenic_template.split("##")
+        final_scenic = template_sections[0].format_map(lmql_outputs) #this should compile everytime
+
+        for i in range(1, len(template_sections)):
+            uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs)
+            #check if compiles
+            compiles, error_message = check_compile(uncompiled_scenic)
+            if not compiles:
+                #regenerate this section and next
+                lmql_outputs = regenerate_lmql(uncompiled_scenic, error_message)
+            else:
+                final_scenic = uncompiled_sceni
 
     return final_scenic
+
+def check_compile(scenic_program):
+    with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
+            fname = temp_file.name
+            print(f'$$$: {fname}')
+        try:
+            # ast = scenic.syntax.parser.parse_file(fname)
+            scenario = scenic.scenarioFromFile(fname, mode2D=True)
+            if verbose_retry: print('No error!')
+            retries = 0 # If this statement is reached program worked -> terminates loop
+            return True, ""
+        except Exception as e:
+            if verbose_retry: print(f'Retrying... {retries}')
+            try:
+                error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                if verbose_retry: print(error_message)
+            except:
+                error_message = f'Error details below..\nmessage: {str(e)}'
+                if verbose_retry: print(error_message)
+            return False, error_message
+    
+

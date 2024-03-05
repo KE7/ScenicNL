@@ -792,7 +792,7 @@ class AnthropicAdapter(ModelAdapter):
             elif prompt_type == LLMPromptType.PREDICT_LMQL_TO_HYDE:
                 #get initial response from LMQL
                 lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
-                response  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+                response  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose, max_retries=0)
 
                 #use response in HYDE - We need to call Claude again
                 new_model_input = ModelInput(
