@@ -40,6 +40,49 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
 
     '''
 
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def regenerate_scenic(uncompiled_scenic, error_message, lmql_outputs):
+    '''lmql
+    
+    Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+    Here is one example of a fully compiling Scenic program:
+    {example_1}
+
+    Create a fully compiling Scenic program that models the description based on:
+
+    1. The following natural language description:
+    {natural_language_description}
+
+    2. The following scenic program with compiler errors that models the description:
+    {first_attempt_scenic_program}
+
+    3. The first compiler error raised with the scenic program:
+    {compiler_error}
+
+    Please output a modified version of scenic_program modified so the compiler error does not appear.
+
+    OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.
+
+    {working_scenic}   
+    "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
+    
+    "## DEFINING BEHAVIORS\n"
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+
+    "## DEFINING SPATIAL RELATIONS\n"
+    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    
+    return {
+        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
+        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+    }
+
+    '''
+
+
+
 
 def strip_other_constants(other_constants):
     """
@@ -69,8 +112,46 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
 
     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
     lmql_outputs["TEXT_DESCRIPTION_TODO"] = nat_lang_scene_des
+
+    section_keys =  ["OTHER_CONSTANTS_TODO", "VEHICLE_BEHAVIORS_TODO" , "SPATIAL_RELATIONS_TODO"]
     
     #complete the template using the lmql_outputs
-    final_scenic = scenic_template.format_map(lmql_outputs)
+    if not segmented_retry:
+        final_scenic = scenic_template.format_map(lmql_outputs)
+    else:
+        template_sections = scenic_template.split("##")
+        final_scenic = template_sections[0].format_map(lmql_outputs) #this should compile everytime
+
+        for i in range(1, len(template_sections)):
+            uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs)
+            #check if compiles
+            compiles, error_message = check_compile(uncompiled_scenic)
+            if not compiles:
+                #regenerate this section and next
+                lmql_outputs = regenerate_lmql(uncompiled_scenic, error_message, lmql_outputs)
+            else:
+                final_scenic = uncompiled_scenic
+                working_key = section_keys.pop(0)
+                lmql_outputs.pop(working_key, None)
 
     return final_scenic
+
+def check_compile(scenic_program):
+    with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
+            fname = temp_file.name
+            print(f'$$$: {fname}')
+        try:
+            # ast = scenic.syntax.parser.parse_file(fname)
+            scenario = scenic.scenarioFromFile(fname, mode2D=True)
+            if verbose_retry: print('No error!')
+            retries = 0 # If this statement is reached program worked -> terminates loop
+            return True, ""
+        except Exception as e:
+            if verbose_retry: print(f'Retrying... {retries}')
+            try:
+                error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
+                if verbose_retry: print(error_message)
+            except:
+                error_message = f'Error details below..\nmessage: {str(e)}'
+                if verbose_retry: print(error_message)
+            return False, error_message
