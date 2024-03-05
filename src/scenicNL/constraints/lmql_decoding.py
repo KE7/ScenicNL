@@ -2,6 +2,8 @@ import lmql
 import numpy as np
 import string
 import time
+import tempfile
+import scenic
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_scenic_code(example_prompt, towns, vehicles, weather):
@@ -23,7 +25,7 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
     "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
     
     "## DEFINING BEHAVIORS\n"
-    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") 
 
     "## DEFINING SPATIAL RELATIONS\n"
     "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
@@ -44,27 +46,27 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
 def regenerate_scenic(uncompiled_scenic, error_message, lmql_outputs):
     '''lmql
     
-    Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
 
-    Here is one example of a fully compiling Scenic program:
-    {example_1}
+    "Here is one example of a fully compiling Scenic program:\n"
+    "{example_1}\n"
 
-    Create a fully compiling Scenic program that models the description based on:
+    "Create a fully compiling Scenic program that models the description based on:\n"
 
-    1. The following natural language description:
-    {natural_language_description}
+    "1. The following natural language description:\n"
+    "{natural_language_description}\n"
 
-    2. The following scenic program with compiler errors that models the description:
-    {first_attempt_scenic_program}
+    "2. The following scenic program with compiler errors that models the description:\n"
+    "{first_attempt_scenic_program}\n"
 
-    3. The first compiler error raised with the scenic program:
-    {compiler_error}
+    "3. The first compiler error raised with the scenic program:\n"
+    "{compiler_error}\n"
 
-    Please output a modified version of scenic_program modified so the compiler error does not appear.
+    "Please output a modified version of scenic_program modified so the compiler error does not appear.\n"
 
-    OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.
+    "OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.\n"
 
-    {working_scenic}   
+    "{working_scenic}\n"   
     "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
     
     "## DEFINING BEHAVIORS\n"
@@ -93,7 +95,7 @@ def strip_other_constants(other_constants):
     
 
 
-def construct_scenic_program(example_prompt, nat_lang_scene_des):
+def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=False):
     """
     constructs a scenic program using the template in lmql_template.scenic 
     """
@@ -116,10 +118,14 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
     section_keys =  ["OTHER_CONSTANTS_TODO", "VEHICLE_BEHAVIORS_TODO" , "SPATIAL_RELATIONS_TODO"]
     
     #complete the template using the lmql_outputs
+    segmented_retry = True
     if not segmented_retry:
         final_scenic = scenic_template.format_map(lmql_outputs)
     else:
+        print('Segmenting retries')
         template_sections = scenic_template.split("##")
+        template_sections = ["##" + section for section in template_sections]
+        print(template_sections)
         final_scenic = template_sections[0].format_map(lmql_outputs) #this should compile everytime
 
         for i in range(1, len(template_sections)):
@@ -127,9 +133,11 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
             #check if compiles
             compiles, error_message = check_compile(uncompiled_scenic)
             if not compiles:
+                print(f'DID NOT COMPILE: {uncompiled_scenic}')
                 #regenerate this section and next
                 lmql_outputs = regenerate_lmql(uncompiled_scenic, error_message, lmql_outputs)
             else:
+                print(f'DID COMPILE: {uncompiled_scenic}')
                 final_scenic = uncompiled_scenic
                 working_key = section_keys.pop(0)
                 lmql_outputs.pop(working_key, None)
@@ -137,9 +145,10 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des):
     return final_scenic
 
 def check_compile(scenic_program):
+    retries_dir = os.path.join(os.curdir, 'temp_dir')
     with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
-            fname = temp_file.name
-            print(f'$$$: {fname}')
+        fname = temp_file.name
+        print(f'$$$: {fname}')
         try:
             # ast = scenic.syntax.parser.parse_file(fname)
             scenario = scenic.scenarioFromFile(fname, mode2D=True)
