@@ -68,6 +68,7 @@ def regenerate_scenic(uncompiled_scenic, error_message, lmql_outputs):
     "OUTPUT NO OTHER LEADING OR TRAILING TEXT OR WHITESPACE BESIDES THE CORRECTED SCENIC PROGRAM. NO ONE CARES.\n"
 
     "{working_scenic}\n"   
+
     "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
     
     "## DEFINING BEHAVIORS\n"
@@ -128,8 +129,10 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=
         template_sections = ["##" + section for section in template_sections]
         print(template_sections)
         final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
-
-        for i in range(2, len(template_sections)):
+        
+        i = 2
+        max_retries = 3
+        while i < len(template_sections) and max_retries > 0:
             uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs)
             #check if compiles
             compiles, error_message = check_compile(uncompiled_scenic)
@@ -137,11 +140,14 @@ def construct_scenic_program(example_prompt, nat_lang_scene_des, segmented_rety=
                 print(f'DID NOT COMPILE: {uncompiled_scenic}')
                 #regenerate this section and next
                 lmql_outputs = regenerate_lmql(uncompiled_scenic, error_message, lmql_outputs)
+                max_retries -= 1
             else:
                 print(f'DID COMPILE: {uncompiled_scenic}')
                 final_scenic = uncompiled_scenic
                 working_key = section_keys.pop(0)
                 lmql_outputs.pop(working_key, None)
+                i += 1
+                max_retries = 3
 
     return final_scenic
 
@@ -150,7 +156,6 @@ def check_compile(scenic_program):
     os.makedirs(retries_dir, exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=retries_dir, delete=False, suffix='.scenic') as temp_file:
         fname = temp_file.name
-        print(f'$$$: {fname}')
         try:
             # ast = scenic.syntax.parser.parse_file(fname)
             scenario = scenic.scenarioFromFile(fname, mode2D=True)
