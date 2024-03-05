@@ -154,15 +154,15 @@ def check_compile(scenic_program):
         try:
             # ast = scenic.syntax.parser.parse_file(fname)
             scenario = scenic.scenarioFromFile(fname, mode2D=True)
-            if verbose_retry: print('No error!')
+            print('No error!')
             retries = 0 # If this statement is reached program worked -> terminates loop
             return True, ""
         except Exception as e:
-            if verbose_retry: print(f'Retrying... {retries}')
+            print(f'Retrying... {retries}')
             try:
                 error_message = f"Error details below..\nmessage: {str(e)}\ntext: {e.text}\nlineno: {e.lineno}\nend_lineno: {e.end_lineno}\noffset: {e.offset}\nend_offset: {e.end_offset}"
-                if verbose_retry: print(error_message)
+                print(error_message)
             except:
                 error_message = f'Error details below..\nmessage: {str(e)}'
-                if verbose_retry: print(error_message)
+                print(error_message)
             return False, error_message
