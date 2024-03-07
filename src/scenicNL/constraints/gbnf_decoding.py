@@ -3,9 +3,12 @@
 from typing import Dict, List
 import openai
 import os
+import requests
 
 import yaml
-from scenicNL.common import ModelInput, PromptFiles
+import scenic
+from scenicNL.common import LOCAL_MODEL_DEFAULT_PARAMS, LOCAL_MODEL_ENDPOINT, ModelInput, PromptFiles
+import tempfile
 
 class CompositionalScenic():
 
@@ -139,7 +142,52 @@ class CompositionalScenic():
         # we will ask the LLM to take the objects and scenic distributions and
         # declare them as constants in a Scenic program
         # we can re-try up to compiler_error many times
-        
+        # TODO: get compiler_error from config
+        prompt = questions["constants"]["prompt"].format(
+                    example_1=model_input.examples[0],
+                    example_2=model_input.examples[1],
+                    example_3=model_input.examples[2],
+                    objects=objects,
+                    distributions=scenic_dists,
+                )
+        for _ in range(5):
+            user_message = {
+                "role": "user",
+                "content": prompt,
+            }
+            data = {"prompt": prompt, "temperature": temperature} | LOCAL_MODEL_DEFAULT_PARAMS
+            data["grammar"] = questions["constants"]["grammar"]
+
+            response = requests.post(LOCAL_MODEL_ENDPOINT, json=data)
+            if response.status_code != 200:
+                raise ValueError(f"Local model returned status code {response.status_code}") 
+            response_body = response.json()
+            content = response_body["content"]
+            if verbose:
+                print("---- Predicted constants section of Scenic program ----")
+                print(content)
+                print("---- End of predicted constants section of Scenic program ----")
+            scenic_program = content.split("FINAL_ANSWER: ")[-1]
+            # Let's write the scenic program to a temp file
+            with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
+                f.write(scenic_program)
+                temp_file_path = f.name
+            try:
+                scenic.scenarioFromFile(temp_file_path, mode2D=True)
+                os.remove(temp_file_path)
+                return scenic_program
+            except Exception as e:
+                # TODO modify prompt to include the compiler_error
+                print("Error compiling Scenic program.")
+                print(e)
+                print(scenic_program)
+                print("Retrying...")
+                os.remove(temp_file_path)
+                continue
+
+        # we could not compile the program so we just return our best effort
+        # TODO: do a GPT-Judge thing here and ask which was the best then return that one?
+        return scenic_program
 
         
 

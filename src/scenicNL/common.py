@@ -289,3 +289,25 @@ def few_shot_prompt_with_rag(
             first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
         return few_shot_prompt_generator(relevant_model_input, False)
+
+
+LOCAL_MODEL_ENDPOINT = "http://127.0.0.1:8080/completion"
+LOCAL_MODEL_DEFAULT_PARAMS = {
+    "cache_prompt": False,
+    "image_data": [],
+    "mirostat": 0,
+    "mirostat_eta": 0.1,
+    "mirostat_tau": 5,
+    "n_predict": -1,
+    "n_probs": 2,
+    "presence_penalty": 0,
+    "repeat_last_n": 241,
+    "repeat_penalty": 1.18,
+    "slot_id": 0,
+    # "stop": ["Question:", "Answer:"],
+    #"stream": False,
+    "tfs_z": 1,
+    "top_k": 40,
+    "top_p": 0.5,
+    "typical_p": 1,
+}
