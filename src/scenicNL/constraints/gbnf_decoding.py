@@ -144,9 +144,9 @@ class CompositionalScenic():
         # we can re-try up to compiler_error many times
         # TODO: get compiler_error from config
         prompt = questions["constants"]["prompt"].format(
-                    example_1=model_input.examples[0],
-                    example_2=model_input.examples[1],
-                    example_3=model_input.examples[2],
+                    example_1=model_input.examples[0], # TODO: these examples are wrong
+                    example_2=model_input.examples[1], # TODO: they are full scenic programs
+                    example_3=model_input.examples[2], # TODO: we need just the constants section
                     objects=objects,
                     distributions=scenic_dists,
                 )
