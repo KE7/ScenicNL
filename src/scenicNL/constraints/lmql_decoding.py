@@ -180,8 +180,8 @@ def construct_scenic_program(model_input, example_prompt, nat_lang_scene_des, se
 
             compiles, error_message = check_compile(uncompiled_scenic)
             # reassign values in model_input
-            model_input.first_attempt_scenic_program = uncompiled_scenic
-            model_input.compiler_error = error_message
+            model_input.set_fasp(uncompiled_scenic)
+            model_input.set_err(error_message)
             print('****\n\n\n\n')
             print(uncompiled_scenic)
             print('%%%%\n\n\n\n')

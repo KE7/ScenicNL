@@ -68,6 +68,12 @@ class ModelInput:
     def set_exs(self, examples):
         object.__setattr__(self, 'examples', examples)
 
+    def set_fasp(self, first_attempt_scenic_program):
+        object.__setattr__(self, 'first_attempt_scenic_program', first_attempt_scenic_program)
+    
+    def set_err(self, compiler_error):
+        object.__setattr__(self, 'compiler_error', compiler_error)
+
 
 
 def load_jsonl(
