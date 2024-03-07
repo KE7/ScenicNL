@@ -4,11 +4,11 @@ import json
 import requests
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import LOCAL_MODEL_DEFAULT_PARAMS, LOCAL_MODEL_ENDPOINT, LLMPromptType, ModelInput, VectorDB
-from scenicNL.constraints.gbnf_decoding import CompositionalScenic, compositionally_construct_scenic_program
+from scenicNL.constraints.gbnf_decoding import CompositionalScenic
 
 
 class LocalModel(Enum):
-    MIXTRAL = "mixtral-8x7b"
+    local = "local"
     
 
 class LocalAdapter(ModelAdapter):
@@ -49,8 +49,8 @@ class LocalAdapter(ModelAdapter):
         msg = None
         # TODO: Add more prompt types
 
-        if msg is None:
-            raise NotImplementedError(f"Prompt type {prompt_type} was not formatted for Anthropic model {self._model.value}")
+        # if msg is None:
+        #     raise NotImplementedError(f"Prompt type {prompt_type} was not formatted for Local model {self._model.value}")
         
         return msg
     

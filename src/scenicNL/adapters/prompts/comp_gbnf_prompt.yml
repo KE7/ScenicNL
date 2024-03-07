@@ -2,7 +2,7 @@
   context: |-
     Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
 
-    We are going to play a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:
+    We are going to play a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. The total of the responses should be no more than 1,000 words. Use the following format:
     EXPERT_1:
     <expert_1_answer>
     EXPERT_2:
@@ -11,9 +11,6 @@
     <expert_3_answer>
     FINAL_ANSWER:
     <final_answer>
-
-    Here is one example of a Scenic program:
-    {example_1}
 
   discussion_grammar: |
     document ::= expert_1 expert_2 expert_3 final_answer
@@ -440,5 +437,11 @@
       {objects}
       {distributions}
 
-      SCENIC_PROGRAM: 
+      FINAL_ANSWER:
+      <final_answer>
+
+    grammar: |-
+      root ::= talking program
+      talking ::= [^"FINAL_ANSWER:"]+
+      program ::= ["FINAL_ANSWER:"]+
 

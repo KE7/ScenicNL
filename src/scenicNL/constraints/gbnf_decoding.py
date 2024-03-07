@@ -39,7 +39,7 @@ class CompositionalScenic():
         # the answer is provided as 3 experts and 1 final where each of them
         # says JUSTIFICATION and FINAL_ANSWER
         # we just want the FINAL_ANSWER of the final
-        answer = answer.split("FINAL_ANSWER: ")[-1]
+        answer = answer.split("FINAL_ANSWER:")[-1]
 
         return answer
 
@@ -202,9 +202,9 @@ class CompositionalScenic():
         Constructs a scenic program by parts
         """
         questions = None
-        with os.open(PromptFiles.COMPOSITIONAL_GBNF.value) as f:
-            prompt = f.read()
-            questions = yaml.safe_load(prompt)
+        with open(PromptFiles.COMPOSITIONAL_GBNF.value, "r") as f:
+            contents = f.read()
+            questions = yaml.safe_load(contents)
 
         system_message = {
             "role": "system",
