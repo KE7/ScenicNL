@@ -1,0 +1,444 @@
+---
+  context: |-
+    Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+    We are going to play a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:
+    EXPERT_1:
+    <expert_1_answer>
+    EXPERT_2:
+    <expert_2_answer>
+    EXPERT_3:
+    <expert_3_answer>
+    FINAL_ANSWER:
+    <final_answer>
+
+    Here is one example of a Scenic program:
+    {example_1}
+
+  discussion_grammar: |
+    document ::= expert_1 expert_2 expert_3 final_answer
+    expert_1 ::= "EXPERT_1:" expert_1_answer
+    expert_2 ::= "EXPERT_2:" expert_2_answer
+    expert_3 ::= "EXPERT_3:" expert_3_answer
+    final_answer ::= "FINAL ANSWER:" final_answer
+    expert_1_answer ::= [^"EXPERT_1:"]+
+    expert_2_answer ::= [^"EXPERT_2:"]+
+    expert_3_answer ::= [^"EXPERT_3:"]+
+    final_answer ::= [^"FINAL_ANSWER:"]+
+  
+  one:
+    question: |-
+        Original description:
+        {description}
+
+        Based on the description, what are the all of the objects that need to be included in the scene?
+        First provide step-by-step justification for all objects you chosen then provide your final answer as:
+
+        JUSTIFICATION:
+        <step_by_step_justification_for_the_objects>
+
+        FINAL_ANSWER:
+        <final_answer>
+
+  nine: # with help from src/scenic/simulators/carla/blueprints.py
+    question: |-
+      {objects_from_one}
+      Given the relevant objects that you identified above, find the closest matching Scenic object from the list. You cannot choose objects that are not in the list so if you cannot find the object in the list, you must choose the closest matching object.
+
+      cars = [
+          "Audi - A2": "vehicle.audi.a2", 
+          "Audi - E-Tron": "vehicle.audi.etron",
+          "Audi - TT": "vehicle.audi.tt",
+          "BMW - Gran Tourer": "vehicle.bmw.grandtourer",
+          "Chevrolet - Impala": "vehicle.chevrolet.impala",
+          "Citroen - C3": "vehicle.citroen.c3",
+          "Dodge - Charger 2020": "vehicle.dodge.charger_2020",
+          "Dodge - Police Charger": "vehicle.dodge.charger_police",
+          "Dodge - Police Charger 2020": "vehicle.dodge.charger_police_2020",
+          "Ford - Crown (taxi)": "vehicle.ford.crown",
+          "Ford - Mustang": "vehicle.ford.mustang",
+          "Jeep - Wrangler Rubicon": "vehicle.jeep.wrangler_rubicon",
+          "Lincoln - MKZ 2017": "vehicle.lincoln.mkz_2017",
+          "Lincoln - MKZ 2020": "vehicle.lincoln.mkz_2020",
+          "Mercedes - Coupe": "vehicle.mercedes.coupe",
+          "Mercedes - Coupe 2020": "vehicle.mercedes.coupe_2020",
+          "Micro - Microlino": "vehicle.micro.microlino",
+          "Mini - Cooper S": "vehicle.mini.cooper_s",
+          "Mini - Cooper S 2021": "vehicle.mini.cooper_s_2021",
+          "Nissan - Micra": "vehicle.nissan.micra",
+          "Nissan - Patrol": "vehicle.nissan.patrol",
+          "Nissan - Patrol 2021": "vehicle.nissan.patrol_2021",
+          "Seat - Leon": "vehicle.seat.leon",
+          "Tesla - Model 3": "vehicle.tesla.model3",
+          "Toyota - Prius": "vehicle.toyota.prius"
+      ]
+      trucks = [
+          "CARLA Motors - CarlaCola": "vehicle.carlamotors.carlacola",
+          "CARLA Motors - European HGV (cab-over-engine type)": "vehicle.carlamotors.european_hgv",
+          "CARLA Motors - Firetruck": "vehicle.carlamotors.firetruck",
+          "Tesla - Cybertruck": "vehicle.tesla.cybertruck"
+      ]
+      vans = [
+          "Ford - Ambulance": "vehicle.ford.ambulance",
+          "Mercedes - Sprinter": "vehicle.mercedes.sprinter",
+          "Volkswagen - T2": "vehicle.volkswagen.t2",
+          "Volkswagen - T2 2021": "vehicle.volkswagen.t2_2021"
+      ]
+      buses = [
+        "Mitsubishi - Fusorosa": "vehicle.mitsubishi.fusorosa",
+      ]
+      motorcycles = [
+          "Harley Davidson - Low Rider": "vehicle.harley-davidson.low_rider",
+          "Kawasaki - Ninja": "vehicle.kawasaki.ninja",
+          "Vespa - ZX 125": "vehicle.vespa.zx125",
+          "Yamaha - YZF": "vehicle.yamaha.yzf"
+      ]
+      bicycles = [
+          "BH - Crossbike": "vehicle.bh.crossbike",
+          "Diamondback - Century": "vehicle.diamondback.century",
+          "Gazelle - Omafiets": "vehicle.gazelle.omafiets"
+      ]
+      trashCanModels = [
+          "static.prop.trashcan01",
+          "static.prop.trashcan02",
+          "static.prop.trashcan03",
+          "static.prop.trashcan04",
+          "static.prop.trashcan05",
+          "static.prop.bin",
+      ]
+      trafficConeModels = [
+          "static.prop.constructioncone",
+          "static.prop.trafficcone01",
+          "static.prop.trafficcone02",
+      ]
+      roadDebrisModels = [
+          "static.prop.dirtdebris01",
+          "static.prop.dirtdebris02",
+          "static.prop.dirtdebris03",
+      ]
+      vendingMachineModels = [
+          "static.prop.vendingmachine",
+      ]
+      chairModels = [
+          "static.prop.plasticchair",
+      ]
+      busStopModels = [
+          "static.prop.busstop",
+      ]
+      roadsideAdvertisementBillboardModels = [
+          "static.prop.advertisement",
+          "static.prop.streetsign",
+          "static.prop.streetsign01",
+          "static.prop.streetsign04",
+      ]
+      garbageYouFindOnTheStreetModels = [
+          "static.prop.colacan",
+          "static.prop.garbage01",
+          "static.prop.garbage02",
+          "static.prop.garbage03",
+          "static.prop.garbage04",
+          "static.prop.garbage05",
+          "static.prop.garbage06",
+          "static.prop.plasticbag",
+          "static.prop.trashbag",
+      ]
+      containerModels = [
+          "static.prop.container",
+          "static.prop.clothcontainer",
+          "static.prop.glasscontainer",
+      ]
+      tableModels = [
+          "static.prop.table",
+          "static.prop.plastictable",
+      ]
+      trafficBarrierModels = [
+          "static.prop.streetbarrier",
+          "static.prop.chainbarrier",
+          "static.prop.chainbarrierend",
+      ]
+      plantpotModels = [
+          "static.prop.plantpot01",
+          "static.prop.plantpot02",
+          "static.prop.plantpot03",
+          "static.prop.plantpot04",
+          "static.prop.plantpot05",
+          "static.prop.plantpot06",
+          "static.prop.plantpot07",
+          "static.prop.plantpot08",
+      ]
+      mailboxModels = [
+          "static.prop.mailbox",
+      ]
+      gnomeModels = [
+          "static.prop.gnome",
+      ]
+      creasedBoxModels = [
+          "static.prop.creasedbox01",
+          "static.prop.creasedbox02",
+          "static.prop.creasedbox03",
+      ]
+      travelCaseModels = [
+          "static.prop.travelcase",
+          "static.prop.briefcase",
+          "static.prop.guitarcase",
+      ]
+      boxModels = [
+          "static.prop.box01",
+          "static.prop.box02",
+          "static.prop.box03",
+      ]
+      pedestrianBenchModels = [
+          "static.prop.bench01",
+          "static.prop.bench02",
+          "static.prop.bench03",
+      ]
+      oilBarrelModels = [
+          "static.prop.barrel",
+      ]
+      atmModels = [
+          "static.prop.atm",
+      ]
+      kioskModels = [
+          "static.prop.kiosk_01",
+      ]
+      ironPlatOnRoadModels = [
+          "static.prop.ironplank",
+      ]
+      trafficwarningModels = [
+          "static.prop.trafficwarning",
+      ]
+      pedestrianModels = [
+          "walker.pedestrian.0001",
+          "walker.pedestrian.0002",
+          "walker.pedestrian.0003",
+          "walker.pedestrian.0004",
+          "walker.pedestrian.0005",
+          "walker.pedestrian.0006",
+          "walker.pedestrian.0007",
+          "walker.pedestrian.0008",
+          "walker.pedestrian.0009",
+          "walker.pedestrian.0010",
+          "walker.pedestrian.0011",
+          "walker.pedestrian.0012",
+          "walker.pedestrian.0013",
+          "walker.pedestrian.0014",
+      ]
+
+      Based on the description, what are the all of the objects that need to be included in the scene?
+      Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer. For example:
+      EXPLANATION:
+      <justification_for_the_objects>
+
+      FINAL_ANSWER:
+      CAR = 'vehicle.audi.a2'
+      BICYCLE = 'vehicle.diamondback.century'
+
+  four:
+    a:
+      question: |-
+        Original description:
+        {description}
+
+        What details about the world and environment are missing from the description? (e.g. what is the weather, time of day, etc.)
+
+        Each expert and the final answer should be provided in the following format:
+        MISSING_ENV_INFO:
+        <missing_env_info>
+    b:
+      question: |-
+        Original description:
+        {description}
+        
+        Relevant objects:
+        {objects_from_nine}
+
+        Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)
+
+        Each expert and the final answer should be provided in the following format:
+        MISSING_OBJECT_INFO:
+        <missing_object_info>
+
+  five:
+    question: |-
+        Original description:
+        {description}
+
+        Missing object information:
+        {missing_object_info}
+
+        Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.
+
+        Each expert and the final answer should be provided in the following format:
+        DISTRIBUTION:
+        <distribution>
+
+        FINAL_ANSWER:
+        <final_answer>
+
+  six:
+    question: |-
+        Missing information:
+        {missing_info}
+
+        Distributions for missing information:
+        {distributions}
+
+        Based on the missing information and distributions above, pick from the following list of distributions that are supported. You may not use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution:
+        Range(low, high) - Uniform distribution over the range [low, high]
+        DiscreteRange(low, high) - Uniform distribution over the discreet integer range [low, high]
+        Normal(mean, std) - Normal distribution with mean and standard deviation
+        TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [low, high]
+        Uniform(value, …) - Uniform distribution over the values provided
+        Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights
+
+        Each expert and the final answer should be provided in the following format:
+        SCENIC_DISTRIBUTION:
+        <scenic_distribution>
+
+        FINAL_ANSWER:
+        <final_answer>
+
+  seven:
+    question: |-
+        Original description:
+        {description}
+
+        Based on the original description, pick from the following the best matching town. You may not choose any other town. If you cannot find a town that matches the original description, you must choose the closest matching town. Then after selecting a town, provide a high-level description (ignoring road names) of where in the town we should replicate the original description. For example, if the original description specified a highway such as US-101, provide a description about the properties of that highway, such as it is a 4 lane road.
+        Town07 - imitates a quiet rural community, a green landscape filled with cornfields, barns, grain silos and windmills.
+        Town06 - is a low density town set into a coniferous landscape exhibiting a multitude of large, 4-6 lane roads and special junctions like the Michigan Left.
+        Town05 - is an urban environment set into a backdrop of conifer-covered hills with a raised highway and large multilane roads and junctions.
+        Town04 - is a small town with a backdrop of snow-capped mountains and conifers. A multi-lane road circumnavigates the town in a "figure of 8".
+        Town03 - is a larger town with features of a downtown urban area. The map includes some interesting road network features such as a roundabout, underpasses and overpasses. The town also includes a raised metro track and a large building under construction.
+        Town02 - is a small town with numerous T-junctions and a variety of buildings, there are patches of coniferous trees, a park and a residential and commercial area.
+        Town01 - is a small town with numerous T-junctions and a variety of buildings, surrounded by coniferous trees and featuring several small bridges spanning across a river that divides the town into 2 halves.
+
+        Each expert and the final answer should be provided in the following format:
+        TOWN:
+        <Town0x>
+
+        LOCATION_IN_TOWN:
+        <description_of_location_in_town>
+
+  three:
+    a:    
+          question: |-
+              Original description:
+              {description}
+
+              What are the main events that happened in the scene? (e.g. car stopped when pedestrian crossed the street, a car was driving in a lane then switched lanes then made a left turn, etc.). Describe these events in natural language.
+
+              Each expert and the final answer should be provided in the following format:
+              EVENTS:
+              <events_in_natural_language>
+
+    b:
+            question: |-
+                Original description:
+                {description}
+
+                Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula (the end of the events or time invariant properties). So for the events that we can, describe the end of the events in LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic: 
+                car2 not in intersection until car1 in intersection
+                eventually car2 in intersection
+                eventually ego in intersection
+                (always car.speed < 30) implies (always distance to car > 10)
+                always not ((ego can see car1) and (ego can see car2))
+
+                LTL_FORMULA:
+                <LTL_formula>
+
+  two:
+    question: |-
+          Original description:
+          {description}
+
+          Relevant Objects:
+          {relevant_objects}
+
+          Based on the relevant objects selected from the original description, what are the spacial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.
+
+          Each expert and the final answer should be provided in the following format:
+          SPATIAL_RELATIONSHIPS:
+          <spatial_relationships>
+
+          MOVEMENT:
+          <movement>
+
+          VISIBILITY:
+          <visibility>
+
+  eight:
+    question: |-
+          Original description:
+          {description}
+
+          Relevant Objects:
+          {relevant_objects}
+
+          Important Events:
+          {important_events}
+
+          Here is a list of the supported behaviors in Scenic. Based on the relevant objects and important events, which behaviors do we need to use to recreate the original description? You may select more than one behavior as they are composable. If you cannot find a behavior that matches the original description, you must choose the closest matching behavior.
+
+          Here are the only behaviors that are allowed for vehicles, buses, motorcycles, and bicycles:
+          behavior ConstantThrottleBehavior(x : float):
+          behavior DriveAvoidingCollisions(target_speed : float = 25, avoidance_threshold : float = 10):
+              # Drive at a target speed, avoiding collisions with other vehicles
+              # Throttle is off and braking is applied if the distance to the nearest vehicle is less 
+              # than the avoidance threshold
+          behavior AccelerateForwardBehavior(): # Accelerate forward with throttle set to 0.5
+          behavior FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False):
+              # Follow's the lane on which the vehicle is at, unless the laneToFollow is specified.
+              # Once the vehicle reaches an intersection, by default, the vehicle will take the straight route.
+              # If straight route is not available, then any available turn route will be taken, uniformly randomly. 
+              # If turning at the intersection, the vehicle will slow down to make the turn, safely. 
+              # This behavior does not terminate. A recommended use of the behavior is to accompany it with condition,
+              # e.g. do FollowLaneBehavior() until ...
+              # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+              # :param laneToFollow: If the lane to follow is different from the lane that the vehicle is on, this parameter can be used to specify that lane. By default, this variable will be set to None, which means that the vehicle will follow the lane that it is currently on.
+          behavior FollowTrajectoryBehavior(target_speed : float = 10, trajectory : List[Lane] = None, turn_speed : float = None):
+              # Follows the given trajectory. The behavior terminates once the end of the trajectory is reached.
+              # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+              # :param trajectory: It is a list of sequential lanes to track, from the lane that the vehicle is initially on to the lane it should end up on.
+          behavior TurnBehavior(trajectory : List[Lane] = None, target_speed : float = 6):
+              # This behavior uses a controller specifically tuned for turning at an intersection.
+              # This behavior is only operational within an intersection, it will terminate if the vehicle is outside of an intersection.
+          behavior LaneChangeBehavior(laneSectionToSwitchTo : Lane, is_oppositeTraffic : bool = False, target_speed : float = 10):
+              # is_oppositeTraffic should be specified as True only if the laneSectionToSwitch to has
+              # the opposite traffic direction to the initial lane from which the vehicle started LaneChangeBehavior
+
+          Here are the only behaviors that are allowed for pedestrians:
+          behavior WalkForwardBehavior(speed=0.5):
+              take SetWalkingDirectionAction(self.heading), SetWalkingSpeedAction(speed)
+              # Walk forward behavior for pedestrians by uniformly sampling either side of the sidewalk for the pedestrian to walk on
+          behavior WalkBehavior(maxSpeed=1.4):
+              take SetWalkAction(True, maxSpeed)
+          behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_speed=None):
+              # This behavior dynamically controls the speed of an actor that will perpendicularly (or close to)
+              # cross the road, so that it arrives at a spot in the road at the same time as a reference actor.
+              # Args:
+              # min_speed (float): minimum speed of the crossing actor. As this is a type of "synchronization action",
+              # a minimum speed is needed, to allow the actor to keep moving even if the reference actor has stopped
+              # threshold (float): starting distance at which the crossing actor starts moving
+              # final_speed (float): speed of the crossing actor after the reference one surpasses it
+
+          Each expert and the final answer should be provided in the following format:
+          BEHAVIOR:
+          <behavior>
+
+  constants:
+    prompt: |-
+      Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+      Your task is to write the first part of a Scenic program, the declaration section. This section defines, objects, agents, and distributions that are used in the program. Here are a few examples:
+      {example_1}
+
+      {example_2}
+
+      {example_3}
+
+      Please write your own declaration section from the following input. Provide only the correct Scenic program. Do not provide any other information.
+      {objects}
+      {distributions}
+
+      SCENIC_PROGRAM: 
+
