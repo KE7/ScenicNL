@@ -496,26 +496,6 @@ class AnthropicAdapter(ModelAdapter):
         )
      
         return sidequest_prompt
-    
-    # def _remove_whitespace(
-    #     self,
-    #     model_input: ModelInput,
-    #     temperature,
-    #     max_length_tokens,
-    #     verbose: bool
-    #     ) -> str:
-        
-    #     whitespace_prompt = (
-    #         f"{HUMAN_PROMPT} Please edit this text such that"
-    #         f"any whitespace appearing before the word 'param' is removed."
-    #         f"\n-- Here is the text. --\n "
-    #         f"\n\n<user_input>{model_input.first_attempt_scenic_program}\n\n</user_input>"
-    #         f"Do not include anything in your output aside from the edited texted."
-    #         f"Follow these instructions very attentively."
-    #         f"{AI_PROMPT}"
-    #     )
-     
-    #     return whitespace_prompt
 
     def _predict(
         self, 
@@ -870,24 +850,7 @@ class AnthropicAdapter(ModelAdapter):
                             )
                             model_result = str(claude_response.completion)
 
-                            # #clean output
-                            # new_model_input = ModelInput(
-                            #     examples=model_input.examples, # this will get overwritten by the search query
-                            #     nat_lang_scene_des=model_input.nat_lang_scene_des,
-                            #     first_attempt_scenic_program=str(model_result),
-                            #     compiler_error=error_message
-                            # )
-
-                            # claude_response = claude.completions.create(
-                            #     prompt=self._remove_whitespace(model_input=new_model_input, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose),
-                            #     temperature=temperature,
-                            #     max_tokens_to_sample=max_length_tokens,
-                            #     model=self._model.value,
-                            # )
-                            # model_result = str(claude_response.completion)
-
-
-
+                            # can clean output here post retries
                             retries -= 1
         if verbose_retry: print(model_result)
         return model_result

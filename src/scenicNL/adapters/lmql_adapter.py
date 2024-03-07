@@ -113,24 +113,6 @@ class LMQLAdapter(ModelAdapter):
     ) -> str:
         
         example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
-        response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
-        
-        return response
-    
-    @retry(
-        wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
-    )
-    def _correct_prediction(
-        self, 
-        *, 
-        model_input: ModelInput, 
-        temperature: float, 
-        max_length_tokens: int,
-        prompt_type: LLMPromptType,
-        verbose: bool,
-    ) -> str:
-        
-        example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
-        response = construct_scenic_program(example_prompt, model_input.nat_lang_scene_des)
+        response = construct_scenic_program(model_input, example_prompt, model_input.nat_lang_scene_des)
         
         return response
