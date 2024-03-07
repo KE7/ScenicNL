@@ -27,6 +27,7 @@ class LLMPromptType(Enum):
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
+    COMPOSITIONAL_GBNF = "comp_gbnf"
 
 
 class PromptFiles(Enum):
@@ -38,6 +39,7 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
+    COMPOSITIONAL_GBNF = os.path.join(PROMPT_PATH, 'comp_gbnf_prompt.yml')
 
 
 @dataclass(frozen=True)

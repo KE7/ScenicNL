@@ -4,6 +4,7 @@ import json
 import requests
 from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.common import LLMPromptType, ModelInput, VectorDB
+from scenicNL.constraints.gbnf_decoding import CompositionalScenic, compositionally_construct_scenic_program
 
 
 class LocalModel(Enum):
@@ -83,6 +84,15 @@ class LocalAdapter(ModelAdapter):
         prompt_type: LLMPromptType,
         verbose: bool
     ) -> str:
+        if prompt_type == LLMPromptType.COMPOSITIONAL_GBNF:
+            program_generator = CompositionalScenic()
+            return program_generator.compositionally_construct_scenic_program(
+                model_input=model_input,
+                temperature=temperature,
+                max_tokens=max_length_tokens,
+                verbose=verbose
+            )
+
         prompt = self._format_message(
             model_input=model_input,
             prompt_type=prompt_type,
