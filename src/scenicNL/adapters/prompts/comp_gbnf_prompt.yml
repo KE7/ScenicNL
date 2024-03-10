@@ -1,8 +1,8 @@
 ---
-  context: |-
+  context: |
     Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
 
-    We are going to play a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. The total of the responses should be no more than 1,000 words. Use the following format:
+    We are going to play a game. For the following question, imagine that you are 3 different autonomous driving experts. For every question, each expert must briefly provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. The total of the responses and final answer should be brief (2-3 sentences) and the whole response should be no more than 500, words. Use the following format:
     EXPERT_1:
     <expert_1_answer>
     EXPERT_2:
@@ -13,34 +13,46 @@
     <final_answer>
 
   discussion_grammar: |
-    document ::= expert_1 expert_2 expert_3 final_answer
-    expert_1 ::= "EXPERT_1:" expert_1_answer
-    expert_2 ::= "EXPERT_2:" expert_2_answer
-    expert_3 ::= "EXPERT_3:" expert_3_answer
-    final_answer ::= "FINAL ANSWER:" final_answer
-    expert_1_answer ::= [^"EXPERT_1:"]+
-    expert_2_answer ::= [^"EXPERT_2:"]+
-    expert_3_answer ::= [^"EXPERT_3:"]+
-    final_answer ::= [^"FINAL_ANSWER:"]+
+    root ::= experts final
+
+    experts ::= expert1 expert2 expert3
+    
+    expert1 ::= "EXPERT_1: " expert1answer
+    expert2 ::= "EXPERT_2: " expert2answer
+    expert3 ::= "EXPERT_3: " expert3answer
+    final ::= "FINAL_ANSWER: " finalanswer
+    
+    expert1answer ::= [^"EXPERT_1:"]+
+    expert2answer ::= [^"EXPERT_2:"]+
+    expert3answer ::= [^"EXPERT_3:"]+
+    finalanswer ::= [^"FINAL_ANSWER:"]+
+
+  single_answer_grammar: |
+    root ::= work answer
+    work ::= "REASONING: " [^"FINAL_ANSWER:"]+
+    answer ::= "FINAL_ANSWER: " [^"FINAL_ANSWER:"]+
   
   one:
     question: |-
         Original description:
         {description}
 
-        Based on the description, what are the all of the objects that need to be included in the scene?
-        First provide step-by-step justification for all objects you chosen then provide your final answer as:
-
-        JUSTIFICATION:
-        <step_by_step_justification_for_the_objects>
+        Based on the description, what are the main objects that need to be included in the scene? Provide step-by-step reasoning for the objects you chosen then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object) and specify your answer in the following format:
+        REASONING:
+        <step_by_step_reasoning_for_each_object>
 
         FINAL_ANSWER:
-        <final_answer>
+        1. object 1
+        2. object 2
+        3. object 3
+        etc...
 
   nine: # with help from src/scenic/simulators/carla/blueprints.py
     question: |-
       {objects_from_one}
-      Given the relevant objects that you identified above, find the closest matching Scenic object from the list. You cannot choose objects that are not in the list so if you cannot find the object in the list, you must choose the closest matching object.
+      For each of the relevant objects above, find the closest matching Scenic object from the list below. Specify your answer as the value of that object. You cannot choose objects that are not in the list so if you cannot find the object in the list, you must choose the closest matching object. If you do not have enough information, pick from the revenant objects. Further, when you make your choice, define a python style variable name in all caps for that choice. For example, if the objects you chose are a man walking with a hat, and a tesla your response could be: 
+      MAN_WITH_HAT = "walker.pedestrian.0007" # randomly choose pedestrian among all pedestrians
+      CAR = 'vehicle.tesla.model3'
 
       cars = [
           "Audi - A2": "vehicle.audi.a2", 
@@ -221,14 +233,13 @@
           "walker.pedestrian.0014",
       ]
 
-      Based on the description, what are the all of the objects that need to be included in the scene?
-      Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer. For example:
-      EXPLANATION:
-      <justification_for_the_objects>
-
+      Provide your explanations and final answer in the following format:
+      
+      REASONING:
+      <step_by_step_reasoning>
+      
       FINAL_ANSWER:
-      CAR = 'vehicle.audi.a2'
-      BICYCLE = 'vehicle.diamondback.century'
+      <final_answer>
 
   four:
     a:
@@ -249,11 +260,7 @@
         Relevant objects:
         {objects_from_nine}
 
-        Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)
-
-        Each expert and the final answer should be provided in the following format:
-        MISSING_OBJECT_INFO:
-        <missing_object_info>
+        For each of the relevant objects, what details about the objects themselves or the environmental conditions are missing from the description that you would need to ask the author about in order to create a more accurate scene? Provide your questions as a numbered list, but do not ask about personal details of any individuals involved.
 
   five:
     question: |-
@@ -263,11 +270,11 @@
         Missing object information:
         {missing_object_info}
 
-        Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.
+        Based on the missing object information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.
 
-        Each expert and the final answer should be provided in the following format:
-        DISTRIBUTION:
-        <distribution>
+        First provide step-by-step reasoning as to why you choose such a distribution then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object) and specify your answer in the following format:
+        REASONING:
+        <reasoning>
 
         FINAL_ANSWER:
         <final_answer>
@@ -280,7 +287,7 @@
         Distributions for missing information:
         {distributions}
 
-        Based on the missing information and distributions above, pick from the following list of distributions that are supported. You may not use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution:
+        Based on the missing information and distributions above, pick from the following list of distributions that are supported. You may not use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution. Provide brief step-by-step reasoning as to why you choose the scenic distribution. Your choices are:
         Range(low, high) - Uniform distribution over the range [low, high]
         DiscreteRange(low, high) - Uniform distribution over the discreet integer range [low, high]
         Normal(mean, std) - Normal distribution with mean and standard deviation
@@ -288,9 +295,12 @@
         Uniform(value, …) - Uniform distribution over the values provided
         Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights
 
-        Each expert and the final answer should be provided in the following format:
-        SCENIC_DISTRIBUTION:
-        <scenic_distribution>
+        Provide your final answer as Python variables in all capital letters. For example, if you choose to model vehicle speed as Range, then your answer should be:
+        VEHICLE_SPEED = Range(30, 40)
+
+        Your answer should be in the following format:
+        REASONING:
+        <step_by_step_reasoning>
 
         FINAL_ANSWER:
         <final_answer>

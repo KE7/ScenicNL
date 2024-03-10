@@ -6,9 +6,8 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
-        "anthropic",
+        "anthropic==0.19.1",
         "bs4",
-        "carla==0.9.15",
         "scenic==3.0.0b2",
         "openai>=0.28,<=0.28.1",
         "pdf2image",
