@@ -9,7 +9,7 @@ setup(
         "anthropic==0.19.1",
         "bs4",
         "scenic==3.0.0b2",
-        "openai>=0.28,<=0.28.1",
+        "openai==1.13.3",
         "pdf2image",
         "pyocr",
         "SQLAlchemy",

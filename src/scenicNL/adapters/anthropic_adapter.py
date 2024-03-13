@@ -21,7 +21,7 @@ class AnthropicAdapter(ModelAdapter):
     """
     This class servers as a wrapper for the Anthropic API.
     """
-    def __init__(self, model : AnthropicModel, use_index : bool = False):
+    def __init__(self, model : AnthropicModel, use_index : bool = True):
         super().__init__()
         self._model = model
         if use_index:
