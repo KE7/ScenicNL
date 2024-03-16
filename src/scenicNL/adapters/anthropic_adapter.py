@@ -13,7 +13,7 @@ from scenicNL.common import get_discussion_prompt, get_discussion_to_program_pro
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
     CLAUDE_2 = "claude-2.0"
-    CLAUDE_3_WEAK = "claude-3-opus-20240229"
+    CLAUDE_3_STRONG = "claude-3-opus-20240229"
     CLAUDE_3_MEDIUM = "claude-3-sonnet-20240229"
     
 

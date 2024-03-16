@@ -1,6 +1,7 @@
 from enum import Enum
 import json
 import os
+import cv2
 import pinecone
 import random
 from dataclasses import dataclass
@@ -289,6 +290,38 @@ def few_shot_prompt_with_rag(
             first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
         return few_shot_prompt_generator(relevant_model_input, False)
+
+
+def sample_frames_from_video(video_path: str, num_frames : int = 10) -> List[str]:
+    if not os.path.isfile(video_path):
+        raise FileNotFoundError(f"Video file not found: {video_path}")
+
+    # Open the video file
+    cap = cv2.VideoCapture(video_path)
+
+    if not cap.isOpened():
+        raise ValueError(f"Unable to open video file: {video_path}")
+
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Calculate the step size between frames to sample evenly
+    step_size = total_frames // num_frames
+
+    frames = []
+
+    # Loop through the video and sample frames at the calculated step size
+    for i in range(num_frames):
+        frame_idx = (i + 1) * step_size
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
+        ret, frame = cap.read()
+
+        if ret:
+            frames.append(frame)
+
+    # Release the video capture object
+    cap.release()
+
+    return frames
 
 
 LOCAL_MODEL_ENDPOINT = "http://127.0.0.1:8080/completion"

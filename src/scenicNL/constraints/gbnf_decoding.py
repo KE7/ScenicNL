@@ -44,7 +44,7 @@ class CompositionalScenic():
             base_url="http://localhost:8079/v1",
             api_key="sk-no-key-required"
         )
-        self.anthropic = AnthropicAdapter(model=AnthropicModel.CLAUDE_2, use_index=False)
+        self.anthropic = AnthropicAdapter(model=AnthropicModel.CLAUDE_3_MEDIUM, use_index=False)
         self.gpt = OpenAIAdapter(model=OpenAIModel.GPT_35_TURBO_16k, use_index=False)
 
 
@@ -651,4 +651,5 @@ class CompositionalScenic():
 
         # Step 3: 
         
+
     
