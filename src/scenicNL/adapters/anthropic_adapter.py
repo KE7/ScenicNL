@@ -1,6 +1,7 @@
 from enum import Enum
 import json
-from typing import cast
+import os
+from typing import List, cast
 
 from anthropic import Anthropic, AI_PROMPT, HUMAN_PROMPT
 import httpx
@@ -12,16 +13,22 @@ from scenicNL.common import get_discussion_prompt, get_discussion_to_program_pro
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
     CLAUDE_2 = "claude-2.0"
+    CLAUDE_3_STRONG = "claude-3-opus-20240229"
+    CLAUDE_3_MEDIUM = "claude-3-sonnet-20240229"
     
 
 class AnthropicAdapter(ModelAdapter):
     """
     This class servers as a wrapper for the Anthropic API.
     """
-    def __init__(self, model : AnthropicModel):
+    def __init__(self, model : AnthropicModel, use_index : bool = True):
         super().__init__()
         self._model = model
-        self.index = VectorDB(index_name='scenic-programs')
+        if use_index:
+            self.index = VectorDB(index_name='scenic-programs')
+        else:
+            self.index = None
+        self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     def get_cache_key(
         self, 
@@ -288,6 +295,19 @@ class AnthropicAdapter(ModelAdapter):
             raise NotImplementedError(f"Prompt type {prompt_type} was not formatted for Anthropic model {self._model.value}")
         
         return msg
+    
+    def predict(
+        self,
+        messages: List[dict],
+    ) -> str:
+        claude_response = self.client.messages.create(
+            messages=messages,
+            model=self._model.value,
+            max_tokens=3600 # Claude's default max tokens
+        )
+
+        return claude_response.content[0].text
+
 
     def _predict(
         self, 

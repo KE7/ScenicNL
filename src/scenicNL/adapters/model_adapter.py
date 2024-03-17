@@ -156,7 +156,7 @@ class ModelAdapter(abc.ABC):
 
         if verbose:
             print(f"Starting batch prediction using {self.__class__.__name__} " + 
-                  "with {num_workers} workers")
+                  f"with {num_workers} workers")
             
         with Cache(cache_path) as cache:
             processor = self._batch_processor(

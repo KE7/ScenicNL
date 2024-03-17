@@ -1,0 +1,1342 @@
+---
+  context: |
+    Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+    We are going to play a game. For the following question, imagine that you are 3 different autonomous driving experts. For every question, each expert must briefly provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. The total of the responses and final answer should be brief (2-3 sentences) and the whole response should be no more than 500, words. Use the following format:
+    EXPERT_1:
+    <expert_1_answer>
+    EXPERT_2:
+    <expert_2_answer>
+    EXPERT_3:
+    <expert_3_answer>
+    FINAL_ANSWER:
+    <final_answer>
+
+  discussion_grammar: |
+    root ::= experts final
+
+    experts ::= expert1 expert2 expert3
+    
+    expert1 ::= "EXPERT_1: " expert1answer
+    expert2 ::= "EXPERT_2: " expert2answer
+    expert3 ::= "EXPERT_3: " expert3answer
+    final ::= "FINAL_ANSWER: " finalanswer
+    
+    expert1answer ::= [^"EXPERT_1:"]+
+    expert2answer ::= [^"EXPERT_2:"]+
+    expert3answer ::= [^"EXPERT_3:"]+
+    finalanswer ::= [^"FINAL_ANSWER:"]+
+
+  single_answer_grammar: |
+    root ::= work answer
+    work ::= "REASONING: " [^"FINAL_ANSWER:"]+
+    answer ::= "FINAL_ANSWER: " [^"FINAL_ANSWER:"]+
+  
+  examples:
+    nat_lang_descriptions:
+      one: |-
+        An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+      two: |-
+        At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+
+      three: |-
+        A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.
+
+      four: |-
+        An autonomous Audi A4 convertible, operating in full autonomous mode, was traveling north on 4th Street approaching Grand Avenue under sunny conditions. As the vehicle entered the intersection on a green light, a delivery truck running a red light from Grand Avenue intersected its path. Simultaneously, a skateboarder was crossing 4th Street within the crosswalk, and a dog, leashed to a nearby lamppost, became startled and attempted to run across the intersection. The Audi's advanced detection systems initiated an emergency stop, avoiding a collision with the truck and ensuring the skateboarder and dog remained unharmed. The incident caused minor traffic disruption but highlighted the vehicle's ability to respond to multiple hazards effectively. No damage or injuries were reported, and the truck driver was cited for running the red light.
+
+      five: |-
+        During a light rain, a Tesla Model S in autonomous mode was driving west on Elm Street. As it approached the junction with 5th Avenue, a cyclist unexpectedly swerved into the lane from the sidewalk to avoid a puddle. At the same time, a pedestrian, distracted by their phone, stepped off the curb against the "Don't Walk" signal. The Tesla, utilizing its automatic emergency braking and evasive maneuver capabilities, managed to avoid contact with both the cyclist and pedestrian, coming to a stop in the intersection. The rapid response of the vehicle's systems prevented potential injuries. No damages were reported, and after a brief pause to ensure the safety of all parties, the vehicle continued on its route.
+
+  complier_system_prompt: |
+    You are a Python programmer. User's will give you their programs and exception messages they encounter. Your task is to fix the syntax errors and respond with the full correct python code. Here are the only objects that are supported:
+
+    {objects}
+    
+    Answer only with the full python code as plain text without code block syntax around it. Variables should be in all caps.
+
+  complier_user_prompt: |
+    Your python program failed to compile. Please fix the syntax errors and try again.
+    Error message:
+    {error}
+
+    Your program:
+    {program}
+
+  objects:
+
+    dynamic:
+      object_info: |
+        carModels = [
+          "Audi - A2": "vehicle.audi.a2", 
+          "Audi - E-Tron": "vehicle.audi.etron",
+          "Audi - TT": "vehicle.audi.tt",
+          "BMW - Gran Tourer": "vehicle.bmw.grandtourer",
+          "Chevrolet - Impala": "vehicle.chevrolet.impala",
+          "Citroen - C3": "vehicle.citroen.c3",
+          "Dodge - Charger 2020": "vehicle.dodge.charger_2020",
+          "Dodge - Police Charger": "vehicle.dodge.charger_police",
+          "Dodge - Police Charger 2020": "vehicle.dodge.charger_police_2020",
+          "Ford - Crown (taxi)": "vehicle.ford.crown",
+          "Ford - Mustang": "vehicle.ford.mustang",
+          "Jeep - Wrangler Rubicon": "vehicle.jeep.wrangler_rubicon",
+          "Lincoln - MKZ 2017": "vehicle.lincoln.mkz_2017",
+          "Lincoln - MKZ 2020": "vehicle.lincoln.mkz_2020",
+          "Mercedes - Coupe": "vehicle.mercedes.coupe",
+          "Mercedes - Coupe 2020": "vehicle.mercedes.coupe_2020",
+          "Micro - Microlino": "vehicle.micro.microlino",
+          "Mini - Cooper S": "vehicle.mini.cooper_s",
+          "Mini - Cooper S 2021": "vehicle.mini.cooper_s_2021",
+          "Nissan - Micra": "vehicle.nissan.micra",
+          "Nissan - Patrol": "vehicle.nissan.patrol",
+          "Nissan - Patrol 2021": "vehicle.nissan.patrol_2021",
+          "Seat - Leon": "vehicle.seat.leon",
+          "Tesla - Model 3": "vehicle.tesla.model3",
+          "Toyota - Prius": "vehicle.toyota.prius"
+        ]
+        truckModels = [
+          "CARLA Motors - CarlaCola": "vehicle.carlamotors.carlacola",
+          "CARLA Motors - European HGV (cab-over-engine type)": "vehicle.carlamotors.european_hgv",
+          "CARLA Motors - Firetruck": "vehicle.carlamotors.firetruck",
+          "Tesla - Cybertruck": "vehicle.tesla.cybertruck"
+        ]
+        vanModels = [
+          "Ford - Ambulance": "vehicle.ford.ambulance",
+          "Mercedes - Sprinter": "vehicle.mercedes.sprinter",
+          "Volkswagen - T2": "vehicle.volkswagen.t2",
+          "Volkswagen - T2 2021": "vehicle.volkswagen.t2_2021"
+        ]
+        busModels = [
+          "Mitsubishi - Fusorosa": "vehicle.mitsubishi.fusorosa",
+        ]
+        motorcycleAndScooterModels = [
+          "Harley Davidson - Low Rider": "vehicle.harley-davidson.low_rider",
+          "Kawasaki - Ninja": "vehicle.kawasaki.ninja",
+          "Vespa - ZX 125": "vehicle.vespa.zx125",
+          "Yamaha - YZF": "vehicle.yamaha.yzf"
+        ]
+        bicycleModels = [
+          "BH - Crossbike": "vehicle.bh.crossbike",
+          "Diamondback - Century": "vehicle.diamondback.century",
+          "Gazelle - Omafiets": "vehicle.gazelle.omafiets"
+        ]
+        pedestrianModels = [
+          "walker.pedestrian.0001",
+          "walker.pedestrian.0002",
+          "walker.pedestrian.0003",
+          "walker.pedestrian.0004",
+          "walker.pedestrian.0005",
+          "walker.pedestrian.0006",
+          "walker.pedestrian.0007",
+          "walker.pedestrian.0008",
+          "walker.pedestrian.0009",
+          "walker.pedestrian.0010",
+          "walker.pedestrian.0011",
+          "walker.pedestrian.0012",
+          "walker.pedestrian.0013",
+          "walker.pedestrian.0014",
+        ]
+
+      system_prompt: |
+        You are a python programming writer. You only respond with python code as plain text without code block syntax around it. Your variables should be in all caps. 
+
+        A user will give you a description. From the description identify all cars, trucks, vans, buses, motorcycles, bicycles, or pedestrians. Identify how many of each there are. Then for each object, find all values that could be considered a match. You must pick at least one value per object instance even if there is no direct match (so do your best). If you find only one, directly assign it otherwise it should be in a list.
+
+        Format your answer as:
+        <brief-step-by-step-reasoning>
+
+        My answer is:
+        <VARIABLES = value or [values]>
+
+        {object_info}
+
+      assistant_answer_1: |
+        The description involves an autonomous vehicle, specifically a Ford Explorer SUV. In the provided lists of vehicle models, there is no direct match for a "Ford Explorer SUV." However, we can select the closest match based on the brand and the type of vehicle, which in this case would be a car (SUV). The closest matches from the car models list under the Ford brand are "Ford - Crown (taxi)" and "Ford - Mustang." Since neither of these is an SUV, but are the only Ford options provided, we'll include them as the closest available matches.
+
+        My answer is:
+        SUV = ["vehicle.ford.crown", "vehicle.ford.mustang"]
+
+      assistant_answer_2: |
+        The description involves multiple entities: an autonomous BMW i8 convertible, a city bus, a scooter rider, a bicyclist, and two pedestrians.
+
+        1. For the BMW i8 convertible, there's no exact match in the car models list, but we can select the closest match based on the brand, which is BMW. The closest BMW model available is "BMW - Gran Tourer."
+        2. The city bus is mentioned, and there is a direct match in the bus models list as "Mitsubishi - Fusorosa."
+        3. A scooter rider is mentioned. In the motorcycle and scooter models list, we have options like "Harley Davidson - Low Rider," "Kawasaki - Ninja," "Vespa - ZX 125," and "Yamaha - YZF." Since it specifically mentions a scooter, "Vespa - ZX 125" is the closest match.
+        4. A bicyclist is mentioned. The bicycle models list includes "BH - Crossbike," "Diamondback - Century," and "Gazelle - Omafiets." Since no specific model of bicycle is mentioned, we'll include all as possible matches.
+        5. Two pedestrians are mentioned. Since there are multiple pedestrian models and no specific descriptions are given, we will include all pedestrian models as possible matches.
+
+        My answer is:
+        CAR = "vehicle.bmw.grandtourer"
+        BUS = "vehicle.mitsubishi.fusorosa"
+        SCOOTER = "vehicle.vespa.zx125"
+        BICYCLE = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+        PEDESTRIAN_ONE = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+        PEDESTRIAN_TWO = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+
+      assistant_answer_3: |
+        The description involves a Chevy Cruise autonomous vehicle and a bicyclist.
+
+        1. For the Chevy Cruise, there's no exact match in the car models list, but we can select the closest match based on the brand, which would be "Chevrolet - Impala" as it is the only Chevrolet model listed.
+        2. The bicyclist can be matched with any of the bicycle models. To keep it general, we'll select all available bicycle models.
+
+        My answer is:
+        CAR = "vehicle.chevrolet.impala"
+        BICYCLE = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+
+      assistant_answer_4: |
+        The description involves several entities: an autonomous Audi A4 convertible, a delivery truck, a skateboarder, and a dog.
+
+        1. For the autonomous Audi A4 convertible, there's no exact match in the car models list, but we can select the closest match based on the brand and model, which is Audi. Since "Audi - A4" is not listed, we'll consider the closest available Audi models: "Audi - A2," "Audi - E-Tron," and "Audi - TT."
+        2. The delivery truck is mentioned. In the truck models list, we have options like "CARLA Motors - CarlaCola," "CARLA Motors - European HGV (cab-over-engine type)," "CARLA Motors - Firetruck," and "Tesla - Cybertruck." Since no specific model of truck is mentioned, we'll include all as possible matches.
+        3. A skateboarder is mentioned, but there are no skateboard models in the provided lists. Since the skateboarder is a pedestrian, we can include all pedestrian models as possible matches.
+        4. A dog is mentioned, but there are no models for animals in the provided lists, and thus it cannot be directly matched to any of the given models.
+
+        My answer is:
+        CAR = ["vehicle.audi.a2", "vehicle.audi.etron", "vehicle.audi.tt"]
+        TRUCK = ["vehicle.carlamotors.carlacola", "vehicle.carlamotors.european_hgv", "vehicle.carlamotors.firetruck", "vehicle.tesla.cybertruck"]
+        SKATEBOARDER = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+
+      assistant_answer_5: |
+        The description involves three entities: a Tesla Model S, a cyclist, and a pedestrian.
+
+        1. For the Tesla Model S, there is a direct match in the car models list as "Tesla - Model 3." Although the specific model mentioned is "Model S," the closest available match provided is "Tesla - Model 3."
+        2. A cyclist is mentioned. The bicycle models list includes "BH - Crossbike," "Diamondback - Century," and "Gazelle - Omafiets." Since no specific model of bicycle is mentioned, we'll include all as possible matches.
+        3. A pedestrian is mentioned. Since there are multiple pedestrian models and no specific descriptions are given, we will include all pedestrian models as possible matches.
+
+        My answer is:
+        CAR = "vehicle.tesla.model3"
+        BICYCLE = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+        PEDESTRIAN = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+
+    static:
+      object_info: |
+        trashCanModels = [
+            "static.prop.trashcan01",
+            "static.prop.trashcan02",
+            "static.prop.trashcan03",
+            "static.prop.trashcan04",
+            "static.prop.trashcan05",
+            "static.prop.bin",
+        ]
+        trafficConeModels = [
+            "static.prop.constructioncone",
+            "static.prop.trafficcone01",
+            "static.prop.trafficcone02",
+        ]
+        roadDebrisModels = [
+            "static.prop.dirtdebris01",
+            "static.prop.dirtdebris02",
+            "static.prop.dirtdebris03",
+        ]
+        vendingMachineModels = [
+            "static.prop.vendingmachine",
+        ]
+        chairModels = [
+            "static.prop.plasticchair",
+        ]
+        busStopModels = [
+            "static.prop.busstop",
+        ]
+        roadsideAdvertisementBillboardModels = [
+            "static.prop.advertisement",
+            "static.prop.streetsign",
+            "static.prop.streetsign01",
+            "static.prop.streetsign04",
+        ]
+        garbageYouFindOnTheStreetModels = [
+            "static.prop.colacan",
+            "static.prop.garbage01",
+            "static.prop.garbage02",
+            "static.prop.garbage03",
+            "static.prop.garbage04",
+            "static.prop.garbage05",
+            "static.prop.garbage06",
+            "static.prop.plasticbag",
+            "static.prop.trashbag",
+        ]
+        containerModels = [
+            "static.prop.container",
+            "static.prop.clothcontainer",
+            "static.prop.glasscontainer",
+        ]
+        tableModels = [
+            "static.prop.table",
+            "static.prop.plastictable",
+        ]
+        trafficBarrierModels = [
+            "static.prop.streetbarrier",
+            "static.prop.chainbarrier",
+            "static.prop.chainbarrierend",
+        ]
+        plantpotModels = [
+            "static.prop.plantpot01",
+            "static.prop.plantpot02",
+            "static.prop.plantpot03",
+            "static.prop.plantpot04",
+            "static.prop.plantpot05",
+            "static.prop.plantpot06",
+            "static.prop.plantpot07",
+            "static.prop.plantpot08",
+        ]
+        mailboxModels = [
+            "static.prop.mailbox",
+        ]
+        gnomeModels = [
+            "static.prop.gnome",
+        ]
+        creasedBoxModels = [
+            "static.prop.creasedbox01",
+            "static.prop.creasedbox02",
+            "static.prop.creasedbox03",
+        ]
+        travelCaseModels = [
+            "static.prop.travelcase",
+            "static.prop.briefcase",
+            "static.prop.guitarcase",
+        ]
+        boxModels = [
+            "static.prop.box01",
+            "static.prop.box02",
+            "static.prop.box03",
+        ]
+        pedestrianBenchModels = [
+            "static.prop.bench01",
+            "static.prop.bench02",
+            "static.prop.bench03",
+        ]
+        oilBarrelModels = [
+            "static.prop.barrel",
+        ]
+        atmModels = [
+            "static.prop.atm",
+        ]
+        kioskModels = [
+            "static.prop.kiosk_01",
+        ]
+        ironPlateOnRoadModels = [
+            "static.prop.ironplank",
+        ]
+        trafficwarningModels = [
+            "static.prop.trafficwarning",
+        ]
+        weather = ['ClearNoon', 'CloudyNoon', 'WetNoon', 'WetCloudyNoon', 'SoftRainNoon', 'MidRainyNoon', 'HardRainNoon', 'ClearSunset', 'CloudySunset', 'WetSunset', 'WetCloudySunset', 'SoftRainSunset', 'MidRainSunset', 'HardRainSunset',
+        'ClearNight', 'CloudyNight', 'WetNight', 'WetCloudyNight', 'SoftRainNight', 'MidRainyNight', 'HardRainNight' ,'DustStorm']
+
+      system_prompt: |
+        You are a python programming writer. You only respond with python code as plain text without code block syntax around it. Your variables should be in all caps. 
+
+        A user will give you a description. From the description identify the weather and any static objects. Reply with all values that could be considered a match. You must pick at least one value per object even if there is no direct match (so pick the closest ones). If you only pick one, you can directly assign it otherwise it should be in a list. 
+
+        Format your answer as:
+        <brief-step-by-step-reasoning>
+
+        My answer is:
+        <VARIABLES = value or [values]>
+
+        {object_info}
+
+      assistant_answer_1: |
+        Identifying static objects and conditions from the description:
+
+        1. **Weather Condition**: Heavy rainstorm implies a weather condition that could be classified as "HardRainNoon" or "HardRainSunset" or "HardRainNight" depending on the time of day the incident occurred. Since the time of day is not specified, all three possibilities are considered.
+        2. **Road Debris**: The driver claimed there was debris on the road, which the autonomous vehicle had to adjust for. The closest matches from the provided models would be items from the `roadDebrisModels` list.
+        3. **Large Puddle**: There's no direct match for a puddle, but it contributes to the wet road conditions already accounted for in the weather condition.
+        4. **Guardrail**: While a guardrail is mentioned, there's no direct model match in the provided lists. The closest related object might be something that serves as a barrier, so "trafficBarrierModels" could be considered the closest match.
+
+        My answer is:
+        WEATHER_CONDITIONS = ["HardRainNoon", "HardRainSunset", "HardRainNight"]
+        ROAD_DEBRIS = ["static.prop.dirtdebris01", "static.prop.dirtdebris02", "static.prop.dirtdebris03"]
+        TRAFFIC_BARRIER = ["static.prop.streetbarrier", "static.prop.chainbarrier", "static.prop.chainbarrierend"]
+
+      assistant_answer_2: |
+        Identifying static objects and conditions from the description:
+
+        1. **Weather Condition**: The incident occurred at approximately 12:05 PM, which suggests a daytime scenario. However, there's no specific mention of weather conditions, so the closest match considering the time would be "ClearNoon" as the default assumption in the absence of any mention of adverse weather.
+        2. **City Bus**: There's no direct match for a city bus in the provided lists, so no static object model can be directly assigned for the bus.
+        3. **Scooter Rider and Bicyclist**: These are dynamic objects (users of the road) rather than static objects, so they don't match any of the provided models.
+        4. **Pedestrians**: Similarly, pedestrians are dynamic objects and do not match any static object models provided.
+        5. **Traffic Signal**: While a traffic signal is crucial to the incident, there's no direct match in the provided lists. The closest related objects might be something that serves as a road sign or indicator, so "roadsideAdvertisementBillboardModels" could be considered for its role in road signaling, albeit not a perfect match.
+
+        My answer is:
+        WEATHER_CONDITION = "ClearNoon"
+        ROAD_SIGN = ["static.prop.advertisement", "static.prop.streetsign", "static.prop.streetsign01", "static.prop.streetsign04"]
+
+      assistant_answer_3: |
+        Identifying static objects and conditions from the description:
+
+        1. **Weather Condition**: There's no mention of weather conditions in the incident description. Without any indication of adverse weather, the default assumption could be clear weather. However, without a specific time of day mentioned, it's challenging to choose between "ClearNoon", "ClearSunset", or "ClearNight". In the absence of further details, all three are considered possibilities.
+        2. **Bicyclist**: The bicyclist is a dynamic object rather than a static one, so it doesn't match any of the provided static object models.
+        3. **Front Sensor Array Damage**: The damage to the vehicle's front sensor array is specific to the vehicle and does not match any of the provided static object models.
+
+        Given the information, the only variable that can be somewhat determined is the weather condition, with a broad assumption due to the lack of specific details about the time of day or weather.
+
+        My answer is:
+        WEATHER_CONDITIONS = ["ClearNoon", "ClearSunset", "ClearNight"]
+        
+      assistant_answer_4: |
+        Identifying static objects and conditions from the description:
+
+        1. **Weather Condition**: The incident occurred under sunny conditions, which directly matches "ClearNoon" if we assume the incident happened around noon given the typical association of sunny conditions with midday.
+        2. **Delivery Truck**: The delivery truck is a dynamic object and does not match any of the provided static object models.
+        3. **Skateboarder**: The skateboarder is a dynamic object, not a static one, so it doesn't match any of the provided static object models.
+        4. **Dog Leashed to a Lamppost**: The dog is a dynamic object, but the lamppost to which it was leashed can be considered a static object. However, there's no direct match for a lamppost in the provided lists. The closest related objects might be something that serves as a street fixture, but without a direct match, this detail cannot be accurately represented with the provided models.
+        5. **Advanced Detection Systems**: This refers to the vehicle's technology and does not match any of the provided static object models.
+
+        Given the information, the only variable that can be directly determined is the weather condition.
+
+        My answer is:
+        WEATHER_CONDITION = "ClearNoon"
+
+      assistant_answer_5: |
+        Identifying static objects and conditions from the description:
+
+        1. **Weather Condition**: The incident occurred during a light rain, which directly matches "SoftRainNoon" if we assume the incident happened around noon, or "SoftRainSunset" if in the evening, or "SoftRainNight" for nighttime, as the specific time of day is not mentioned.
+        2. **Cyclist**: The cyclist is a dynamic object and does not match any of the provided static object models.
+        3. **Pedestrian**: Similarly, the pedestrian is a dynamic object and does not match any of the provided static object models.
+        4. **Puddle**: While the puddle is mentioned as part of the scenario, it is not a static object in the context of the provided models and is more a condition of the wet road, which is already accounted for in the weather condition.
+        5. **Automatic Emergency Braking and Evasive Maneuver Capabilities**: These refer to the vehicle's technology and do not match any of the provided static object models.
+
+        Given the information, the only variable that can be directly determined is the weather condition.
+
+        My answer is:
+        WEATHER_CONDITIONS = ["SoftRainNoon", "SoftRainSunset", "SoftRainNight"]
+        
+
+  one:
+    system_question: |
+      Based on the description, what are the main objects that need to be included in the scene? Provide step-by-step reasoning then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object). Only respond with this exact format:
+      REASONING:
+      <your_step_by_step_reasoning>
+
+      FINAL_ANSWER:
+      <final_answer_as_numbered_list>
+    
+    user_question_1: |
+      Original description:
+      A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.
+
+    assistant_answer_1: |
+      REASONING:
+      1. The Chevy Cruise autonomous vehicle is mentioned as attempting to merge, indicating it's moving and thus a movable object.
+      2. The bicyclist entered the vehicle's path and made contact with it, indicating the bicyclist is also a movable object.
+
+      FINAL_ANSWER:
+      1. Chevy Cruise autonomous vehicle
+      2. Bicyclist
+
+    user_question_2: |
+      Original description:
+      At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+      
+    assistant_answer_2: |
+      REASONING:
+      1. The autonomous BMW i8 convertible is described as moving eastbound and attempting to avoid a collision, indicating it's a movable object.
+      2. The city bus is mentioned as running a red light and colliding with the BMW, indicating it is also a movable object.
+      3. The scooter rider and bicyclist are described as legally crossing the intersection and narrowly avoiding the incident, signifying they are moving through the scene.
+      4. The two pedestrians were nearby on the sidewalk, which doesn't inherently mean they were moving, but pedestrians are generally considered movable objects in traffic scenarios.
+
+      FINAL_ANSWER:
+      1. Autonomous BMW i8 convertible
+      2. City bus
+      3. Scooter rider
+      4. Bicyclist
+      5. Pedestrian one
+      6. Pedestrian two
+
+    user_question_3: |
+      Original description:
+      An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+    assistant_answer_3: |
+      REASONING:
+      1. The autonomous Ford Explorer SUV is described as navigating and hydroplaning, indicating it is a moving object.
+      2. The presence of debris on the road is a movable object in the scene.
+
+      FINAL_ANSWER:
+      1. Autonomous Ford Explorer SUV
+      2. Road debris
+
+    user_question: |-
+      Original description:
+      {description}
+
+  one_static:
+    system_question: |
+      Based on the description, what are the main static objects that need to be included in the scene? Provide step-by-step reasoning then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object). Only respond with this exact format:
+      REASONING:
+      <your_step_by_step_reasoning>
+
+      FINAL_ANSWER:
+      <final_answer_as_numbered_list>
+    
+    user_question_1: |
+      Original description:
+      A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.
+
+    assistant_answer_1: |
+      REASONING:
+      1. There are no static objects mentioned in the description therefore my final answer will be empty.
+
+      FINAL_ANSWER:
+      
+
+    user_question_2: |
+      Original description:
+      At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through evasive maneuvers the presence of trash cans forced the vehicle to apply emergency braking instead, it sustained significant front-end damage, and the bus had minor damage on its right side. Three bus passengers reported minor injuries.
+      
+    assistant_answer_2: |
+      REASONING:
+      1. Trash cans are a static object in the scene which affected the BMW's movement.
+
+      FINAL_ANSWER:
+      1. Trash cans
+      
+
+    user_question_3: |
+      Original description:
+      An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+    assistant_answer_3: |
+      REASONING:
+      1. The description mentions that there is debris on the road so I will include that.
+
+      FINAL_ANSWER:
+      1. Road debris
+
+    user_question: |-
+      Original description:
+      {description}
+
+  nine: # with help from src/scenic/simulators/carla/blueprints.py
+    system_question: |
+      A user will provide you with a list of main objects from a description. For each of the main objects, find the closest matching models from the list below. If there are any objects in the original description that you see a match for (e.g. a traffic cone), include them in your answer even if they are not listed as a main object. Specify your answer as the string value of that model. You CANNOT under any circumstance pick models that are not listed here. You must select only from the list provided. If there is no direct match or you are unsure, pick ALL eligible similar models as a python list. Never leave empty choices. You should prefer lists over single choices. Provide step-by-step reasoning for any decision you make. Specify your final answer as python code with variables in all caps. In your final answer, only respond with python code as plain text without code block syntax around it.
+
+      Here are the models you can choose from:
+      carModels = [
+          "Audi - A2": "vehicle.audi.a2", 
+          "Audi - E-Tron": "vehicle.audi.etron",
+          "Audi - TT": "vehicle.audi.tt",
+          "BMW - Gran Tourer": "vehicle.bmw.grandtourer",
+          "Chevrolet - Impala": "vehicle.chevrolet.impala",
+          "Citroen - C3": "vehicle.citroen.c3",
+          "Dodge - Charger 2020": "vehicle.dodge.charger_2020",
+          "Dodge - Police Charger": "vehicle.dodge.charger_police",
+          "Dodge - Police Charger 2020": "vehicle.dodge.charger_police_2020",
+          "Ford - Crown (taxi)": "vehicle.ford.crown",
+          "Ford - Mustang": "vehicle.ford.mustang",
+          "Jeep - Wrangler Rubicon": "vehicle.jeep.wrangler_rubicon",
+          "Lincoln - MKZ 2017": "vehicle.lincoln.mkz_2017",
+          "Lincoln - MKZ 2020": "vehicle.lincoln.mkz_2020",
+          "Mercedes - Coupe": "vehicle.mercedes.coupe",
+          "Mercedes - Coupe 2020": "vehicle.mercedes.coupe_2020",
+          "Micro - Microlino": "vehicle.micro.microlino",
+          "Mini - Cooper S": "vehicle.mini.cooper_s",
+          "Mini - Cooper S 2021": "vehicle.mini.cooper_s_2021",
+          "Nissan - Micra": "vehicle.nissan.micra",
+          "Nissan - Patrol": "vehicle.nissan.patrol",
+          "Nissan - Patrol 2021": "vehicle.nissan.patrol_2021",
+          "Seat - Leon": "vehicle.seat.leon",
+          "Tesla - Model 3": "vehicle.tesla.model3",
+          "Toyota - Prius": "vehicle.toyota.prius"
+      ]
+      truckModels = [
+          "CARLA Motors - CarlaCola": "vehicle.carlamotors.carlacola",
+          "CARLA Motors - European HGV (cab-over-engine type)": "vehicle.carlamotors.european_hgv",
+          "CARLA Motors - Firetruck": "vehicle.carlamotors.firetruck",
+          "Tesla - Cybertruck": "vehicle.tesla.cybertruck"
+      ]
+      vanModels = [
+          "Ford - Ambulance": "vehicle.ford.ambulance",
+          "Mercedes - Sprinter": "vehicle.mercedes.sprinter",
+          "Volkswagen - T2": "vehicle.volkswagen.t2",
+          "Volkswagen - T2 2021": "vehicle.volkswagen.t2_2021"
+      ]
+      busModels = [
+        "Mitsubishi - Fusorosa": "vehicle.mitsubishi.fusorosa",
+      ]
+      motorcycleModels = [
+          "Harley Davidson - Low Rider": "vehicle.harley-davidson.low_rider",
+          "Kawasaki - Ninja": "vehicle.kawasaki.ninja",
+          "Vespa - ZX 125": "vehicle.vespa.zx125",
+          "Yamaha - YZF": "vehicle.yamaha.yzf"
+      ]
+      bicycleModels = [
+          "BH - Crossbike": "vehicle.bh.crossbike",
+          "Diamondback - Century": "vehicle.diamondback.century",
+          "Gazelle - Omafiets": "vehicle.gazelle.omafiets"
+      ]
+      trashCanModels = [
+          "static.prop.trashcan01",
+          "static.prop.trashcan02",
+          "static.prop.trashcan03",
+          "static.prop.trashcan04",
+          "static.prop.trashcan05",
+          "static.prop.bin",
+      ]
+      trafficConeModels = [
+          "static.prop.constructioncone",
+          "static.prop.trafficcone01",
+          "static.prop.trafficcone02",
+      ]
+      roadDebrisModels = [
+          "static.prop.dirtdebris01",
+          "static.prop.dirtdebris02",
+          "static.prop.dirtdebris03",
+      ]
+      vendingMachineModels = [
+          "static.prop.vendingmachine",
+      ]
+      chairModels = [
+          "static.prop.plasticchair",
+      ]
+      busStopModels = [
+          "static.prop.busstop",
+      ]
+      roadsideAdvertisementBillboardModels = [
+          "static.prop.advertisement",
+          "static.prop.streetsign",
+          "static.prop.streetsign01",
+          "static.prop.streetsign04",
+      ]
+      garbageYouFindOnTheStreetModels = [
+          "static.prop.colacan",
+          "static.prop.garbage01",
+          "static.prop.garbage02",
+          "static.prop.garbage03",
+          "static.prop.garbage04",
+          "static.prop.garbage05",
+          "static.prop.garbage06",
+          "static.prop.plasticbag",
+          "static.prop.trashbag",
+      ]
+      containerModels = [
+          "static.prop.container",
+          "static.prop.clothcontainer",
+          "static.prop.glasscontainer",
+      ]
+      tableModels = [
+          "static.prop.table",
+          "static.prop.plastictable",
+      ]
+      trafficBarrierModels = [
+          "static.prop.streetbarrier",
+          "static.prop.chainbarrier",
+          "static.prop.chainbarrierend",
+      ]
+      plantpotModels = [
+          "static.prop.plantpot01",
+          "static.prop.plantpot02",
+          "static.prop.plantpot03",
+          "static.prop.plantpot04",
+          "static.prop.plantpot05",
+          "static.prop.plantpot06",
+          "static.prop.plantpot07",
+          "static.prop.plantpot08",
+      ]
+      mailboxModels = [
+          "static.prop.mailbox",
+      ]
+      gnomeModels = [
+          "static.prop.gnome",
+      ]
+      creasedBoxModels = [
+          "static.prop.creasedbox01",
+          "static.prop.creasedbox02",
+          "static.prop.creasedbox03",
+      ]
+      travelCaseModels = [
+          "static.prop.travelcase",
+          "static.prop.briefcase",
+          "static.prop.guitarcase",
+      ]
+      boxModels = [
+          "static.prop.box01",
+          "static.prop.box02",
+          "static.prop.box03",
+      ]
+      pedestrianBenchModels = [
+          "static.prop.bench01",
+          "static.prop.bench02",
+          "static.prop.bench03",
+      ]
+      oilBarrelModels = [
+          "static.prop.barrel",
+      ]
+      atmModels = [
+          "static.prop.atm",
+      ]
+      kioskModels = [
+          "static.prop.kiosk_01",
+      ]
+      ironPlatOnRoadModels = [
+          "static.prop.ironplank",
+      ]
+      trafficwarningModels = [
+          "static.prop.trafficwarning",
+      ]
+      pedestrianModels = [
+          "walker.pedestrian.0001",
+          "walker.pedestrian.0002",
+          "walker.pedestrian.0003",
+          "walker.pedestrian.0004",
+          "walker.pedestrian.0005",
+          "walker.pedestrian.0006",
+          "walker.pedestrian.0007",
+          "walker.pedestrian.0008",
+          "walker.pedestrian.0009",
+          "walker.pedestrian.0010",
+          "walker.pedestrian.0011",
+          "walker.pedestrian.0012",
+          "walker.pedestrian.0013",
+          "walker.pedestrian.0014",
+      ]
+
+      For example, if the main objects are a tesla sedan, and road debris, a valid response could be:
+      REASONING:
+      The closest matching model to a tesla sedan is 'vehicle.tesla.model3'.
+      We do not know what kind of debris is on the road so we list all of them.
+
+      FINAL_ANSWER:
+      CAR = 'vehicle.tesla.model3'
+      DEBRIS = ["static.prop.dirtdebris01", "static.prop.dirtdebris02", "static.prop.dirtdebris03"]
+
+      Answer as follows:
+      REASONING:
+      <step_by_step_reasoning>
+      
+      FINAL_ANSWER:
+      <final_answer>
+    
+    user_question: |
+      Original description:
+      {description}
+
+      Main objects:
+      {objects_from_one}
+
+    user_question_1: |
+      Original description:
+      An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+      Main objects:
+      1. Autonomous Ford Explorer SUV
+      2. Road debris
+
+    assistant_answer_1: |
+      REASONING:
+      1. Autonomous Ford Explorer SUV: This is a specific model of a vehicle, so we need to find the closest matching model from the list of car models. The closest match would be "Ford - Crown (taxi)" as both are Ford vehicles. 
+
+      2. Road debris: This is not listed as a main object, but it is mentioned in the description. We need to find the closest matching model from the list of road debris models. The description mentions "debris on the road" and "large puddle", so the closest match would be "static.prop.dirtdebris01" or "static.prop.dirtdebris02" from the road debris models.
+
+      FINAL_ANSWER:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.ford.crown"
+      ROAD_DEBRIS_MODEL = ["static.prop.dirtdebris01", "static.prop.dirtdebris02"]
+
+    user_question_2: |
+      Original description:
+      At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+
+      Main objects:
+      1. Autonomous BMW i8 convertible
+      2. City bus
+      3. Scooter rider
+      4. Bicyclist
+      5. Pedestrian one
+      6. Pedestrian two
+
+    assistant_answer_2: |
+      REASONING:
+      1. Autonomous BMW i8 convertible: This is a specific model of a vehicle, so we need to find the closest matching model from the list of car models. The closest match would be "BMW - Gran Tourer" as both are BMW vehicles.
+
+      2. City bus: We need to find the closest matching model from the list of bus models. The description does not provide specific details about the bus, so the closest match would be "Mitsubishi - Fusorosa" from the bus models.
+
+      3. Scooter rider: We need to find the closest matching model from the list of motorcycle models. The description does not provide specific details about the scooter, so the closest match would be "Vespa - ZX 125" from the motorcycle models.
+
+      4. Bicyclist:  We need to find the closest matching model from the list of bicycle models. The description does not provide specific details about the bicycle, so we must pick all eligible bicycle models "BH - Crossbike",  "Diamondback - Century", or "Gazelle - Omafiets".
+
+      5. Pedestrian one: We need to find the closest matching model from the list of pedestrian models. The description does not provide specific details about the pedestrian, so we can choose any pedestrian model from the list. Since all pedestrian models are eligible will use all of them.
+
+      6. Pedestrian two: We need to find the closest matching model from the list of pedestrian models. The description does not provide specific details about the pedestrian, so we can choose any pedestrian model from the list. Since all pedestrian models are eligible will use all of them.
+
+      FINAL_ANSWER:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.bmw.grandtourer"
+      BUS_MODEL = "vehicle.mitsubishi.fusorosa"
+      SCOOTER_MODEL = "vehicle.vespa.zx125"
+      BICYCLE_MODEL = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+      PEDESTRIAN_ONE_MODEL =  ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+      PEDESTRIAN_TWO_MODEL = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+
+    user_question_3: |
+      Original description:
+      A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.
+
+      Main objects:
+      1. Chevy Cruise autonomous vehicle
+      2. Bicyclist
+
+    assistant_answer_3: |
+      REASONING:
+      1. Chevy Cruise autonomous vehicle: This is a specific model of a vehicle, so we need to find the closest matching model from the list of car models. The closest match would be "Chevrolet - Impala" as both are Chevrolet vehicles.
+
+      2. Bicyclist: We need to find the closest matching model from the list of bicycle models. The description does not provide specific details about the bicycle, so we must pick all eligible bicycle models "BH - Crossbike",  "Diamondback - Century", or "Gazelle - Omafiets".
+
+      FINAL_ANSWER:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.chevrolet.impala"
+      BICYCLE_MODEL = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+
+  nine_b:
+    system_question: |
+      The user will input python variables that represent values that we will use for a probabilistic program. If any of the values are a list, your task is to replace the list with one of the supported probability distributions specified below. If the values are constants, leave them as is and repeat them in your answer. Use Uniform when the values all have equal probabilities otherwise, use Discrete when some values are more likely than others.
+
+      Distributions:
+      Uniform(value, …) - Uniform distribution over the values provided. To be used when there is an equal probability of all values.
+      Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights. To be used when some values have higher probabilities than others. The weights must add up to 1.
+
+      Only respond with code as plain text without code block syntax around it.
+    
+    user_question: |
+      Original description:
+      {description}
+
+      Program:
+      {program}
+
+    user_question_1: |
+      Original description:
+      A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.
+
+      Program:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.chevrolet.impala"
+      BICYCLE_MODEL = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+
+    assistant_answer_1: |
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.chevrolet.impala"
+      BICYCLE_MODEL = Discrete({"vehicle.bh.crossbike": 0.4, "vehicle.diamondback.century": 0.3, "vehicle.gazelle.omafiets": 0.3})
+
+    user_question_2: |
+      Original description:
+      At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+
+      Program:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.bmw.grandtourer"
+      BUS_MODEL = "vehicle.mitsubishi.fusorosa"
+      SCOOTER_MODEL = "vehicle.vespa.zx125"
+      BICYCLE_MODEL = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+      PEDESTRIAN_ONE_MODEL =  ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+      PEDESTRIAN_TWO_MODEL = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+    
+    assistant_answer_2: |
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.bmw.grandtourer"
+      BUS_MODEL = "vehicle.mitsubishi.fusorosa"
+      SCOOTER_MODEL = "vehicle.vespa.zx125"
+      BICYCLE_MODEL = Uniform("vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets")
+      PEDESTRIAN_ONE_MODEL = Uniform("walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014")
+      PEDESTRIAN_TWO_MODEL = Uniform("walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014")
+
+    user_question_3: |
+      Original description:
+      An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+      Program:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.ford.crown"
+      ROAD_DEBRIS_MODEL = ["static.prop.dirtdebris01", "static.prop.dirtdebris02"]
+
+    assistant_answer_3: |
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.ford.crown"
+      ROAD_DEBRIS_MODEL = Uniform("static.prop.dirtdebris01", "static.prop.dirtdebris02")
+
+  four_a:
+    question: |-
+      Original description:
+      {description}
+
+      What details about the world and environment are missing from the description? (e.g. weather, time of day, etc.)
+
+      Each expert and the final answer should be provided in the following format:
+      MISSING_ENV_INFO:
+      <missing_env_info>
+  four_b:
+      system_question: |
+        For each of the relevant objects, what details about the objects are missing from the description that you would need to ask the author about in order to create a more accurate scene? What are the main environmental factors that need to be included in the scene? Your questions should cover dynamics of objects in motion (e.g. speed), distances between every pair of objects, and environmental conditions (e.g. weather). Provide your questions as a numbered list, but do not ask about personal details of any individuals involved.
+      user_question: |
+        Original description:
+        {description}
+        
+        Relevant objects:
+        {objects_from_nine}
+
+      user_question_1: |
+        Original description:
+        An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+        Relevant objects:
+        1. Autonomous Ford Explorer SUV
+        2. Road debris
+
+      assistant_answer_1: |
+        Missing information:
+        1. Can you provide more details about the speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm?
+        2. How large was the unexpected puddle that caused the vehicle to hydroplane?
+        3. What type of debris was present on the road that the driver had to avoid?
+        4. Were there any other vehicles in the vicinity on the ramp at the time of the incident?
+        5. What specific weather conditions were present during the heavy rainstorm (e.g., visibility, wind speed)?
+        6. How did the autonomous system respond to the hydroplaning situation before the collision occurred?
+
+      user_question_2: |
+        Original description:
+        At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+
+        Relevant objects:
+        1. Autonomous BMW i8 convertible
+        2. City bus
+        3. Scooter rider
+        4. Bicyclist
+        5. Pedestrian one
+        6. Pedestrian two        
+
+      assistant_answer_2: |
+        Missing information:
+        1. What was the approximate speed of the autonomous BMW i8 convertible when it was traveling eastbound on University Avenue?
+        2. Can you provide more details about the evasive maneuvers that the BMW attempted to avoid the collision?
+        3. How close were the scooter rider and bicyclist to the point of impact between the BMW and the city bus?
+        4. Were there any specific actions taken by the scooter rider and bicyclist to avoid the collision?
+        5. How far away were the two pedestrians on the sidewalk from the intersection where the collision occurred?
+        6. What were the weather conditions like at the time of the incident?
+        7. Were there any specific road markings or signs at the intersection of University Avenue and Hamilton Avenue that may have influenced the events leading up to the collision?
+        7. How did the autonomous system of the BMW respond to the situation when it detected the city bus running a red light?
+        9. Were there any traffic congestion or other vehicles around the intersection that could have affected the incident?
+
+  five:
+    system_question: |-
+      Based on the missing object information from the user, provide a reasonable probability distribution over the missing values. Answer only the questions that are about distance between objects, speed, weather, or time. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour (Normal(8, 1)). If the color of the car is missing, you could use a uniform distribution over common car color string names. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and reasonable standard deviation, etc.
+
+      First provide step-by-step reasoning as to why you choose such a distribution then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object) and specify your answer in the following format:
+      REASONING:
+      <reasoning>
+
+      FINAL_ANSWER:
+      <final_answer>
+
+    user_question: |-
+      Original description:
+      {description}
+
+      Relevant objects:
+      {objects_from_nine}
+
+      Missing object information:
+      {missing_object_info}
+
+    user_question_1: |
+      Original description:
+      An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+      Relevant objects:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.ford.crown"
+      ROAD_DEBRIS_MODEL = ["static.prop.dirtdebris01", "static.prop.dirtdebris02"]
+
+      Missing information:
+      1. Can you provide more details about the speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm?
+      2. How large was the unexpected puddle that caused the vehicle to hydroplane?
+      3. What type of debris was present on the road that the driver had to avoid?
+      4. Were there any other vehicles in the vicinity on the ramp at the time of the incident?
+      5. What specific weather conditions were present during the heavy rainstorm (e.g., visibility, wind speed)?
+      6. How did the autonomous system respond to the hydroplaning situation before the collision occurred?
+
+    assistant_answer_1: |
+      REASONING:
+      1. The speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm can be modeled using a normal distribution with a mean around the speed limit for ramps (e.g., 35-45 mph) and a reasonable standard deviation to account for variations in driving behavior and road conditions.
+
+      2. The size of the unexpected puddle that caused the vehicle to hydroplane can be modeled using a normal distribution with a mean based the fact that the puddle must have been at least as wide as the vehicle and on common puddle sizes on roads (e.g., 6-8 feet in diameter) and a standard deviation to capture variations in puddle sizes.
+
+      3. The type of debris present on the road that the driver had to avoid can be modeled using a uniform distribution over the provided ROAD_DEBRIS_MODEL options ["static.prop.dirtdebris01", "static.prop.dirtdebris02"].
+
+      4. The presence of other vehicles in the vicinity on the ramp at the time of the incident can be modeled using a Bernoulli distribution with a parameter reflecting the likelihood of other vehicles being present (e.g., low probability due to heavy rainstorm and specific location).
+
+      5. The specific weather conditions present during the heavy rainstorm (e.g., visibility, wind speed) can be modeled using a combination of distributions such as normal distribution for visibility range and wind speed based on historical weather data for the area.
+
+      6. The response of the autonomous system to the hydroplaning situation before the collision occurred can be modeled as a categorical distribution with options such as "applied corrective steering maneuvers," "adjusted speed," "issued warnings to safety operator," etc.
+
+      FINAL_ANSWER:
+      1. Speed at which the autonomous Ford Explorer SUV was traveling: Normal distribution with mean around 40 mph and standard deviation 5 mph.
+      2. Size of the unexpected puddle: Normal distribution with mean around 7 feet in diameter and standard deviation 0.5 feet.
+      3. Type of debris present on the road: Uniform distribution over ["static.prop.dirtdebris01", "static.prop.dirtdebris02"].
+      4. Presence of other vehicles in the vicinity: Bernoulli distribution with low probability.
+      5. Specific weather conditions: Modeled using appropriate distributions based on historical data.
+      6. Autonomous system response to hydroplaning situation: Categorical distribution with relevant options.
+
+    user_question_2: |
+      Original description:
+      At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+
+      Relevant objects:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.bmw.grandtourer"
+      BUS_MODEL = "vehicle.mitsubishi.fusorosa"
+      SCOOTER_MODEL = "vehicle.vespa.zx125"
+      BICYCLE_MODEL = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+      PEDESTRIAN_ONE_MODEL =  ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+      PEDESTRIAN_TWO_MODEL = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+
+      Missing information:
+      1. What was the approximate speed of the autonomous BMW i8 convertible when it was traveling eastbound on University Avenue?
+      2. Can you provide more details about the evasive maneuvers that the BMW attempted to avoid the collision?
+      3. How close were the scooter rider and bicyclist to the point of impact between the BMW and the city bus?
+      4. Were there any specific actions taken by the scooter rider and bicyclist to avoid the collision?
+      5. How far away were the two pedestrians on the sidewalk from the intersection where the collision occurred?
+      6. What were the weather conditions like at the time of the incident?
+      7. Were there any specific road markings or signs at the intersection of University Avenue and Hamilton Avenue that may have influenced the events leading up to the collision?
+      7. How did the autonomous system of the BMW respond to the situation when it detected the city bus running a red light?
+      9. Were there any traffic congestion or other vehicles around the intersection that could have affected the incident?
+    
+    assistant_answer_2: |
+      REASONING:
+      1. The approximate speed of the autonomous BMW i8 convertible when traveling eastbound on University Avenue can be modeled using a normal distribution with a mean around the speed limit for urban roads (e.g., 25-35 mph) and a standard deviation to account for variations in driving conditions.
+
+      2. Details about the evasive maneuvers that the BMW attempted to avoid the collision can be modeled as a categorical distribution with options such as "emergency braking," "swerve to the left," "swerve to the right," etc.
+
+      3. The proximity of the scooter rider and bicyclist to the point of impact between the BMW and the city bus can be modeled using a normal distribution with a mean distance based on typical reaction times and speeds of the vehicles involved and a standard deviation to capture variations.
+
+      4. Specific actions taken by the scooter rider and bicyclist to avoid the collision can be modeled as a categorical distribution with options such as "braking," "changing direction," "accelerating," etc.
+
+      5. The distance of the two pedestrians on the sidewalk from the intersection where the collision occurred can be modeled using a normal distribution with a mean distance based on typical sidewalk widths and locations relative to intersections, with an appropriate standard deviation.
+
+      6. Weather conditions at the time of the incident can be modeled using appropriate distributions based on historical weather data for the area, such as visibility range, precipitation intensity, and wind speed.
+
+      7. Specific road markings or signs at the intersection of University Avenue and Hamilton Avenue that may have influenced the events leading up to the collision can be modeled as a categorical distribution with options like "traffic lights," "stop signs," "pedestrian crossings," etc.
+
+      8. The response of the autonomous system of the BMW when it detected the city bus running a red light can be modeled as a categorical distribution with options like "alerted safety operator," "initiated emergency braking," "attempted evasive maneuvers," etc.
+
+      9. Traffic congestion or other vehicles around the intersection that could have affected the incident can be modeled using a Poisson distribution to estimate the number of vehicles in the vicinity.
+
+      FINAL_ANSWER:
+      1. Approximate speed of the autonomous BMW i8 convertible: Normal distribution with mean around 30 mph and standard deviation 5 mph.
+      2. Evasive maneuvers attempted by the BMW: Categorical distribution with relevant options.
+      3. Proximity of scooter rider and bicyclist to point of impact: Normal distribution with appropriate parameters.
+      4. Actions taken by scooter rider and bicyclist: Categorical distribution with relevant options.
+      5. Distance of pedestrians on sidewalk from intersection: Normal distribution with mean distance and standard deviation.
+      6. Weather conditions at the time: Modeled using appropriate weather data distributions.
+      7. Influence of road markings/signs at intersection: Categorical distribution with relevant options.
+      8. Response of BMW's autonomous system to bus running red light: Categorical distribution with relevant options.
+      9. Traffic congestion or other vehicles around intersection: Poisson distribution for estimating vehicle presence.
+      
+
+  six:
+    dist_info: |
+      Range(low, high) # Uniform distribution over the real range [low, high]
+      DiscreteRange(low, high) # Uniform distribution over the discreet integer range [low, high]
+      Normal(mean, std) # Normal distribution with mean and standard deviation
+      TruncatedNormal(mean, stdDev, low, high) # Normal distribution with mean and standard deviation truncated to the range [low, high]
+      Uniform(value, …) - Uniform distribution over the list of values provided.
+      Discrete([value: weight, … ]) - Discrete distribution over the list of values provided with the given weights (e.g., [value: 0.5, value: 0.2, value: 0.3])
+
+    complier_user_prompt: |
+      Your python program failed to compile. Please fix the syntax errors and try again. Ensure that the program is using supported distributions. If there are any unsupported distributions, replace them with the closest supported distribution.
+      Error message:
+      {error}
+
+      Your program:
+      {program}
+
+    system_prompt: |
+      You are a specialized agent for writing Scenic, a probabilistic programming language. 
+
+      A user will provide you with probability distributions for missing information in a vehicle crash description. Your task is to interpret the probability distributions and express them as a Scenic program.
+
+      Scenic can only support the following distributions so you must pick the closest matching distribution. Under no circumstance should you use any of the other distributions:
+      {dist_info}
+
+      You will answer the user by first providing step-by-step reasoning as to why you choose such a distribution then provide your final answer as code. Be concise in your reasoning (no more than 1-2 sentences per object). Provide your final answer as Python variables in all capital letters. Only respond with code as plain text without code block syntax around it. Answer in the following format:
+      REASONING:
+      <brief-step-by-step-reasoning>
+
+      FINAL_ANSWER:
+      <final_answer>
+
+    sys_prompt: |
+      You are a specialized agent for writing Scenic, a probabilistic programming language. 
+
+      A user will provide you with probability distributions for missing information in a vehicle crash description. Your task is to interpret the probability distributions and express them as a Scenic program.
+
+      Scenic can only support the following distributions so you must pick the closest matching distribution. Under no circumstance should you use any of the other distributions:
+      Range(low, high) - Uniform distribution over the real range [low, high]
+      DiscreteRange(low, high) - Uniform distribution over the discreet integer range [low, high]
+      Normal(mean, std) - Normal distribution with mean and standard deviation
+      TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [low, high]
+      Uniform(value, …) - Uniform distribution over the list of values provided.
+      Discrete([value: weight, … ]) - Discrete distribution over the list of values provided with the given weights (e.g., [value: 0.5, value: 0.2, value: 0.3])
+
+      For weather, Scenic can only support a Uniform or Discrete distribution over the following values:
+      ['ClearNoon', 'CloudyNoon', 'WetNoon', 'WetCloudyNoon', 'SoftRainNoon', 'MidRainyNoon', 'HardRainNoon', 'ClearSunset', 'CloudySunset', 'WetSunset', 'WetCloudySunset', 'SoftRainSunset', 'MidRainSunset', 'HardRainSunset',
+      'ClearNight', 'CloudyNight', 'WetNight', 'WetCloudyNight', 'SoftRainNight', 'MidRainyNight', 'HardRainNight' ,'DustStorm']
+
+      Based on the distributions and original description, define Scenic distributions over the uncertain values. Provide values for the parameters to your distributions. You may not use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution.
+
+      You will answer the user by first providing step-by-step reasoning as to why you choose such a distribution then provide your final answer as code. Be concise in your reasoning (no more than 1-2 sentences per object). Provide your final answer as Python variables in all capital letters. Only respond with code as plain text without code block syntax around it. Answer in the following format:
+      REASONING:
+      <reasoning>
+
+      FINAL_ANSWER:
+      <final_answer>
+
+    system_question: |
+      A user will provide you with probability distributions for missing information. You must interpret the distributions, replace them with the closest matching Scenic distributions.
+
+      Scenic only supports the following distributions so you must only use these in your final answer:
+      Range(low, high) - Uniform distribution over the range [low, high]
+      DiscreteRange(low, high) - Uniform distribution over the discreet integer range [low, high]
+      Normal(mean, std) - Normal distribution with mean and standard deviation
+      TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [low, high]
+      Uniform(value, …) - Uniform distribution over the values provided
+      Discrete([value: weight, … ]) - Discrete distribution over the values provided with the given weights (e.g., [value: 0.5, value: 0.2, value: 0.3])
+
+      Any other distribution (Categorical, Bernoulli, Poison, etc.) IS NOT SUPPORTED. They CANNOT be in your FINAL_ANSWER. Replace them with  the closest matching supported distribution (Range, DiscreteRange, Normal, TruncatedNormal, Uniform, or Discrete)
+
+      Note that for weather, you can only provide a Uniform or Discrete distribution over the following values:
+      ['ClearNoon', 'CloudyNoon', 'WetNoon', 'WetCloudyNoon', 'SoftRainNoon', 'MidRainyNoon', 'HardRainNoon', 'ClearSunset', 'CloudySunset', 'WetSunset', 'WetCloudySunset', 'SoftRainSunset', 'MidRainSunset', 'HardRainSunset',
+      'ClearNight', 'CloudyNight', 'WetNight', 'WetCloudyNight', 'SoftRainNight', 'MidRainyNight', 'HardRainNight' ,'DustStorm']
+      So for example, if the description says that the road was wet around the evening, then the weather was most likely rainy, you could use a Discrete distribution as:
+      WEATHER = Discrete(['WetSunset': 0.7, 'WetCloudySunset': 0.2, 'WetNight': 0.1])
+
+      Based on the distributions and original description, define Scenic distributions over the uncertain values. Provide values for the parameters to your distributions. DO NOT use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution. If you are unsure of the parameter values, pick the best numerical values as appropriate for the scene.
+
+      Answer by providing step-by-step reasoning as to why you choose such a distribution. Remember to replace unsupported distributions. Then provide your final answer as code. Provide your final answer as Python variables in all capital letters. Only respond with code as plain text without code block syntax around it. Answer in the following format:
+      REASONING:
+      <step_by_step_reasoning>
+
+      FINAL_ANSWER:
+      <final_answer>
+
+    user_question: |
+      Original description:
+      {description}
+
+      Missing information:
+      {missing_info}
+
+      Distributions for missing information:
+      {distributions}
+
+    user_question_1: |
+      Original description:
+      An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.
+
+      Relevant objects:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.ford.crown"
+      ROAD_DEBRIS_MODEL = ["static.prop.dirtdebris01", "static.prop.dirtdebris02"]
+
+      Missing information:
+      1. Can you provide more details about the speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm?
+      2. How large was the unexpected puddle that caused the vehicle to hydroplane?
+      3. What type of debris was present on the road that the driver had to avoid?
+      4. Were there any other vehicles in the vicinity on the ramp at the time of the incident?
+      5. What specific weather conditions were present during the heavy rainstorm (e.g., visibility, wind speed)?
+      6. How did the autonomous system respond to the hydroplaning situation before the collision occurred?
+
+    assistant_answer_1: |
+      REASONING:
+      1. For the speed of the autonomous Ford Explorer SUV during the heavy rainstorm, we can use a TruncatedNormal distribution with a mean around a reasonable speed for a ramp area and a standard deviation to capture variability while ensuring the speed is within possible values.
+      2. To estimate the size of the unexpected puddle that caused the vehicle to hydroplane, we can use a Normal distribution with a mean and standard deviation based on common sizes of puddles that can lead to hydroplaning.
+      3. The type of debris present on the road that the driver had to avoid can be modeled using a Uniform distribution over the provided ROAD_DEBRIS_MODEL options.
+      4. Since there is no explicit mention of other vehicles in the vicinity, we can use a Uniform distribution to represent uncertainty about the presence of other vehicles on the ramp at the time of the incident.
+      5. The specific weather conditions during the heavy rainstorm can be represented using a Discrete distribution over the possible weather conditions listed in Scenic for heavy rain events.
+
+      FINAL_ANSWER:
+      AUTONOMOUS_VEHICLE_SPEED = TruncatedNormal(mean=45, stdDev=7.5, low=30, high=60)
+      PUDDLE_SIZE = Normal(mean=2, std=0.5)
+      DEBRIS_TYPE = Uniform(["static.prop.dirtdebris01", "static.prop.dirtdebris02"])
+      OTHER_VEHICLES_PRESENT = Uniform("Yes", "No")
+      WEATHER_CONDITIONS = Uniform(['WetRainNoon', 'HardRainNoon', 'WetCloudyNoon'])
+
+    user_question_2: |
+      Original description:
+      At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.
+
+      Relevant objects:
+      AUTONOMOUS_VEHICLE_MODEL = "vehicle.bmw.grandtourer"
+      BUS_MODEL = "vehicle.mitsubishi.fusorosa"
+      SCOOTER_MODEL = "vehicle.vespa.zx125"
+      BICYCLE_MODEL = ["vehicle.bh.crossbike", "vehicle.diamondback.century", "vehicle.gazelle.omafiets"]
+      PEDESTRIAN_ONE_MODEL =  ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+      PEDESTRIAN_TWO_MODEL = ["walker.pedestrian.0001", "walker.pedestrian.0002", "walker.pedestrian.0003", "walker.pedestrian.0004", "walker.pedestrian.0005", "walker.pedestrian.0006", "walker.pedestrian.0007", "walker.pedestrian.0008", "walker.pedestrian.0009", "walker.pedestrian.0010", "walker.pedestrian.0011", "walker.pedestrian.0012", "walker.pedestrian.0013", "walker.pedestrian.0014"]
+
+      Missing information:
+      1. What was the approximate speed of the autonomous BMW i8 convertible when it was traveling eastbound on University Avenue?
+      2. Can you provide more details about the evasive maneuvers that the BMW attempted to avoid the collision?
+      3. How close were the scooter rider and bicyclist to the point of impact between the BMW and the city bus?
+      4. Were there any specific actions taken by the scooter rider and bicyclist to avoid the collision?
+      5. How far away were the two pedestrians on the sidewalk from the intersection where the collision occurred?
+      6. What were the weather conditions like at the time of the incident?
+      7. Were there any specific road markings or signs at the intersection of University Avenue and Hamilton Avenue that may have influenced the events leading up to the collision?
+      7. How did the autonomous system of the BMW respond to the situation when it detected the city bus running a red light?
+      9. Were there any traffic congestion or other vehicles around the intersection that could have affected the incident?
+
+    assistant_answer_2: |
+      REASONING:
+      1. The speed of the autonomous BMW i8 convertible traveling eastbound on University Avenue is likely within the typical speed range for urban roads. A normal distribution with a mean of 30 mph and a standard deviation of 5 mph captures this variability in driving conditions.
+
+      2. The evasive maneuvers attempted by the BMW to avoid the collision can be categorized into options such as emergency braking, swerving left, swerving right, etc., which fits a categorical distribution. However, Scenic does not support categorical so we can replace it with Uniform.
+
+      3. The proximity of the scooter rider and bicyclist to the point of impact between the BMW and the city bus is unknown except that they narrowly avoided the incident. We can model this distance between them as a Range between really close (1 foot) and close (6ft standard car with).
+
+      4. The actions taken by the scooter rider and bicyclist to avoid the collision can be categorized into options like braking, changing direction, accelerating, etc., fitting a categorical distribution. However, Scenic does not support categorical so we can replace it with Uniform. 
+
+      5. The distance of the two pedestrians on the sidewalk from the intersection where the collision occurred can be modeled with a normal distribution. The mean distance would be based on typical sidewalk widths and locations relative to intersections, which is between 8 to 12 feet.
+
+      FINAL_ANSWER:
+      SPEED_DISTRIBUTION = Normal(30, 5) # 30 mph with std 5 mph
+      EVASIVE_MANEUVERS_DISTRIBUTION = Uniform(["emergency braking", "swerve to the left", "swerve to the right"])
+      PROXIMITY_TO_IMPACT_DISTRIBUTION = Range(1, 6) # Between 1 foot and 6 feet
+      ACTIONS_TAKEN_DISTRIBUTION = Uniform(["braking", "changing direction", "accelerating"])
+      PEDESTRIAN_DISTANCE_DISTRIBUTION = Normal(10, 2) # Mean distance of 10 feet with std 2 feet      
+
+  seven:
+    question: |-
+        Original description:
+        {description}
+
+        Based on the original description, pick from the following the best matching town. You may not choose any other town. If you cannot find a town that matches the original description, you must choose the closest matching town. Then after selecting a town, provide a high-level description (ignoring road names) of where in the town we should replicate the original description. For example, if the original description specified a highway such as US-101, provide a description about the properties of that highway, such as it is a 4 lane road.
+        Town07 - imitates a quiet rural community, a green landscape filled with cornfields, barns, grain silos and windmills.
+        Town06 - is a low density town set into a coniferous landscape exhibiting a multitude of large, 4-6 lane roads and special junctions like the Michigan Left.
+        Town05 - is an urban environment set into a backdrop of conifer-covered hills with a raised highway and large multilane roads and junctions.
+        Town04 - is a small town with a backdrop of snow-capped mountains and conifers. A multi-lane road circumnavigates the town in a "figure of 8".
+        Town03 - is a larger town with features of a downtown urban area. The map includes some interesting road network features such as a roundabout, underpasses and overpasses. The town also includes a raised metro track and a large building under construction.
+        Town02 - is a small town with numerous T-junctions and a variety of buildings, there are patches of coniferous trees, a park and a residential and commercial area.
+        Town01 - is a small town with numerous T-junctions and a variety of buildings, surrounded by coniferous trees and featuring several small bridges spanning across a river that divides the town into 2 halves.
+
+        Each expert and the final answer should be provided in the following format:
+        TOWN:
+        <Town0x>
+
+        LOCATION_IN_TOWN:
+        <description_of_location_in_town>
+
+  three:
+    a:    
+          question: |-
+              Original description:
+              {description}
+
+              What are the main events that happened in the scene? (e.g. car stopped when pedestrian crossed the street, a car was driving in a lane then switched lanes then made a left turn, etc.). Describe these events in natural language.
+
+              Each expert and the final answer should be provided in the following format:
+              EVENTS:
+              <events_in_natural_language>
+
+    b:
+            question: |-
+                Original description:
+                {description}
+
+                Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula (the end of the events or time invariant properties). So for the events that we can, describe the end of the events in LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic: 
+                car2 not in intersection until car1 in intersection
+                eventually car2 in intersection
+                eventually ego in intersection
+                (always car.speed < 30) implies (always distance to car > 10)
+                always not ((ego can see car1) and (ego can see car2))
+
+                LTL_FORMULA:
+                <LTL_formula>
+
+  two:
+    question: |-
+          Original description:
+          {description}
+
+          Relevant Objects:
+          {relevant_objects}
+
+          Based on the relevant objects selected from the original description, what are the spacial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.
+
+          Each expert and the final answer should be provided in the following format:
+          SPATIAL_RELATIONSHIPS:
+          <spatial_relationships>
+
+          MOVEMENT:
+          <movement>
+
+          VISIBILITY:
+          <visibility>
+
+  eight:
+    question: |-
+          Original description:
+          {description}
+
+          Relevant Objects:
+          {relevant_objects}
+
+          Important Events:
+          {important_events}
+
+          Here is a list of the supported behaviors in Scenic. Based on the relevant objects and important events, which behaviors do we need to use to recreate the original description? You may select more than one behavior as they are composable. If you cannot find a behavior that matches the original description, you must choose the closest matching behavior.
+
+          Here are the only behaviors that are allowed for vehicles, buses, motorcycles, and bicycles:
+          behavior ConstantThrottleBehavior(x : float):
+          behavior DriveAvoidingCollisions(target_speed : float = 25, avoidance_threshold : float = 10):
+              # Drive at a target speed, avoiding collisions with other vehicles
+              # Throttle is off and braking is applied if the distance to the nearest vehicle is less 
+              # than the avoidance threshold
+          behavior AccelerateForwardBehavior(): # Accelerate forward with throttle set to 0.5
+          behavior FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False):
+              # Follow's the lane on which the vehicle is at, unless the laneToFollow is specified.
+              # Once the vehicle reaches an intersection, by default, the vehicle will take the straight route.
+              # If straight route is not available, then any available turn route will be taken, uniformly randomly. 
+              # If turning at the intersection, the vehicle will slow down to make the turn, safely. 
+              # This behavior does not terminate. A recommended use of the behavior is to accompany it with condition,
+              # e.g. do FollowLaneBehavior() until ...
+              # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+              # :param laneToFollow: If the lane to follow is different from the lane that the vehicle is on, this parameter can be used to specify that lane. By default, this variable will be set to None, which means that the vehicle will follow the lane that it is currently on.
+          behavior FollowTrajectoryBehavior(target_speed : float = 10, trajectory : List[Lane] = None, turn_speed : float = None):
+              # Follows the given trajectory. The behavior terminates once the end of the trajectory is reached.
+              # :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s
+              # :param trajectory: It is a list of sequential lanes to track, from the lane that the vehicle is initially on to the lane it should end up on.
+          behavior TurnBehavior(trajectory : List[Lane] = None, target_speed : float = 6):
+              # This behavior uses a controller specifically tuned for turning at an intersection.
+              # This behavior is only operational within an intersection, it will terminate if the vehicle is outside of an intersection.
+          behavior LaneChangeBehavior(laneSectionToSwitchTo : Lane, is_oppositeTraffic : bool = False, target_speed : float = 10):
+              # is_oppositeTraffic should be specified as True only if the laneSectionToSwitch to has
+              # the opposite traffic direction to the initial lane from which the vehicle started LaneChangeBehavior
+
+          Here are the only behaviors that are allowed for pedestrians:
+          behavior WalkForwardBehavior(speed=0.5):
+              take SetWalkingDirectionAction(self.heading), SetWalkingSpeedAction(speed)
+              # Walk forward behavior for pedestrians by uniformly sampling either side of the sidewalk for the pedestrian to walk on
+          behavior WalkBehavior(maxSpeed=1.4):
+              take SetWalkAction(True, maxSpeed)
+          behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_speed=None):
+              # This behavior dynamically controls the speed of an actor that will perpendicularly (or close to)
+              # cross the road, so that it arrives at a spot in the road at the same time as a reference actor.
+              # Args:
+              # min_speed (float): minimum speed of the crossing actor. As this is a type of "synchronization action",
+              # a minimum speed is needed, to allow the actor to keep moving even if the reference actor has stopped
+              # threshold (float): starting distance at which the crossing actor starts moving
+              # final_speed (float): speed of the crossing actor after the reference one surpasses it
+
+          Each expert and the final answer should be provided in the following format:
+          BEHAVIOR:
+          <behavior>
+
+  constants:
+    prompt: |-
+      Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.
+
+      Your task is to write the first part of a Scenic program, the declaration section. This section defines, objects, agents, and distributions that are used in the program. Here are a few examples:
+      {example_1}
+
+      {example_2}
+
+      {example_3}
+
+      Please write your own declaration section from the following input. Provide only the correct Scenic program.
+      {objects}
+      {distributions}
+
+      FINAL_ANSWER:
+      <final_answer>
+
+    grammar: |-
+      root ::= talking program
+      talking ::= [^"FINAL_ANSWER:"]+
+      program ::= ["FINAL_ANSWER:"]+
+

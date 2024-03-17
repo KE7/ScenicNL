@@ -1,6 +1,7 @@
 from enum import Enum
 import json
 import os
+import cv2
 import pinecone
 import random
 from dataclasses import dataclass
@@ -27,6 +28,7 @@ class LLMPromptType(Enum):
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
+    COMPOSITIONAL_GBNF = "comp_gbnf"
 
 
 class PromptFiles(Enum):
@@ -38,6 +40,7 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
+    COMPOSITIONAL_GBNF = os.path.join(PROMPT_PATH, 'comp_gbnf_prompt.yml')
 
 
 @dataclass(frozen=True)
@@ -287,3 +290,57 @@ def few_shot_prompt_with_rag(
             first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
         return few_shot_prompt_generator(relevant_model_input, False)
+
+
+def sample_frames_from_video(video_path: str, num_frames : int = 10) -> List[str]:
+    if not os.path.isfile(video_path):
+        raise FileNotFoundError(f"Video file not found: {video_path}")
+
+    # Open the video file
+    cap = cv2.VideoCapture(video_path)
+
+    if not cap.isOpened():
+        raise ValueError(f"Unable to open video file: {video_path}")
+
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Calculate the step size between frames to sample evenly
+    step_size = total_frames // num_frames
+
+    frames = []
+
+    # Loop through the video and sample frames at the calculated step size
+    for i in range(num_frames):
+        frame_idx = (i + 1) * step_size
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
+        ret, frame = cap.read()
+
+        if ret:
+            frames.append(frame)
+
+    # Release the video capture object
+    cap.release()
+
+    return frames
+
+
+LOCAL_MODEL_ENDPOINT = "http://127.0.0.1:8080/completion"
+LOCAL_MODEL_DEFAULT_PARAMS = {
+    "cache_prompt": False,
+    "image_data": [],
+    "mirostat": 0,
+    "mirostat_eta": 0.1,
+    "mirostat_tau": 5,
+    "n_predict": -1,
+    "n_probs": 2,
+    "presence_penalty": 0,
+    "repeat_last_n": 241,
+    "repeat_penalty": 1.18,
+    "slot_id": 0,
+    # "stop": ["Question:", "Answer:"],
+    #"stream": False,
+    "tfs_z": 1,
+    "top_k": 40,
+    "top_p": 0.5,
+    "typical_p": 1,
+}

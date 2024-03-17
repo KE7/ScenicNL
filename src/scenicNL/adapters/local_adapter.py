@@ -3,34 +3,15 @@ import json
 
 import requests
 from scenicNL.adapters.model_adapter import ModelAdapter
-from scenicNL.common import LLMPromptType, ModelInput, VectorDB
+from scenicNL.common import LOCAL_MODEL_DEFAULT_PARAMS, LOCAL_MODEL_ENDPOINT, LLMPromptType, ModelInput, VectorDB
+from scenicNL.constraints.gbnf_decoding import CompositionalScenic
 
 
 class LocalModel(Enum):
-    MIXTRAL = "mixtral-8x7b"
+    local = "local"
     
 
 class LocalAdapter(ModelAdapter):
-    ENDPOINT = "http://127.0.0.1:8080/completion"
-    DEFAULT_PARAMS = {
-        "cache_prompt": False,
-        "image_data": [],
-        "mirostat": 0,
-        "mirostat_eta": 0.1,
-        "mirostat_tau": 5,
-        "n_predict": -1,
-        "n_probs": 0,
-        "presence_penalty": 0,
-        "repeat_last_n": 241,
-        "repeat_penalty": 1.18,
-        "slot_id": 0,
-        "stop": ["Question:", "Answer:"],
-        #"stream": False,
-        "tfs_z": 1,
-        "top_k": 40,
-        "top_p": 0.5,
-        "typical_p": 1,
-    }
 
     def __init__(self, model : LocalModel):
         super().__init__()
@@ -68,8 +49,8 @@ class LocalAdapter(ModelAdapter):
         msg = None
         # TODO: Add more prompt types
 
-        if msg is None:
-            raise NotImplementedError(f"Prompt type {prompt_type} was not formatted for Anthropic model {self._model.value}")
+        # if msg is None:
+        #     raise NotImplementedError(f"Prompt type {prompt_type} was not formatted for Local model {self._model.value}")
         
         return msg
     
@@ -83,13 +64,22 @@ class LocalAdapter(ModelAdapter):
         prompt_type: LLMPromptType,
         verbose: bool
     ) -> str:
+        if prompt_type == LLMPromptType.COMPOSITIONAL_GBNF:
+            program_generator = CompositionalScenic()
+            return program_generator.compositionally_construct_scenic_program(
+                model_input=model_input,
+                temperature=temperature,
+                max_tokens=max_length_tokens,
+                verbose=verbose
+            )
+
         prompt = self._format_message(
             model_input=model_input,
             prompt_type=prompt_type,
             verbose=verbose,
         )
 
-        data = {"prompt": prompt, "temperature": temperature} | self.DEFAULT_PARAMS
+        data = {"prompt": prompt, "temperature": temperature} | LOCAL_MODEL_DEFAULT_PARAMS
         if max_length_tokens > 0:
             data["max_tokens"] = max_length_tokens
 
@@ -99,7 +89,7 @@ class LocalAdapter(ModelAdapter):
         # - Add logic to check the correctness of each partial scenic program
         # - Add logic to synthesize the full scenic program from all of the partial scenic programs
 
-        response = requests.post(self.ENDPOINT, json=data)
+        response = requests.post(LOCAL_MODEL_ENDPOINT, json=data)
         if response.status_code != 200:
             raise ValueError(f"Local model {self._model} returned status code {response.status_code}") 
         response_body = response.json()

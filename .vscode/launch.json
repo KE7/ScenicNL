@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: gbnf decoding",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/scenicNL/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--query_path",
+                "Scenic-CA-AV-Crash/crash_reports/uncategorized/",
+                "--llm_prompt_type",
+                "comp_gbnf",
+                "--count",
+                "1",
+                "-m",
+                "local",
+                "--verbose",
+                "--ignore-cache",
+            ],
+            "env": {
+                "PINECONE_API_KEY":"373c6f4b-61df-40fb-ba26-05e160088c83",
+                "PINECONE_ENVIRONMENT":"gcp-starter",
+                "PINECONE_INDEX":"scenic-programs",
+            }
+        }
+    ]
+}

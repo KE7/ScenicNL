@@ -2,34 +2,44 @@ from scenicNL.adapters.api_adapter import Scenic3
 from scenicNL.adapters.model_adapter import ModelAdapter
 
 import json
-from typing import Dict, List, cast
+from typing import Dict, List, Optional, cast
 from enum import Enum
 from tenacity import retry, stop_after_attempt, wait_exponential_jitter
 import os
 
-import openai
+from openai import OpenAI
+
 
 from scenicNL.common import DISCUSSION_TEMPERATURE, NUM_EXPERTS, LLMPromptType, ModelInput, PromptFiles, VectorDB, few_shot_prompt_with_rag, get_discussion_prompt, get_discussion_to_program_prompt, get_expert_synthesis_prompt
 
 
 class OpenAIModel(Enum):
-    GPT_35_TURBO = "gpt-3.5-turbo-0613"
+    GPT_35_TURBO = "gpt-3.5-turbo-0125"
+    GPT_35_TURBO_16k = "gpt-3.5-turbo-16k"
     GPT_4 = "gpt-4-0613"
     GPT_4_TURBO = "gpt-4-1106-preview"
     GPT_4_32K = "gpt-4-32k-0613"
+    GPT_4_128K_TURBO = "gpt-4-0125-preview"
+    GPT_4_PREVIEW = "gpt-4-turbo-preview"
 
 
 class OpenAIAdapter(ModelAdapter):
     """
     This class servers as a wrapper for the OpenAI API.
     """
-    def __init__(self, model: OpenAIModel):
+    def __init__(self, model: OpenAIModel, use_index : bool = True):
         super().__init__()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
         if os.getenv("OPENAI_ORGANIZATION") and len(os.getenv("OPENAI_ORGANIZATION")) > 0:
-            openai.organization = os.getenv("OPENAI_ORGANIZATION")
+            # TODO: The 'openai.organization' option isn't read in the client API. You will need to pass it when you instantiate the client, e.g. 'OpenAI(organization=os.getenv("OPENAI_ORGANIZATION"))'
+            organization = os.getenv("OPENAI_ORGANIZATION")
+            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), organization=organization)
+        else:
+            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.model = model
-        self.index = VectorDB(index_name='scenic-programs')
+        if use_index:
+            self.index = VectorDB(index_name='scenic-programs')
+        else:
+            self.index = None
 
     def _zero_shot_prompt(
         self,
@@ -361,6 +371,21 @@ class OpenAIAdapter(ModelAdapter):
             },
             sort_keys=True,
         )
+    
+    def predict(
+        self,
+        messages: List[dict],
+        temperature: float = 0.7,
+    ) -> str:
+        response = self.client.chat.completions.create(model=self.model.value,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=1000,
+            top_p=1,
+            frequency_penalty=0.1,
+            presence_penalty=0
+        )
+        return response.choices[0].message.content
 
     @retry(
         wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
@@ -378,12 +403,10 @@ class OpenAIAdapter(ModelAdapter):
             # 1. Use tree of thought to answer all questions in the prompt
             panel_answers = []
             for _ in range(NUM_EXPERTS):
-                response = openai.ChatCompletion.create(
-                    temperature=DISCUSSION_TEMPERATURE,
-                    model=self.model.value,
-                    max_tokens=max_length_tokens,
-                    messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose),
-                )
+                response = self.client.chat.completions.create(temperature=DISCUSSION_TEMPERATURE,
+                model=self.model.value,
+                max_tokens=max_length_tokens,
+                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_DISCUSSION, verbose=verbose))
                 panel_answers.append(response.choices[0].message.content)
 
             if len(panel_answers) != NUM_EXPERTS:
@@ -402,24 +425,20 @@ class OpenAIAdapter(ModelAdapter):
                       f"Tree of thought answers: {panel_answers}\n")
 
             # 2. Ask an expert to synthesize the answers into a single program
-            expert_response = openai.ChatCompletion.create(
-                temperature=DISCUSSION_TEMPERATURE,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_SYNTHESIS, verbose=verbose),
-            )
+            expert_response = self.client.chat.completions.create(temperature=DISCUSSION_TEMPERATURE,
+            model=self.model.value,
+            max_tokens=max_length_tokens,
+            messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.EXPERT_SYNTHESIS, verbose=verbose))
             expert_synthesis = expert_response.choices[0].message.content
             if verbose:
                 print(f"GPT model {self.model.value}\n"
                       f"Expert synthesis: {expert_synthesis}\n")
 
             # 3. Do a few shot predict on the natural language description
-            response = openai.ChatCompletion.create(
-                temperature=temperature,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose),
-            )
+            response = self.client.chat.completions.create(temperature=temperature,
+            model=self.model.value,
+            max_tokens=max_length_tokens,
+            messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose))
 
             # 4. Use the resulting program to query the index to do HyDE thus obtaining the top k programs
             new_model_input = ModelInput(
@@ -431,44 +450,36 @@ class OpenAIAdapter(ModelAdapter):
             )
 
             # 5. Use the top k programs as examples for the few shot prediction along with the answer from the tree of thought
-            response = openai.ChatCompletion.create(
-                temperature=temperature,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
-            )
+            response = self.client.chat.completions.create(temperature=temperature,
+            model=self.model.value,
+            max_tokens=max_length_tokens,
+            messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
 
             # TODO: 6. Compile the program and loop feedback to GPT until the program compiles
 
             return response.choices[0].message.content
         elif prompt_type != LLMPromptType.PREDICT_FEW_SHOT_WITH_HYDE:
             messages = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
-            response = openai.ChatCompletion.create(
-                temperature=temperature,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=messages
-            )
+            response = self.client.chat.completions.create(temperature=temperature,
+            model=self.model.value,
+            max_tokens=max_length_tokens,
+            messages=messages)
             return response.choices[0].message.content
         else: # HyDE
-            response = openai.ChatCompletion.create(
-                temperature=temperature,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose)
-            )
+            response = self.client.chat.completions.create(temperature=temperature,
+            model=self.model.value,
+            max_tokens=max_length_tokens,
+            messages=self._format_message(model_input=model_input, prompt_type=LLMPromptType.PREDICT_FEW_SHOT, verbose=verbose))
             # We need to call GPT again
             new_model_input = ModelInput(
                 examples=model_input.examples, # this will get overwritten by the search query
                 nat_lang_scene_des=model_input.nat_lang_scene_des,
                 first_attempt_scenic_program=response.choices[0].message.content,
             )
-            response = openai.ChatCompletion.create(
-                temperature=temperature,
-                model=self.model.value,
-                max_tokens=max_length_tokens,
-                messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose)
-            )
+            response = self.client.chat.completions.create(temperature=temperature,
+            model=self.model.value,
+            max_tokens=max_length_tokens,
+            messages=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose))
             return response.choices[0].message.content
 
     def _format_scenic_tutorial_prompt(

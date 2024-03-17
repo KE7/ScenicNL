@@ -2,7 +2,7 @@ from scenicNL.adapters.model_adapter import ModelAdapter
 from scenicNL.adapters.api_adapter import Scenic3
 
 import os
-import openai
+from openai import OpenAI
 import json
 from enum import Enum
 from typing import Dict
@@ -22,9 +22,12 @@ class LMQLAdapter(ModelAdapter):
     """
     def __init__(self, model: LMQLModel):
         super().__init__()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
         if os.getenv("OPENAI_ORGANIZATION") and len(os.getenv("OPENAI_ORGANIZATION")) > 0:
-            openai.organization = os.getenv("OPENAI_ORGANIZATION")
+            # TODO: The 'openai.organization' option isn't read in the client API. You will need to pass it when you instantiate the client, e.g. 'OpenAI(organization=os.getenv("OPENAI_ORGANIZATION"))'
+            organization = os.getenv("OPENAI_ORGANIZATION")
+            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), organization=organization)
+        else:
+            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
         self._model = model
         
