@@ -370,7 +370,10 @@ class AnthropicAdapter(ModelAdapter):
         elif prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
             msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.PREDICT_LMQL_TOT_RETRY:
+            print('$&%^*$%^&*$%^')
+            model_input.set_tot(True)
             msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
+            print('$&%^*$%^&*$%^')
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 

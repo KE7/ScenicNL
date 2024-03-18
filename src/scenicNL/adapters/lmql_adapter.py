@@ -114,8 +114,7 @@ class LMQLAdapter(ModelAdapter):
         
         example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
         
-        tot_reasoning = model_input.tot_reasoning
-        if tot_reasoning == True:
+        if prompt_type == LLMPromptType.PREDICT_LMQL_TOT_RETRY:
             response = construct_scenic_program_tot(model_input, example_prompt, model_input.nat_lang_scene_des)
         else:
             response = construct_scenic_program(model_input, example_prompt, model_input.nat_lang_scene_des)

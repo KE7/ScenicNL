@@ -7,7 +7,7 @@ import scenic
 import os
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_scenic_code(example_prompt, towns, vehicles, weather, questions):
+def generate_scenic_code(example_prompt, towns, vehicles, weather):
     '''lmql
     "{example_prompt}\n"
 
@@ -44,7 +44,7 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather, questions):
     '''
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_reasoning(example_prompt, towns, vehicles, weather):
+def generate_reasoning(description, example, towns, vehicles, objects, weather):
     '''lmql
     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
@@ -64,24 +64,112 @@ def generate_reasoning(example_prompt, towns, vehicles, weather):
     "Original description:\n"
     "{description}\n"
 
-    "Based on the description, what are the all of the objects that need to be included in the scene?\n"
-    "First provide step-by-step justification for all objects you chosen then provide your final answer as:\n"
+    
+    "QUESTION ONE:\n"
+
+    "Based on the description, what are the all of the vehicles that need to be included in the scene?\n"
+    "First provide step-by-step justification for all vehicles you chose then provide your final answer as:\n"
 
     "JUSTIFICATION:\n"
-    "[Q1_JUSTIFICATION]\n" where STOPS_BEFORE(Q1_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q1_JUSTIFICATION)) < 600
+    "[Q1_JUSTIFICATION]\n" where STOPS_BEFORE(Q1_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q1_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q1_FINAL_ANSWER]\n" where STOPS_BEFORE(Q1_FINAL_ANSWER, "F) and len(TOKENS(Q1_FINAL_ANSWER)) < 200
+    "[Q1_FINAL_ANSWER]\n" where STOPS_BEFORE(Q1_FINAL_ANSWER, "QUESTION TWO:") and len(TOKENS(Q1_FINAL_ANSWER)) < 100
 
     
+    "QUESTION TWO:\n"
+
+    "Given the relevant vehicles and objects that you identified above, find the closest matching Scenic vehicle from the list. You cannot choose vehicles that are not in the lists so if you cannot find the vehicle in the list, you must choose the closest matching vehicle.\n"
+
+    "Previously Answered Question One:\n"
+    "{Q1_FINAL_ANSWER}\n"
+
+    "VEHICLES:\n"
+    "{vehicles}\n"
+
+    "OBJECTS:\n"
+    "{objects}\n"
+
+    "Based on the description, what are the all of the objects that need to be included in the scene? Let ego denote the self-driving car.\n"
+    "Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer. For example:\n"
+
+    "JUSTIFICATION:\n"
+    "<justification_for_the_objects>\n"
+
+    "FINAL_ANSWER:\n"
+    "ego = 'vehicle.audi.a2'\n"
+    "bicycle = 'vehicle.diamondback.century'\n"
+    "pedestrian = 'walker.pedestrian.0003'\n"
+
+    "Now please provide your justification and final answer.\n"
+
+    "JUSTIFICATION:\n"
+    "[Q2_JUSTIFICATION]\n" where STOPS_BEFORE(Q2_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q2_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q2_FINAL_ANSWER]\n" where STOPS_BEFORE(Q2_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q2_FINAL_ANSWER)) < 100
+    
+
+    "QUESTION THREE:\n"
+
+    "Previously Provided Original Description:\n"
+    "{description}\n"
+    
+    "What details about the world and environment are missing from the description? (e.g. what is the weather, time of day, etc.)\n"
+
+    "JUSTIFICATION:\n"
+    "[Q3_JUSTIFICATION]\n" where STOPS_BEFORE(Q3_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q3_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3_FINAL_ANSWER)) < 100
+
+    "QUESTION FOUR:\n"
+
+    "Previously Provided Original Description:\n"
+    "{description}\n"
+
+    "Previously Answered Question One:\n"
+    "{Q1_FINAL_ANSWER}\n"
+    
+    "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
+
+    "JUSTIFICATION:\n"
+    "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
+    
+    "QUESTION FIVE:\n"
+
+    "Previously Provided Original Description:\n"
+    "{description}\n"
+
+    "Previously Answered Question Four:\n"
+    "{Q4_FINAL_ANSWER}\n"
+
+    "Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.\n"
+
+    "JUSTIFICATION:\n"
+    "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
+
+    
+    "QUESTION SIX:\n"
+    ""
+
     return {
-        "CARLA_MAP_NAME_TODO" : CARLA_MAP_NAME,
-        "WEATHER_PARAM_TODO" : WEATHER_PARAM,
-        "EGO_VEHICLE_BLUEPRINT_ID_TODO" : EGO_VEHICLE_BLUEPRINT_ID,
-        "EGO_VEHICLE_SPEED_TODO" : EGO_VEHICLE_SPEED,
-        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
-        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
-        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+        "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
+        "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
+        "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
+        "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
+        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
+        "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
+        "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
+        "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
+        "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
+        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
     }
 
     '''
@@ -90,6 +178,10 @@ def generate_reasoning(example_prompt, towns, vehicles, weather):
 # description - original description
 # vehicles - valid list of Scenic vehicles * static
 # objects - valid list of Scenic objects * static
+
+# "Each expert and the final answer should be provided in the following format:\n"
+# "MISSING_ENV_INFO:\n"
+# "<missing_env_info>\n"
 
 
 # "Here is one example of a fully compiling Scenic program:\n"
@@ -158,12 +250,19 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     towns = list(np.load('src/scenicNL/constraints/blueprints/towns.npy'))
     vehicles = list(np.load('src/scenicNL/constraints/blueprints/vehicles.npy')) 
     weather = list(np.load('src/scenicNL/constraints/blueprints/weather.npy')) 
+    objects = list(np.load('src/scenicNL/constraints/blueprints/objects.npy')) 
+    description = nat_lang_scene_des
+    example = model_input.examples[0]
 
-    # #Load output template
+    #Load output template
     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
     scenic_template = open(scenic_template_path, 'r').read()
 
     #query lmql to get fill in blanks
+    lmql_tot = generate_reasoning(description, example, towns, vehicles, objects, weather)
+    print('$%$%$%')
+    print(lmql_tot)
+    print('$%$%$%')
     lmql_outputs = generate_scenic_code(example_prompt, towns, vehicles, weather)
 
     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
