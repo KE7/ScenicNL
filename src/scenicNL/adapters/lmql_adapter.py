@@ -10,7 +10,7 @@ from scenicNL.common import LLMPromptType, ModelInput, format_scenic_tutorial_pr
 from tenacity import retry, stop_after_attempt, wait_exponential_jitter
 
 
-from scenicNL.constraints.lmql_decoding import construct_scenic_program
+from scenicNL.constraints.lmql_decoding import construct_scenic_program, construct_scenic_program_tot
 
 
 class LMQLModel(Enum):
@@ -113,6 +113,10 @@ class LMQLAdapter(ModelAdapter):
     ) -> str:
         
         example_prompt = self._format_message(model_input=model_input, prompt_type=prompt_type, verbose=verbose)
-        response = construct_scenic_program(model_input, example_prompt, model_input.nat_lang_scene_des)
         
+        tot_reasoning = model_input.tot_reasoning
+        if tot_reasoning == True:
+            response = construct_scenic_program_tot(model_input, example_prompt, model_input.nat_lang_scene_des)
+        else:
+            response = construct_scenic_program(model_input, example_prompt, model_input.nat_lang_scene_des)
         return response

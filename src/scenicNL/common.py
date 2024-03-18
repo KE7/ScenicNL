@@ -32,6 +32,7 @@ class LLMPromptType(Enum):
     AST_FEEDBACK = "ast_feedback"
     PREDICT_LMQL_TO_HYDE = 'predict_lmql_to_hyde'
     PREDICT_LMQL_RETRY = 'predict_lmql_retry'
+    PREDICT_LMQL_TOT_RETRY = 'predict_lmql_tot_retry'
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
@@ -59,6 +60,7 @@ class ModelInput:
     compiler_error: Optional[str] = None
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
+    tot_reasoning: Optional[bool] = False
 
     # @nat_lang_scene_des.setter
     def set_nl(self, nat_lang_scene_des):
@@ -73,6 +75,9 @@ class ModelInput:
     
     def set_err(self, compiler_error):
         object.__setattr__(self, 'compiler_error', compiler_error)
+    
+    def set_tot(self, tot_reasoning):
+        object.__setattr__(self, 'tot_reasoning', tot_reasoning)
 
 
 

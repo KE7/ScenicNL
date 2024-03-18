@@ -369,6 +369,8 @@ class AnthropicAdapter(ModelAdapter):
             msg = self._few_shot_prompt_with_hyde(model_input=model_input, verbose=verbose)
         elif prompt_type == LLMPromptType.PREDICT_LMQL_RETRY:
             msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
+        elif prompt_type == LLMPromptType.PREDICT_LMQL_TOT_RETRY:
+            msg = self._ast_feedback_prompt(model_input=model_input, verbose=verbose)
         else:
             raise ValueError(f"Invalid prompt type: {prompt_type}")
 
@@ -801,6 +803,10 @@ class AnthropicAdapter(ModelAdapter):
                 # model_input.set_exs(query_with_rag(vector_index=self.index,
                 #                                     nat_lang_scene_des=model_input.nat_lang_scene_des))
                 model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+            elif prompt_type == LLMPromptType.PREDICT_LMQL_TOT_RETRY:
+                lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
+                model_input.set_tot(True)
+                model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)    
             else:
                 model_result = str(claude_response.completion)
 
