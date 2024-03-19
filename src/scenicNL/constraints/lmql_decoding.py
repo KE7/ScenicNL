@@ -141,6 +141,44 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather):
     
     "QUESTION FIVE:\n"
 
+    return {
+        "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
+        "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
+        "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
+        "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
+        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
+        "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
+        "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
+        "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
+        "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
+        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
+    }
+
+    '''
+
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
+
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+    "Original description:\n"
+    "{description}\n"
+    
+    "QUESTION FIVE:\n"
+
     "Previously Provided Original Description:\n"
     "{description}\n"
 
@@ -155,21 +193,32 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather):
     "FINAL ANSWER:\n"
     "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
 
-    
     "QUESTION SIX:\n"
     ""
 
     return {
-        "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
-        "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
-        "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
-        "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
-        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
-        "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
-        "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
-        "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
-        "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
-        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
+         return {
+        "Q1_FINAL_ANSWER_TODO": ANSWERS.Q1_FINAL_ANSWER,
+        "Q2_FINAL_ANSWER_TODO": ANSWERS.Q2_FINAL_ANSWER,
+        "Q3_FINAL_ANSWER_TODO": ANSWERS.Q3_FINAL_ANSWER,
+        "Q4_FINAL_ANSWER_TODO": ANSWERS.Q4_FINAL_ANSWER,
+        "Q5_FINAL_ANSWER_TODO": ANSWERS.Q5_FINAL_ANSWER,
+        "Q6_FINAL_ANSWER_TODO": Q6_FINAL_ANSWER,
+        "Q7_FINAL_ANSWER_TODO": Q7_FINAL_ANSWER,
+        "Q8_FINAL_ANSWER_TODO": Q8_FINAL_ANSWER,
+        "Q9_FINAL_ANSWER_TODO": Q9_FINAL_ANSWER,
+        "Q10_FINAL_ANSWER_TODO": Q10_FINAL_ANSWER,
+        "Q1_JUSTIFICATION_TODO": ANSWERS.Q1_JUSTIFICATION,
+        "Q2_JUSTIFICATION_TODO": ANSWERS.Q2_JUSTIFICATION,
+        "Q3_JUSTIFICATION_TODO": ANSWERS.Q3_JUSTIFICATION,
+        "Q4_JUSTIFICATION_TODO": ANSWERS.Q4_JUSTIFICATION,
+        "Q5_JUSTIFICATION_TODO": ANSWERS.Q5_JUSTIFICATION,
+        "Q6_JUSTIFICATION_TODO": Q6_JUSTIFICATION,
+        "Q7_JUSTIFICATION_TODO": Q7_JUSTIFICATION,
+        "Q8_JUSTIFICATION_TODO": Q8_JUSTIFICATION,
+        "Q9_JUSTIFICATION_TODO": Q9_JUSTIFICATION,
+        "Q10_JUSTIFICATION_TODO": Q10_JUSTIFICATION,
+    }
     }
 
     '''
@@ -262,6 +311,10 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     lmql_tot = generate_reasoning(description, example, towns, vehicles, objects, weather)
     print('$%$%$%')
     print(lmql_tot)
+    print('$%$%$%')
+    lmql_tot_full = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot)
+    print('$%$%$%')
+    print(lmql_tot_full)
     print('$%$%$%')
     lmql_outputs = generate_scenic_code(example_prompt, towns, vehicles, weather)
 
