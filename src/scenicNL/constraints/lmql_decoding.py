@@ -5,6 +5,8 @@ import time
 import tempfile
 import scenic
 import os
+from tenacity import retry, stop_after_attempt, wait_exponential_jitter
+
 
 @retry(
     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
@@ -46,6 +48,9 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
 
     '''
 
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+)
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning(description, example, towns, vehicles, objects, weather):
     '''lmql
@@ -142,6 +147,9 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather):
         # "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
         # "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION
 
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+)
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
     '''lmql
