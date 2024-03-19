@@ -99,7 +99,7 @@ class LMQLAdapter(ModelAdapter):
         )
 
     @retry(
-        wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+        wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
     )
     def _predict(
         self, 

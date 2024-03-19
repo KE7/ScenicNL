@@ -6,6 +6,9 @@ import tempfile
 import scenic
 import os
 
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+)
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_scenic_code(example_prompt, towns, vehicles, weather):
     '''lmql
@@ -314,7 +317,8 @@ def strip_other_constants(other_constants):
     
 def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des, segmented_retry=True, max_retries=5):
     """
-    constructs a scenic program using the template in lmql_template.scenic 
+    constructs a scenic program using the template in lmql_template_limited.scenic 
+    incorporates tot reasoning from LMQL into final outputs
     """
 
     #Load known variable sets from blueprints
