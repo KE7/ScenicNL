@@ -123,38 +123,21 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather):
     "FINAL ANSWER:\n"
     "[Q3_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3_FINAL_ANSWER)) < 100
 
+
     "QUESTION FOUR:\n"
-
-    "Previously Provided Original Description:\n"
-    "{description}\n"
-
-    "Previously Answered Question One:\n"
-    "{Q1_FINAL_ANSWER}\n"
-    
-    "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
-
-    "JUSTIFICATION:\n"
-    "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
-
-    "FINAL ANSWER:\n"
-    "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
-    
-    "QUESTION FIVE:\n"
 
     return {
         "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
         "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
         "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
-        "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
-        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
         "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
         "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
         "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
-        "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
-        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
     }
 
     '''
+        # "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
+        # "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION
 
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
@@ -176,7 +159,25 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
 
     "Original description:\n"
     "{description}\n"
+
     
+    "QUESTION FOUR:\n"
+    
+    "Previously Provided Original Description:\n"
+    "{description}\n"
+
+    "Previously Answered Question One:\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+    
+    "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
+
+    "JUSTIFICATION:\n"
+    "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
+    
+
     "QUESTION FIVE:\n"
 
     "Previously Provided Original Description:\n"
@@ -193,35 +194,56 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
     "FINAL ANSWER:\n"
     "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
 
+
     "QUESTION SIX:\n"
-    ""
+
 
     return {
-         return {
-        "Q1_FINAL_ANSWER_TODO": ANSWERS.Q1_FINAL_ANSWER,
-        "Q2_FINAL_ANSWER_TODO": ANSWERS.Q2_FINAL_ANSWER,
-        "Q3_FINAL_ANSWER_TODO": ANSWERS.Q3_FINAL_ANSWER,
-        "Q4_FINAL_ANSWER_TODO": ANSWERS.Q4_FINAL_ANSWER,
-        "Q5_FINAL_ANSWER_TODO": ANSWERS.Q5_FINAL_ANSWER,
-        "Q6_FINAL_ANSWER_TODO": Q6_FINAL_ANSWER,
-        "Q7_FINAL_ANSWER_TODO": Q7_FINAL_ANSWER,
-        "Q8_FINAL_ANSWER_TODO": Q8_FINAL_ANSWER,
-        "Q9_FINAL_ANSWER_TODO": Q9_FINAL_ANSWER,
-        "Q10_FINAL_ANSWER_TODO": Q10_FINAL_ANSWER,
-        "Q1_JUSTIFICATION_TODO": ANSWERS.Q1_JUSTIFICATION,
-        "Q2_JUSTIFICATION_TODO": ANSWERS.Q2_JUSTIFICATION,
-        "Q3_JUSTIFICATION_TODO": ANSWERS.Q3_JUSTIFICATION,
-        "Q4_JUSTIFICATION_TODO": ANSWERS.Q4_JUSTIFICATION,
-        "Q5_JUSTIFICATION_TODO": ANSWERS.Q5_JUSTIFICATION,
-        "Q6_JUSTIFICATION_TODO": Q6_JUSTIFICATION,
-        "Q7_JUSTIFICATION_TODO": Q7_JUSTIFICATION,
-        "Q8_JUSTIFICATION_TODO": Q8_JUSTIFICATION,
-        "Q9_JUSTIFICATION_TODO": Q9_JUSTIFICATION,
-        "Q10_JUSTIFICATION_TODO": Q10_JUSTIFICATION,
-    }
+        "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
+        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
+        "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
+        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
     }
 
     '''
+        # "Q1_FINAL_ANSWER_TODO": ANSWERS[Q1_FINAL_ANSWER],
+        # "Q2_FINAL_ANSWER_TODO": ANSWERS[Q2_FINAL_ANSWER],
+        # "Q3_FINAL_ANSWER_TODO": ANSWERS[Q3_FINAL_ANSWER],
+        # "Q1_JUSTIFICATION_TODO": ANSWERS[Q1_JUSTIFICATION],
+        # "Q2_JUSTIFICATION_TODO": ANSWERS[Q2_JUSTIFICATION],
+        # "Q3_JUSTIFICATION_TODO": ANSWERS[Q3_JUSTIFICATION],
+    # "Previously Answered Missing Info:\n"
+    # "{ANSWERS[Q4_FINAL_ANSWER]}\n"
+
+    # "Distributions for Missing Information:\n"
+    # "{Q5_FINAL_ANSWER}\n"
+
+    # "Based on the missing information and distributions above, pick from the following list of distributions that are supported. You may not use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution:\n"
+    # "Range(low, high) - Uniform distribution over the range [[low, high]]\n"
+    # "DiscreteRange(low, high) - Uniform distribution over the discreet integer range [[low, high]]\n"
+    # "Normal(mean, std) - Normal distribution with mean and standard deviation\n"
+    # "TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [[low, high]]\n"
+    # "Uniform(value, …) - Uniform distribution over the values provided\n"
+    # "Discrete([[value: weight, … ]]) - Discrete distribution over the values provided with the given weights\n"
+
+    # "JUSTIFICATION:\n"
+    # "[Q6_JUSTIFICATION]\n" where STOPS_BEFORE(Q6_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q6_JUSTIFICATION)) < 500
+
+    # "FINAL ANSWER:\n"
+    # "[Q6_FINAL_ANSWER]\n" where STOPS_BEFORE(Q6_FINAL_ANSWER, "QUESTION SEVEN:") and len(TOKENS(Q6_FINAL_ANSWER)) < 100
+
+
+    # "QUESTION SEVEN:\n"
+        # "Q6_FINAL_ANSWER_TODO": Q6_FINAL_ANSWER,
+        # "Q6_JUSTIFICATION_TODO": Q6_JUSTIFICATION,
+# "Q7_FINAL_ANSWER_TODO": Q7_FINAL_ANSWER,
+# "Q8_FINAL_ANSWER_TODO": Q8_FINAL_ANSWER,
+# "Q9_FINAL_ANSWER_TODO": Q9_FINAL_ANSWER,
+# "Q10_FINAL_ANSWER_TODO": Q10_FINAL_ANSWER,
+# "Q7_JUSTIFICATION_TODO": Q7_JUSTIFICATION,
+# "Q8_JUSTIFICATION_TODO": Q8_JUSTIFICATION,
+# "Q9_JUSTIFICATION_TODO": Q9_JUSTIFICATION,
+# "Q10_JUSTIFICATION_TODO": Q10_JUSTIFICATION,
 
 # example - example scenic program * static
 # description - original description
@@ -307,12 +329,17 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
     scenic_template = open(scenic_template_path, 'r').read()
 
+    def update(d_old, d_new):
+        for k, v in d_old.items():
+            if k not in d_new:
+                d_new[k] = v
     #query lmql to get fill in blanks
     lmql_tot = generate_reasoning(description, example, towns, vehicles, objects, weather)
-    print('$%$%$%')
-    print(lmql_tot)
-    print('$%$%$%')
+    print('Completed generate reasoning pt 1!')
     lmql_tot_full = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot)
+    print('Completed generate reasoning pt 2!')
+    update(d_old = lmql_tot, d_new = lmql_tot_full)
+    
     print('$%$%$%')
     print(lmql_tot_full)
     print('$%$%$%')
