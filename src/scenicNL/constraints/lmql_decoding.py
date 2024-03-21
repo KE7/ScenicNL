@@ -240,7 +240,6 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
 #     "Original description:\n"
 #     "{description}\n"
 
-    
 #     "QUESTION FOUR:\n"
     
 #     "Previously Provided Original Description:\n"
@@ -249,52 +248,6 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
 #     "Previously Answered Question One:\n"
 #     "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
     
-#     "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
-
-#     "JUSTIFICATION:\n"
-#     "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
-
-#     "FINAL ANSWER:\n"
-#     "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
-    
-
-#     "QUESTION FIVE:\n"
-
-#     "Previously Provided Original Description:\n"
-#     "{description}\n"
-
-#     "Previously Answered Question Four:\n"
-#     "{Q4_FINAL_ANSWER}\n"
-
-#     "Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.\n"
-
-#     "JUSTIFICATION:\n"
-#     "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
-
-#     "FINAL ANSWER:\n"
-#     "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
-
-
-#     "QUESTION SIX:\n"
-
-
-#     return {
-#         "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
-#         "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
-#         "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
-#         "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
-#     }
-
-#     '''
-
-
-
-        # "Q1_FINAL_ANSWER_TODO": ANSWERS[Q1_FINAL_ANSWER],
-        # "Q2_FINAL_ANSWER_TODO": ANSWERS[Q2_FINAL_ANSWER],
-        # "Q3_FINAL_ANSWER_TODO": ANSWERS[Q3_FINAL_ANSWER],
-        # "Q1_JUSTIFICATION_TODO": ANSWERS[Q1_JUSTIFICATION],
-        # "Q2_JUSTIFICATION_TODO": ANSWERS[Q2_JUSTIFICATION],
-        # "Q3_JUSTIFICATION_TODO": ANSWERS[Q3_JUSTIFICATION],
     # "Previously Answered Missing Info:\n"
     # "{ANSWERS[Q4_FINAL_ANSWER]}\n"
 
@@ -449,20 +402,42 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     if not segmented_retry:
         final_scenic = scenic_template.format_map(lmql_outputs)
     else:
-        print('Segmenting retries')
+        print('1. Segmenting retries into template sections:')
         template_sections = scenic_template.split("##")
         template_sections = ["##" + section for section in template_sections]
-        print(template_sections)
+        for ind, section in enumerate(template_sections):
+            print(f'{ind}-'*8)
+            print(section)
+        print()
+
+
         # final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
         # i = 2
+        print('2. Printing first template section infilled with lmql_outputs:')
+        final_scenic = template_sections[0].format_map(lmql_outputs) #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        print(final_scenic)
 
-        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        print('Starting loop below:')
         i = 1
         num_retries = max_retries
         while i < len(template_sections) and num_retries > 0:
-            print(f'\n\n\n\n\n\n\n{i} {num_retries} {i} {num_retries} {i} {num_retries}')
+            print(f'\n\n\n\n{i} {num_retries} {i} {num_retries} {i} {num_retries}\n\n\n\n')
+
+            print('3. Lmql outputs')
+            for key in sorted(lmql_outputs.keys()):
+                print(key)
+            print('3b. Lmql outputs')
+            for key in sorted(lmql_outputs.keys()):
+                print(key, '-', lmql_outputs[key])
+
+
             uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs)
             working_scenic = final_scenic
+            print('4. Working scenic')
+            print(working_scenic)
+            print()
+            print('5. Uncompiled scenic')
+            print(uncompiled_scenic)
 
             compiles, error_message = check_compile(uncompiled_scenic)
             # reassign values in model_input
@@ -488,7 +463,7 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
                 working_key = section_keys.pop(0)
                 lmql_outputs.pop(working_key, None)
                 i += 1
-                num_retries = 3
+                num_retries = max_retries
         if num_retries == 0:
             print("RAN OUT OF RETRIES RIP")
         print('CHECKING FINAL SCENIC')
