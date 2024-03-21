@@ -411,49 +411,32 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     objects = list(np.load('src/scenicNL/constraints/blueprints/objects.npy')) 
     description = nat_lang_scene_des
     example = model_input.examples[0]
+    model_input.set_nl(nat_lang_scene_des)
 
     #Load output template
     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
     scenic_template = open(scenic_template_path, 'r').read()
 
-    def update(temp, full):
-        for k, v in temp.items():
-            if k not in full:
-                full[k] = v
-    #query lmql to get fill in blanks
-
-    reasoning_funcs = [generate_reasoning, generate_reasoning2]
-    lmql_tot_full = {}
-    for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
-        lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
-        update(temp = lmql_tot_temp, full = lmql_tot_full)
-        print(f'Completed generate reasoning pt {reasoning_count+1}/{len(reasoning_funcs)}!')
-
+    # #Start reasoning
+    # def update(temp, full):
+    #     for k, v in temp.items():
+    #         if k not in full:
+    #             full[k] = v
+    # reasoning_funcs = [generate_reasoning, generate_reasoning2]
     # lmql_tot_full = {}
-    # lmql_tot_temp = generate_reasoning(description, example, towns, vehicles, objects, weather, lmql_tot_full)
-    # print('Completed generate reasoning pt 1!')
-    # update(temp = lmql_tot_temp, full = lmql_tot_full)
+    # for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
+    #     lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
+    #     update(temp = lmql_tot_temp, full = lmql_tot_full)
+    #     print(f'Completed generate reasoning pt {reasoning_count+1}/{len(reasoning_funcs)}!')
 
-    # lmql_tot_temp = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot_full)
-    # print('Completed generate reasoning pt 2!')
-    # update(temp = lmql_tot_temp, full = lmql_tot_full)
+    # print('$%$%$%')
+    # # print(lmql_tot_full)
+    # for key in sorted(lmql_tot_full.keys()):
+    #     if 'FINAL_ANSWER' in key:
+    #         print(key, '-', lmql_tot_full[key])
+    # print('$%$%$%')
+    # #End reasoning
 
-    # lmql_tot_full = generate_reasoning(description, example, towns, vehicles, objects, weather)
-    # print('Completed generate reasoning pt 1!')
-    # lmql_tot_temp = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot)
-    # print('Completed generate reasoning pt 2!')
-    # update(d_old = lmql_tot, d_new = lmql_tot_full)
-    
-    # lmql_tot_full = generate_reasoning3(description, example, towns, vehicles, objects, weather, lmql_tot)
-    # print('Completed generate reasoning pt 3!')
-    # update(d_old = lmql_tot, d_new = lmql_tot_full)
-
-    print('$%$%$%')
-    # print(lmql_tot_full)
-    for key in sorted(lmql_tot_full.keys()):
-        if 'FINAL_ANSWER' in key:
-            print(key, '-', lmql_tot_full[key])
-    print('$%$%$%')
     lmql_outputs = generate_scenic_code(example_prompt, towns, vehicles, weather)
     assert 'EGO_VEHICLE_BLUEPRINT_ID_TODO' in lmql_outputs
 
@@ -471,10 +454,9 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         template_sections = ["##" + section for section in template_sections]
         print(template_sections)
         # final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
-        
         # i = 2
+
         final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
-        
         i = 1
         num_retries = max_retries
         while i < len(template_sections) and num_retries > 0:
