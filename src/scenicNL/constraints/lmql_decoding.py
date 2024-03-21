@@ -28,19 +28,69 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
     "## CONSTANTS\n"
     "EGO_MODEL = [EGO_VEHICLE_BLUEPRINT_ID]\n" where type(EGO_VEHICLE_BLUEPRINT_ID) == str and EGO_VEHICLE_BLUEPRINT_ID in vehicles
     "EGO_SPEED = [EGO_VEHICLE_SPEED]\n"  where INT(EGO_VEHICLE_SPEED) 
-    "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
+    "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "##") and len(TOKENS(OTHER_CONSTANTS)) < 100
     
     "## DEFINING BEHAVIORS\n"
-    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
+    "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "##") and len(TOKENS(SPATIAL_RELATIONS)) < 400
 
     "## DEFINING SPATIAL RELATIONS\n"
-    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
+    "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 400
     
     return {
         "CARLA_MAP_NAME_TODO" : CARLA_MAP_NAME,
         "WEATHER_PARAM_TODO" : WEATHER_PARAM,
         "EGO_VEHICLE_BLUEPRINT_ID_TODO" : EGO_VEHICLE_BLUEPRINT_ID,
         "EGO_VEHICLE_SPEED_TODO" : EGO_VEHICLE_SPEED,
+        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
+        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+    }
+
+    '''
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def regenerate_scenic(model_input, working_scenic, lmql_outputs):
+    '''lmql
+    
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+
+    "TODO: Create a fully compiling Scenic program that models the description based on:\n"
+
+    "1. The following natural language description:\n"
+    "{model_input.nat_lang_scene_des}\n"
+
+    "2. The following scenic_program with compiler errors that models the description:\n"
+    "{model_input.first_attempt_scenic_program}\n"
+
+    "3. The first compiler error raised with the scenic program:\n"
+    "{model_input.compiler_error}\n"
+
+    "Please output a modified version of scenic_program modified so the compiler error does not appear.\n"
+
+    "{working_scenic}\n"
+
+    if "OTHER_CONSTANTS_TODO" in lmql_outputs:
+        "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "##") and len(TOKENS(OTHER_CONSTANTS)) < 100
+    else:
+        OTHER_CONSTANTS = None
+    
+    if "VEHICLE_BEHAVIORS_TODO" in lmql_outputs:
+        "## DEFINING BEHAVIORS\n"
+        "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "##") and len(TOKENS(SPATIAL_RELATIONS)) < 400
+    else:
+        BEHAVIORS = None
+    
+
+    if "SPATIAL_RELATIONS_TODO" in lmql_outputs:
+        "## DEFINING SPATIAL RELATIONS\n"
+        "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 400
+    else:
+        SPATIAL_RELATIONS = None
+    
+    return {
         "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
         "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
         "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
@@ -293,55 +343,6 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
 
 # "Here is one example of a fully compiling Scenic program:\n"
 # "{example_1}\n"
-@retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
-)
-@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def regenerate_scenic(model_input, working_scenic, lmql_outputs):
-    '''lmql
-    
-    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
-
-    "TODO: Create a fully compiling Scenic program that models the description based on:\n"
-
-    "1. The following natural language description:\n"
-    "{model_input.nat_lang_scene_des}\n"
-
-    "2. The following scenic_program with compiler errors that models the description:\n"
-    "{model_input.first_attempt_scenic_program}\n"
-
-    "3. The first compiler error raised with the scenic program:\n"
-    "{model_input.compiler_error}\n"
-
-    "Please output a modified version of scenic_program modified so the compiler error does not appear.\n"
-
-    "{working_scenic}\n"
-
-    if "OTHER_CONSTANTS_TODO" in lmql_outputs:
-        "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "## DEFINING BEHAVIORS")
-    else:
-        OTHER_CONSTANTS = None
-    
-    if "VEHICLE_BEHAVIORS_TODO" in lmql_outputs:
-        "## DEFINING BEHAVIORS\n"
-        "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "## DEFINING SPATIAL RELATIONS") and len(TOKENS(SPATIAL_RELATIONS)) < 200
-    else:
-        BEHAVIORS = None
-    
-
-    if "SPATIAL_RELATIONS_TODO" in lmql_outputs:
-        "## DEFINING SPATIAL RELATIONS\n"
-        "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 500
-    else:
-        SPATIAL_RELATIONS = None
-    
-    return {
-        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
-        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
-        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
-    }
-
-    '''
 
 
 def strip_other_constants(other_constants):
@@ -370,11 +371,11 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
     scenic_template = open(scenic_template_path, 'r').read()
 
-    # #Start reasoning
-    # def update(temp, full):
-    #     for k, v in temp.items():
-    #         if k not in full:
-    #             full[k] = v
+    #Start reasoning
+    def update(temp, full):
+        for k, v in temp.items():
+            if k not in full:
+                full[k] = v
     # reasoning_funcs = [generate_reasoning, generate_reasoning2]
     # lmql_tot_full = {}
     # for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
@@ -411,14 +412,14 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         print()
 
 
-        # final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
-        # i = 2
         print('2. Printing first template section infilled with lmql_outputs:')
-        final_scenic = template_sections[0].format_map(lmql_outputs) #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        i = 2
+        # final_scenic = template_sections[0].format_map(lmql_outputs) #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
         print(final_scenic)
 
         print('Starting loop below:')
-        i = 1
+        i = 2
         num_retries = max_retries
         while i < len(template_sections) and num_retries > 0:
             print(f'\n\n\n\n{i} {num_retries} {i} {num_retries} {i} {num_retries}\n\n\n\n')
@@ -431,7 +432,14 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
                 print(key, '-', lmql_outputs[key])
 
 
-            uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs)
+            print('3c. Template to fill in')
+            print(template_sections[i])
+            print('3d. Template filling in attempt')
+            print('start')
+            print(template_sections[i].format_map(lmql_outputs))
+            print('end')
+
+            uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs).strip()
             working_scenic = final_scenic
             print('4. Working scenic')
             print(working_scenic)
@@ -443,20 +451,19 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
             # reassign values in model_input
             model_input.set_fasp(uncompiled_scenic)
             model_input.set_err(error_message)
-            print('****\n\n\n\n')
-            print(uncompiled_scenic)
-            print('%%%%\n\n\n\n')
-            print(working_scenic)
-            print('$$$$\n\n\n\n')
-            print(error_message)
+            
+            if not compiles:
+                print('6. Error message on uncompiled scenic (if any)')
+                print(error_message)
+            else:
+                print('6. No error on uncompiled scenic')
 
             # check if compiles
             if not compiles:
-                print(f'{i} {num_retries} DID NOT COMPILE: \n\n{uncompiled_scenic}')
                 #regenerate this section and next
                 print(f"{i} {num_retries} ERROR {error_message}")
-                lmql_outputs = regenerate_scenic(model_input, working_scenic, lmql_outputs)
-                lmql_outputs = {k: v for k, v in lmql_outputs.items() if v is not None}
+                lmql_outputs_tmp = regenerate_scenic(model_input, working_scenic, lmql_outputs)
+                lmql_outputs = {k: v for k, v in lmql_outputs_tmp.items() if v is not None} ### this is bad
                 num_retries -= 1
             else:
                 final_scenic = uncompiled_scenic
