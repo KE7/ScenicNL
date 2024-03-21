@@ -462,8 +462,23 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
             if not compiles:
                 #regenerate this section and next
                 print(f"{i} {num_retries} ERROR {error_message}")
+
+                print('7. Inputs to regenerate scenic')
+
+                print("A. The following natural language description:")
+                print(f"{model_input.nat_lang_scene_des}")
+                print("B. The following scenic_program with compiler errors that models the description:")
+                print(f"{model_input.first_attempt_scenic_program}")
+                print("C. The first compiler error raised with the scenic program:")
+                print(f"{model_input.compiler_error}")
+
+                print("D. Please output a modified version of scenic_program modified so the compiler error does not appear.")
+                f"{working_scenic}"
+
                 lmql_outputs_tmp = regenerate_scenic(model_input, working_scenic, lmql_outputs)
-                lmql_outputs = {k: v for k, v in lmql_outputs_tmp.items() if v is not None} ### this is bad
+                lmql_outputs_tmp = {k: v for k, v in lmql_outputs_tmp.items() if v is not None} ### this is bad
+                for key in lmql_outputs_tmp:
+                    lmql_outputs[key] = lmql_outputs_tmp[key]
                 num_retries -= 1
             else:
                 final_scenic = uncompiled_scenic
