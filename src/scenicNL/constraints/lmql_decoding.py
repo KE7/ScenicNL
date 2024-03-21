@@ -49,10 +49,10 @@ def generate_scenic_code(example_prompt, towns, vehicles, weather):
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_reasoning(description, example, towns, vehicles, objects, weather):
+def generate_reasoning(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
     '''lmql
     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
@@ -144,11 +144,9 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather):
     }
 
     '''
-        # "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
-        # "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
@@ -217,6 +215,80 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
     }
 
     '''
+
+# @retry(
+#     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+# )
+# @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+# def generate_reasoning3(description, example, towns, vehicles, objects, weather, ANSWERS):
+#     '''lmql
+#     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+#     "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+#     "EXPERT_1:\n"
+#     "<expert_1_answer>\n"
+#     "EXPERT_2:\n"
+#     "<expert_2_answer>\n"
+#     "EXPERT_3:\n"
+#     "<expert_3_answer>\n"
+#     "FINAL_ANSWER:\n"
+#     "<final_answer>\n"
+
+#     "Here is one example of a Scenic program:\n"
+#     "{example}\n"
+
+#     "Original description:\n"
+#     "{description}\n"
+
+    
+#     "QUESTION FOUR:\n"
+    
+#     "Previously Provided Original Description:\n"
+#     "{description}\n"
+
+#     "Previously Answered Question One:\n"
+#     "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+    
+#     "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
+
+#     "JUSTIFICATION:\n"
+#     "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
+
+#     "FINAL ANSWER:\n"
+#     "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
+    
+
+#     "QUESTION FIVE:\n"
+
+#     "Previously Provided Original Description:\n"
+#     "{description}\n"
+
+#     "Previously Answered Question Four:\n"
+#     "{Q4_FINAL_ANSWER}\n"
+
+#     "Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.\n"
+
+#     "JUSTIFICATION:\n"
+#     "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
+
+#     "FINAL ANSWER:\n"
+#     "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
+
+
+#     "QUESTION SIX:\n"
+
+
+#     return {
+#         "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
+#         "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
+#         "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
+#         "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
+#     }
+
+#     '''
+
+
+
         # "Q1_FINAL_ANSWER_TODO": ANSWERS[Q1_FINAL_ANSWER],
         # "Q2_FINAL_ANSWER_TODO": ANSWERS[Q2_FINAL_ANSWER],
         # "Q3_FINAL_ANSWER_TODO": ANSWERS[Q3_FINAL_ANSWER],
@@ -268,6 +340,9 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
 
 # "Here is one example of a fully compiling Scenic program:\n"
 # "{example_1}\n"
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+)
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def regenerate_scenic(model_input, working_scenic, lmql_outputs):
     '''lmql
@@ -341,21 +416,46 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     scenic_template_path = f"src/scenicNL/constraints/lmql_template_limited.scenic"
     scenic_template = open(scenic_template_path, 'r').read()
 
-    def update(d_old, d_new):
-        for k, v in d_old.items():
-            if k not in d_new:
-                d_new[k] = v
+    def update(temp, full):
+        for k, v in temp.items():
+            if k not in full:
+                full[k] = v
     #query lmql to get fill in blanks
-    lmql_tot = generate_reasoning(description, example, towns, vehicles, objects, weather)
-    print('Completed generate reasoning pt 1!')
-    lmql_tot_full = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot)
-    print('Completed generate reasoning pt 2!')
-    update(d_old = lmql_tot, d_new = lmql_tot_full)
+
+    reasoning_funcs = [generate_reasoning, generate_reasoning2]
+    lmql_tot_full = {}
+    for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
+        lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
+        update(temp = lmql_tot_temp, full = lmql_tot_full)
+        print(f'Completed generate reasoning pt {reasoning_count+1}/{len(reasoning_funcs)}!')
+
+    # lmql_tot_full = {}
+    # lmql_tot_temp = generate_reasoning(description, example, towns, vehicles, objects, weather, lmql_tot_full)
+    # print('Completed generate reasoning pt 1!')
+    # update(temp = lmql_tot_temp, full = lmql_tot_full)
+
+    # lmql_tot_temp = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot_full)
+    # print('Completed generate reasoning pt 2!')
+    # update(temp = lmql_tot_temp, full = lmql_tot_full)
+
+    # lmql_tot_full = generate_reasoning(description, example, towns, vehicles, objects, weather)
+    # print('Completed generate reasoning pt 1!')
+    # lmql_tot_temp = generate_reasoning2(description, example, towns, vehicles, objects, weather, lmql_tot)
+    # print('Completed generate reasoning pt 2!')
+    # update(d_old = lmql_tot, d_new = lmql_tot_full)
     
+    # lmql_tot_full = generate_reasoning3(description, example, towns, vehicles, objects, weather, lmql_tot)
+    # print('Completed generate reasoning pt 3!')
+    # update(d_old = lmql_tot, d_new = lmql_tot_full)
+
     print('$%$%$%')
-    print(lmql_tot_full)
+    # print(lmql_tot_full)
+    for key in sorted(lmql_tot_full.keys()):
+        if 'FINAL_ANSWER' in key:
+            print(key, '-', lmql_tot_full[key])
     print('$%$%$%')
     lmql_outputs = generate_scenic_code(example_prompt, towns, vehicles, weather)
+    assert 'EGO_VEHICLE_BLUEPRINT_ID_TODO' in lmql_outputs
 
     lmql_outputs["OTHER_CONSTANTS_TODO"] = strip_other_constants(lmql_outputs["OTHER_CONSTANTS_TODO"])
     lmql_outputs["TEXT_DESCRIPTION_TODO"] = nat_lang_scene_des
@@ -370,9 +470,12 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         template_sections = scenic_template.split("##")
         template_sections = ["##" + section for section in template_sections]
         print(template_sections)
-        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        # final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
         
-        i = 2
+        # i = 2
+        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        
+        i = 1
         num_retries = max_retries
         while i < len(template_sections) and num_retries > 0:
             print(f'\n\n\n\n\n\n\n{i} {num_retries} {i} {num_retries} {i} {num_retries}')
@@ -441,10 +544,10 @@ def construct_scenic_program(model_input, example_prompt, nat_lang_scene_des, se
         print('Segmenting retries')
         template_sections = scenic_template.split("##")
         template_sections = ["##" + section for section in template_sections]
-        print(template_sections)
-        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        print('TEMNPLAE_SECTIONS', template_sections)
+        final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
         
-        i = 2
+        i = 1
         num_retries = max_retries
         while i < len(template_sections) and num_retries > 0:
             print(f'\n\n\n\n\n\n\n{i} {num_retries} {i} {num_retries} {i} {num_retries}')
@@ -504,8 +607,9 @@ def check_compile(scenic_program):
                 print(error_message)
             works = False
         try:
-            if works: ast = scenic.syntax.parser.parse_file(fname)
-            print('No compilation error! (2/2)')
+            if works: 
+                ast = scenic.syntax.parser.parse_file(fname)
+                print('No execution or compilation error! (2/2)')
         except Exception as e:
             try:
                 error_message = f"Error details below..\nerror message: {str(e)}\nerror text: {e.text}\nerror lineno: {e.lineno}\nend_lineno: {e.end_lineno}\nerror offset: {e.offset}\nerror end_offset: {e.end_offset}"
