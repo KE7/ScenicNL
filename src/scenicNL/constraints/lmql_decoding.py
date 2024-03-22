@@ -350,7 +350,7 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def regenerate_scenic_code(model_input, example_prompt, working_scenic, broken_scenic, lmql_outputs):
+def regenerate_scenic_code(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs):
     '''lmql
 
     "You are an autonomous vehicle simulation programming expert. Earlier on, you made your first attempt of the following task.\n"
@@ -369,7 +369,7 @@ def regenerate_scenic_code(model_input, example_prompt, working_scenic, broken_s
     "{model_input.compiler_error}\n"
 
     "TASK: Modify the code below using your expertise about the Scenic programming language so the error no longer appears\n"
-    "{broken_scenic}\n"
+    "{new_scenic}\n"
 
     if "OTHER_CONSTANTS_TODO" in lmql_outputs:
         "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "##") and len(TOKENS(OTHER_CONSTANTS)) < 100
