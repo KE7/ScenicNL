@@ -344,6 +344,58 @@ def generate_reasoning2(description, example, towns, vehicles, objects, weather,
 # "Here is one example of a fully compiling Scenic program:\n"
 # "{example_1}\n"
 
+    # "2. The following scenic_program with compiler errors that models the description:\n"
+    # "{model_input.first_attempt_scenic_program}\n"
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def regenerate_scenic_code(model_input, example_prompt, working_scenic, broken_scenic, lmql_outputs):
+    '''lmql
+
+    "You are an autonomous vehicle simulation programming expert. Earlier on, you made your first attempt of the following task.\n"
+    
+    "{example_prompt}\n"
+
+    "TODO: Your task is to modify one section of your previous output so the generated code for the given scenario executes.\n"
+
+    "Previous user input: consider the following natural language description of a traffic incident:\n"
+    "{model_input.nat_lang_scene_des}\n"
+
+    "## WORKING CODE: The code below represents the working section program and contains no errors.\n"
+    "{working_scenic}\n"
+
+    "## ERROR: The first compiler error raised with the continuation of the Scenic program below:\n"
+    "{model_input.compiler_error}\n"
+
+    "TASK: Modify the code below using your expertise about the Scenic programming language so the error no longer appears\n"
+    "{broken_scenic}\n"
+
+    if "OTHER_CONSTANTS_TODO" in lmql_outputs:
+        "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "##") and len(TOKENS(OTHER_CONSTANTS)) < 100
+    else:
+        OTHER_CONSTANTS = None
+    
+    if "VEHICLE_BEHAVIORS_TODO" in lmql_outputs:
+        "## DEFINING BEHAVIORS\n"
+        "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "##") and len(TOKENS(SPATIAL_RELATIONS)) < 400
+    else:
+        BEHAVIORS = None
+    
+
+    if "SPATIAL_RELATIONS_TODO" in lmql_outputs:
+        "## DEFINING SPATIAL RELATIONS\n"
+        "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 400
+    else:
+        SPATIAL_RELATIONS = None
+    
+    return {
+        "OTHER_CONSTANTS_TODO" : OTHER_CONSTANTS,
+        "VEHICLE_BEHAVIORS_TODO" : BEHAVIORS,
+        "SPATIAL_RELATIONS_TODO" : SPATIAL_RELATIONS,
+    }
+
+    '''
 
 def strip_other_constants(other_constants):
     """
@@ -390,6 +442,11 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
     #         print(key, '-', lmql_tot_full[key])
     # print('$%$%$%')
     # #End reasoning
+    
+
+    print('0. Displaying example_prompt for the code that follows')
+    print(example_prompt)
+    print()
 
     lmql_outputs = generate_scenic_code(example_prompt, towns, vehicles, weather)
     assert 'EGO_VEHICLE_BLUEPRINT_ID_TODO' in lmql_outputs
@@ -439,7 +496,8 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
             print(template_sections[i].format_map(lmql_outputs))
             print('end')
 
-            uncompiled_scenic = final_scenic + '\n' + template_sections[i].format_map(lmql_outputs).strip()
+            new_scenic = template_sections[i].format_map(lmql_outputs).strip()
+            uncompiled_scenic = final_scenic + '\n' + new_scenic
             working_scenic = final_scenic
             print('4. Working scenic')
             print(working_scenic)
@@ -475,7 +533,8 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
                 print("D. Please output a modified version of scenic_program modified so the compiler error does not appear.")
                 f"{working_scenic}"
 
-                lmql_outputs_tmp = regenerate_scenic(model_input, working_scenic, lmql_outputs)
+                # lmql_outputs_tmp = regenerate_scenic(model_input, working_scenic, lmql_outputs)
+                lmql_outputs_tmp = regenerate_scenic_code(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs)
                 lmql_outputs_tmp = {k: v for k, v in lmql_outputs_tmp.items() if v is not None} ### this is bad
                 for key in lmql_outputs_tmp:
                     lmql_outputs[key] = lmql_outputs_tmp[key]
