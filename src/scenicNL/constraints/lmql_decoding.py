@@ -99,10 +99,10 @@ def regenerate_scenic(model_input, working_scenic, lmql_outputs):
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_reasoning(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+def generate_reasoning_1(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
     '''lmql
     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
@@ -156,204 +156,408 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather, 
     }
     '''
 
-# @retry(
-#     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
-# )
-# @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-# def generate_reasoning1(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
-#     '''lmql
-#     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_9a(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
-#     "We are going to play a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
-#     "EXPERT_1:\n"
-#     "<expert_1_answer>\n"
-#     "EXPERT_2:\n"
-#     "<expert_2_answer>\n"
-#     "EXPERT_3:\n"
-#     "<expert_3_answer>\n"
-#     "FINAL_ANSWER:\n"
-#     "<final_answer>\n"
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
 
-#     "Here is one example of a Scenic program:\n"
-#     "{example}\n"
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
 
-#     "Original description:\n"
-#     "{description}\n"
 
+    "QUESTION NINE:\n"
+
+    "A user will provide you with a list of main objects from a description. For each of the main objects, find the closest matching models from the list below. If there are any objects in the original description that you see a match for (e.g. a traffic cone), include them in your answer even if they are not listed as a main object. Specify your answer as the string value of that model.In your final answer, only respond with python code as plain text without code block syntax around it.\n"
+
+    "VEHICLES:\n"
+    "{vehicles}\n"
+
+    "OBJECTS:\n"
+    "{objects}\n"
+
+    "For example, if the main objects are a tesla sedan, and road debris, a valid response could be:\n"
+    "REASONING:\n"
+    "The closest matching model to a tesla sedan is 'vehicle.tesla.model3'.\n"
+    "We do not know what kind of debris is on the road so we list all of them.\n"
+
+    "Based on the description, what are the all of the objects that need to be included in the scene? Let ego denote the self-driving car.\n"
+    "Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer.\n"
+
+    "Original description:\n"
+    "{description}\n"
     
-#     "QUESTION ONE:\n"
+    "Previously Answered Question One:\n"
+    "{Q1_FINAL_ANSWER}\n"
 
-#     "Based on the description, what are the main objects that need to be included in the scene? Provide step-by-step reasoning then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object).\n"
+    "JUSTIFICATION:\n"
+    "<justification_for_the_objects>\n"
 
-#     "Example 1:\n"
-#     "Original description:\n"
-#     "A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.\n"
+    "FINAL_ANSWER:\n"
+    "ego = 'vehicle.audi.a2'\n"
+    "bicycle = 'vehicle.diamondback.century'\n"
+    "pedestrian = 'walker.pedestrian.0003'\n"
 
-#     "JUSTIFICATION:\n"
-#     "1. The Chevy Cruise autonomous vehicle is mentioned as attempting to merge, indicating it's moving and thus a movable object.\n"
-#     "2. The bicyclist entered the vehicle's path and made contact with it, indicating the bicyclist is also a movable object.\n"
+    "Now please provide your justification and final answer.\n"
 
-#     "FINAL ANSWER:\n"
-#     "1. Chevy Cruise autonomous vehicle\n"
-#     "2. Bicyclist\n"
+    "JUSTIFICATION:\n"
+    "[Q9A_JUSTIFICATION]\n" where STOPS_BEFORE(Q9A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q9A_JUSTIFICATION)) < 500
 
-#     "Example 2:\n"
-#     "Original description:\n"
-#     "At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.\n"
-
-#     "JUSTIFICATION:\n"
-#     "1. The autonomous BMW i8 convertible is described as moving eastbound and attempting to avoid a collision, indicating it's a movable object.\n"
-#     "2. The city bus is mentioned as running a red light and colliding with the BMW, indicating it is also a movable object.\n"
-#     "3. The scooter rider and bicyclist are described as legally crossing the intersection and narrowly avoiding the incident, signifying they are moving through the scene.\n"
-#     "4. TheThe two pedestrians were nearby on the sidewalk, which doesn't inherently mean they were moving, but pedestrians are generally considered movable objects in traffic scenarios.\n"
-
-
-#     "FINAL ANSWER:\n"
-#     "1. Autonomous BMW i8 convertible\n"
-#     "2. City bus\n"
-#     "3. Scooter rider\n"
-#     "4. Bicyclist\n"
-#     "5. Pedestrian one\n"
-#     "6. Pedestrian two\n"
-
-
-#     "JUSTIFICATION:\n"
-#     "[Q1_JUSTIFICATION]\n" where STOPS_BEFORE(Q1_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q1_JUSTIFICATION)) < 500
-
-#     "FINAL ANSWER:\n"
-#     "[Q1_FINAL_ANSWER]\n" where STOPS_BEFORE(Q1_FINAL_ANSWER, "QUESTION TWO:") and len(TOKENS(Q1_FINAL_ANSWER)) < 100
+    "FINAL ANSWER:\n"
+    "[Q9A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q9A_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q9A_FINAL_ANSWER)) < 100
 
     
-#     "QUESTION TWO:\n"
+    "QUESTION THREE:\n"
 
-#     "Given the relevant vehicles and objects that you identified above, find the closest matching Scenic vehicle from the list. You cannot choose vehicles that are not in the lists so if you cannot find the vehicle in the list, you must choose the closest matching vehicle.\n"
+    return {
+        "Q9A_FINAL_ANSWER_TODO": Q9A_FINAL_ANSWER,
+        "Q9A_JUSTIFICATION_TODO": Q9A_JUSTIFICATION,
+    }
+    '''
 
-#     "Previously Answered Question One:\n"
-#     "{Q1_FINAL_ANSWER}\n"
-
-#     "VEHICLES:\n"
-#     "{vehicles}\n"
-
-#     "OBJECTS:\n"
-#     "{objects}\n"
-
-#     "Based on the description, what are the all of the objects that need to be included in the scene? Let ego denote the self-driving car.\n"
-#     "Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer. For example:\n"
-
-#     "JUSTIFICATION:\n"
-#     "<justification_for_the_objects>\n"
-
-#     "FINAL_ANSWER:\n"
-#     "ego = 'vehicle.audi.a2'\n"
-#     "bicycle = 'vehicle.diamondback.century'\n"
-#     "pedestrian = 'walker.pedestrian.0003'\n"
-
-#     "Now please provide your justification and final answer.\n"
-
-#     "JUSTIFICATION:\n"
-#     "[Q2_JUSTIFICATION]\n" where STOPS_BEFORE(Q2_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q2_JUSTIFICATION)) < 500
-
-#     "FINAL ANSWER:\n"
-#     "[Q2_FINAL_ANSWER]\n" where STOPS_BEFORE(Q2_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q2_FINAL_ANSWER)) < 100
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_9b(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
 
-#     "QUESTION THREE:\n"
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
 
-#     "Previously Provided Original Description:\n"
-#     "{description}\n"
+
+    "QUESTION NINE:\n"
+
+    "The user will input python variables that represent values that we will use for a probabilistic program. If any of the values are a list, your task is to replace the list with one of the supported probability distributions specified below. If the values are constants, leave them as is and repeat them in your answer. Use Uniform when the values all have equal probabilities otherwise, use Discrete when some values are more likely than others.\n"
+
+    "Distributions:\n"
+    "Uniform(value, …) - Uniform distribution over the values provided. To be used when there is an equal probability of all values.\n"
+    "Discrete([[value: weight, … ]]) - Discrete distribution over the values provided with the given weights. To be used when some values have higher probabilities than others. The weights must add up to 1.\n"
+
+    "Only respond with code as plain text without code block syntax around it\n"
+
+    "Example 1:\n"
+
+    "Original description:\n"
+    "A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.\n"
+
+    "Program:\n"
+    "AUTONOMOUS_VEHICLE_MODEL = \"vehicle.chevrolet.impala\"\n"
+    "BICYCLE_MODEL = [[\"vehicle.bh.crossbike\", \"vehicle.diamondback.century\", \"vehicle.gazelle.omafiets\"]]\n"
     
-#     "What details about the world and environment are missing from the description? (e.g. what is the weather, time of day, etc.)\n"
+    "Final Answer:\n"
+    "AUTONOMOUS_VEHICLE_MODEL = \"vehicle.chevrolet.impala\"\n"
+    "BICYCLE_MODEL = Discrete({{\"vehicle.bh.crossbike\": 0.4, \"vehicle.diamondback.century\": 0.3, \"vehicle.gazelle.omafiets\": 0.3}})\n"
 
-#     "JUSTIFICATION:\n"
-#     "[Q3_JUSTIFICATION]\n" where STOPS_BEFORE(Q3_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3_JUSTIFICATION)) < 500
+    "Now please provide your justification and final answer.\n"
 
-#     "FINAL ANSWER:\n"
-#     "[Q3_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3_FINAL_ANSWER)) < 100
+    "JUSTIFICATION:\n"
+    "[Q9B_JUSTIFICATION]\n" where STOPS_BEFORE(Q9B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q9B_JUSTIFICATION)) < 500
 
-
-#     "QUESTION FOUR:\n"
-
-#     return {
-#         "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
-#         "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
-#         "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
-#         "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
-#         "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
-#         "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
-#     }
-
-#     '''
-
-# @retry(
-#     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
-# )
-# @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-# def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
-#     '''lmql
-#     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
-    
-#     "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
-#     "EXPERT_1:\n"
-#     "<expert_1_answer>\n"
-#     "EXPERT_2:\n"
-#     "<expert_2_answer>\n"
-#     "EXPERT_3:\n"
-#     "<expert_3_answer>\n"
-#     "FINAL_ANSWER:\n"
-#     "<final_answer>\n"
-
-#     "Here is one example of a Scenic program:\n"
-#     "{example}\n"
-
-#     "Original description:\n"
-#     "{description}\n"
+    "FINAL ANSWER:\n"
+    "[Q9B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q9B_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q9B_FINAL_ANSWER)) < 100
 
     
-#     "QUESTION FOUR:\n"
+    "QUESTION THREE:\n"
+
+    return {
+        "Q9A_FINAL_ANSWER_TODO": Q9A_FINAL_ANSWER,
+        "Q9A_JUSTIFICATION_TODO": Q9A_JUSTIFICATION,
+    }
+    '''
+
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_4a(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
-#     "Previously Provided Original Description:\n"
-#     "{description}\n"
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
 
-#     "Previously Answered Question One:\n"
-#     "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+
+    "QUESTION FOUR:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "What details about the world and environment are missing from the description? (e.g. weather, time of day, etc.)\n"
+
+    "JUSTIFICATION:\n"
+    "[Q4A_JUSTIFICATION]\n" where STOPS_BEFORE(Q4A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4A_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q4A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4A_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4A_FINAL_ANSWER)) < 100
+
+
+    "QUESTION FIVE:\n"
+
+    return {
+        "Q4A_FINAL_ANSWER_TODO": Q4A_FINAL_ANSWER,
+        "Q4A_JUSTIFICATION_TODO": Q4A_JUSTIFICATION,
+    }
+    '''
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_4b(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
-#     "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
 
-#     "JUSTIFICATION:\n"
-#     "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
 
-#     "FINAL ANSWER:\n"
-#     "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
+
+    "QUESTION FOUR:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "Relevant objects:\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+
+    "For each of the relevant objects, what details about the objects are missing from the description that you would need to ask the author about in order to create a more accurate scene? What are the main environmental factors that need to be included in the scene? Your questions should cover dynamics of objects in motion (e.g. speed), distances between every pair of objects, and environmental conditions (e.g. weather). Provide your questions as a numbered list, but do not ask about personal details of any individuals involved.\n"
+
+    "Example 1:\n"
+    "Original description:\n"
+    "An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.\n"
+
+    "Relevant objects:\n"
+    "1. Autonomous Ford Explorer SUV\n"
+    "2. Road debris\n"
+
+    "Final Answer:\n"
+    "Missing information:\n"
+    "1. Can you provide more details about the speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm?\n"
+    "2. How large was the unexpected puddle that caused the vehicle to hydroplane?\n"
+    "3. What type of debris was present on the road that the driver had to avoid?\n"
+    "4. Were there any other vehicles in the vicinity on the ramp at the time of the incident?\n"
+    "5. What specific weather conditions were present during the heavy rainstorm (e.g., visibility, wind speed)?\n"
+    "6. How did the autonomous system respond to the hydroplaning situation before the collision occurred?\n"
+
+    "Example 2:\n"
+
+    "Original description:\n"
+    "At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.\n"
+
+    "Relevant objects:\n"
+    "1. Autonomous BMW i8 convertible\n"
+    "2. City bus\n"
+    "3. Scooter rider\n"
+    "4. Bicyclist\n"
+    "5. Pedestrian one\n"
+    "6. Pedestrian two\n"
+
+    "Final Answer:\n"
+    "1. What was the approximate speed of the autonomous BMW i8 convertible when it was traveling eastbound on University Avenue?\n"
+    "2. Can you provide more details about the evasive maneuvers that the BMW attempted to avoid the collision?\n"
+    "3. How close were the scooter rider and bicyclist to the point of impact between the BMW and the city bus?\n"
+    "4. Were there any specific actions taken by the scooter rider and bicyclist to avoid the collision?\n"
+    "5. How far away were the two pedestrians on the sidewalk from the intersection where the collision occurred?\n"
+    "6. What were the weather conditions like at the time of the incident?\n"
+    "7. Were there any specific road markings or signs at the intersection of University Avenue and Hamilton Avenue that may have influenced the events leading up to the collision?\n"
+    "8. How did the autonomous system of the BMW respond to the situation when it detected the city bus running a red light?\n"
+    "9. Were there any traffic congestion or other vehicles around the intersection that could have affected the incident?\n"
+
+
+    "JUSTIFICATION:\n"
+    "[Q4B_JUSTIFICATION]\n" where STOPS_BEFORE(Q4B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4B_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q4B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4B_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4B_FINAL_ANSWER)) < 100
+
+
+    "QUESTION FIVE:\n"
+
+    return {
+        "Q4B_FINAL_ANSWER_TODO": Q4B_FINAL_ANSWER,
+        "Q4B_JUSTIFICATION_TODO": Q4B_JUSTIFICATION,
+    }
+    '''
+
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_5(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
 
-#     "QUESTION FIVE:\n"
-
-#     "Previously Provided Original Description:\n"
-#     "{description}\n"
-
-#     "Previously Answered Question Four:\n"
-#     "{Q4_FINAL_ANSWER}\n"
-
-#     "Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.\n"
-
-#     "JUSTIFICATION:\n"
-#     "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
-
-#     "FINAL ANSWER:\n"
-#     "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
 
 
-#     "QUESTION SIX:\n"
+    "QUESTION FIVE:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "Relevant objects:\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+
+    "Based on the missing object information from the user, provide a reasonable probability distribution over the missing values. Answer only the questions that are about distance between objects, speed, weather, or time. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour (Normal(8, 1)). If the color of the car is missing, you could use a uniform distribution over common car color string names. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and reasonable standard deviation, etc.\n"
+
+    "First provide step-by-step reasoning as to why you choose such a distribution then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object).\n"
+
+    "Original description:\n"
+    "An autonomous Ford Explorer SUV, operating in full autonomous mode, was navigating the ramp to merge onto Sand Hill Road amidst a heavy rainstorm. The vehicle's sensors detected the wet road conditions and adjusted speed accordingly. However, the driver claims' there was debris on the road and they adjusted accordingly. They encountered an unexpected large puddle which caused the vehicle to hydroplane, leading to a temporary loss of traction. The autonomous system attempted corrective steering maneuvers, but the vehicle ultimately made contact with the guardrail on the right side of the ramp. The collision resulted in moderate damage to the vehicle's right rear quarter panel and bumper. No injuries were reported, as the vehicle was unoccupied except for the presence of a safety operator, who did not sustain any injuries. The California Highway Patrol was notified and arrived on the scene to document the incident and assist in the vehicle's recovery. The incident highlighted the challenges faced by autonomous vehicles in severe weather conditions and the need for ongoing improvements in sensor and navigation technologies to handle such situations.\n"
+
+    "Relevant objects:\n"
+    "AUTONOMOUS_VEHICLE_MODEL = \"vehicle.ford.crown\"\n"
+    "ROAD_DEBRIS_MODEL = [[\"static.prop.dirtdebris01\", \"static.prop.dirtdebris02\"]]\n"
+
+    "Missing information:\n"
+    "1. Can you provide more details about the speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm?\n"
+    "2. How large was the unexpected puddle that caused the vehicle to hydroplane?\n"
+    "3. What type of debris was present on the road that the driver had to avoid?\n"
+    "4. Were there any other vehicles in the vicinity on the ramp at the time of the incident?\n"
+    "5. What specific weather conditions were present during the heavy rainstorm (e.g., visibility, wind speed)?\n"
+    "6. How did the autonomous system respond to the hydroplaning situation before the collision occurred?\n"
+
+    "REASONING:\n"
+    "1. The speed at which the autonomous Ford Explorer SUV was traveling on the ramp during the heavy rainstorm can be modeled using a normal distribution with a mean around the speed limit for ramps (e.g., 35-45 mph) and a reasonable standard deviation to account for variations in driving behavior and road conditions.\n"
+    "2. The size of the unexpected puddle that caused the vehicle to hydroplane can be modeled using a normal distribution with a mean based the fact that the puddle must have been at least as wide as the vehicle and on common puddle sizes on roads (e.g., 6-8 feet in diameter) and a standard deviation to capture variations in puddle sizes.\n"
+    "3. The type of debris present on the road that the driver had to avoid can be modeled using a uniform distribution over the provided ROAD_DEBRIS_MODEL options [[\"static.prop.dirtdebris01\", \"static.prop.dirtdebris02\"]].\n"
+    "4. The presence of other vehicles in the vicinity on the ramp at the time of the incident can be modeled using a Bernoulli distribution with a parameter reflecting the likelihood of other vehicles being present (e.g., low probability due to heavy rainstorm and specific location).\n"
+    "5. The specific weather conditions present during the heavy rainstorm (e.g., visibility, wind speed) can be modeled using a combination of distributions such as normal distribution for visibility range and wind speed based on historical weather data for the area.\n"
+    "6. The response of the autonomous system to the hydroplaning situation before the collision occurred can be modeled as a categorical distribution with options such as \"applied corrective steering maneuvers,\" \"adjusted speed,\" \"issued warnings to safety operator,\" etc.\n"
+
+    "FINAL_ANSWER:\n"
+    "1. Speed at which the autonomous Ford Explorer SUV was traveling: Normal distribution with mean around 40 mph and standard deviation 5 mph.\n"
+    "2. Size of the unexpected puddle: Normal distribution with mean around 7 feet in diameter and standard deviation 0.5 feet.\n"
+    "3. Type of debris present on the road: Uniform distribution over [[\"static.prop.dirtdebris01\", \"static.prop.dirtdebris02\"]].\n"
+    "4. Presence of other vehicles in the vicinity: Bernoulli distribution with low probability.\n"
+    "5. Specific weather conditions: Modeled using appropriate distributions based on historical data.\n"
+    "6. Autonomous system response to hydroplaning situation: Categorical distribution with relevant options.\n"
 
 
-#     return {
-#         "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
-#         "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
-#         "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
-#         "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
-#     }
+    "JUSTIFICATION:\n"
+    "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
 
-#     '''
+    "FINAL ANSWER:\n"
+    "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
+
+
+    "QUESTION SIX:\n"
+
+    return {
+        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
+        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
+    }
+    '''
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_6(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
+
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+
+    "QUESTION SIX:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "Relevant objects:\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+
+    "You are a specialized agent for writing Scenic, a probabilistic programming language.\n"
+
+    "A user will provide you with probability distributions for missing information in a vehicle crash description. Your task is to interpret the probability distributions and express them as a Scenic program.\n"
+
+    "Scenic can only support the following distributions so you must pick the closest matching distribution. Under no circumstance should you use any of the other distributions\n"
+
+
+
+    "JUSTIFICATION:\n"
+    "[Q6_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q6_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
+
+
+    "QUESTION SIX:\n"
+
+    return {
+        "Q6_FINAL_ANSWER_TODO": Q6_FINAL_ANSWER,
+        "Q6_JUSTIFICATION_TODO": Q6_JUSTIFICATION,
+    }
+    '''
 
 # @retry(
 #     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
@@ -517,7 +721,8 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         for k, v in temp.items():
             if k not in full:
                 full[k] = v
-    reasoning_funcs = [generate_reasoning]
+    reasoning_funcs = [generate_reasoning_1, generate_reasoning_9a, generate_reasoning_9b, generate_reasoning_4a, generate_reasoning_4b, generate_reasoning_5]
+    reasoning_funcs += []
     lmql_tot_full = {}
     for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
         lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
