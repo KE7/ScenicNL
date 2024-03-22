@@ -117,5 +117,5 @@ class LMQLAdapter(ModelAdapter):
         if prompt_type == LLMPromptType.PREDICT_LMQL_TOT_RETRY:
             response = construct_scenic_program_tot(model_input, example_prompt, model_input.nat_lang_scene_des)
         else:
-            response = construct_scenic_program(model_input, example_prompt, model_input.nat_lang_scene_des)
+            response = construct_scenic_program_tot(model_input, example_prompt, model_input.nat_lang_scene_des)
         return response

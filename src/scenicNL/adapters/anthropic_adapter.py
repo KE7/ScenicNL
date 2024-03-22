@@ -18,6 +18,8 @@ import tempfile
 class AnthropicModel(Enum):
     CLAUDE_INSTANT = "claude-instant-1.2"
     CLAUDE_2 = "claude-2.0"
+    CLAUDE_3_HAIKU = "claude-3-haiku-20240307"
+    CLAUDE_3_SONNET = "claude-3-sonnet-20240229-v1:0" 
     
 
 class AnthropicAdapter(ModelAdapter):
@@ -777,7 +779,7 @@ class AnthropicAdapter(ModelAdapter):
             elif prompt_type == LLMPromptType.PREDICT_LMQL_TO_HYDE:
                 #get initial response from LMQL
                 lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
-                response  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+                response  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose, max_retries=max_retries)
 
                 #use response in HYDE - We need to call Claude again
                 new_model_input = ModelInput(
@@ -805,11 +807,11 @@ class AnthropicAdapter(ModelAdapter):
                 lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
                 # model_input.set_exs(query_with_rag(vector_index=self.index,
                 #                                     nat_lang_scene_des=model_input.nat_lang_scene_des))
-                model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)
+                model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose, max_retries=max_retries)
             elif prompt_type == LLMPromptType.PREDICT_LMQL_TOT_RETRY:
                 lmql_adapter = LMQLAdapter(LMQLModel.LMQL)
                 model_input.set_tot(True)
-                model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose)    
+                model_result  = lmql_adapter._predict(model_input=model_input, prompt_type=LLMPromptType.PREDICT_LMQL, temperature=temperature, max_length_tokens=max_length_tokens, verbose=verbose, max_retries=max_retries)    
             else:
                 model_result = str(claude_response.completion)
 
@@ -852,7 +854,7 @@ class AnthropicAdapter(ModelAdapter):
                             )
 
                             claude_response = claude.completions.create(
-                                prompt=self._format_message(model_input=new_model_input, prompt_type=prompt_type, verbose=verbose),
+                                prompt=self._format_message(model_input=new_model_input, prompt_type=LLMPromptType.PREDICT_LMQL_RETRY, verbose=verbose),
                                 temperature=temperature,
                                 max_tokens_to_sample=max_length_tokens,
                                 model=self._model.value,

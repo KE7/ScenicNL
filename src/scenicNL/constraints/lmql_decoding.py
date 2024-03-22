@@ -471,6 +471,7 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
 
         print('2. Printing first template section infilled with lmql_outputs:')
         final_scenic = template_sections[0].format_map(lmql_outputs) + '\n' + template_sections[1].format_map(lmql_outputs) #this should compile everytime
+        new_scenic = ''
         i = 2
         # final_scenic = template_sections[0].format_map(lmql_outputs) #+ template_sections[1].format_map(lmql_outputs) #this should compile everytime
         print(final_scenic)
@@ -547,6 +548,17 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
                 num_retries = max_retries
         if num_retries == 0:
             print("RAN OUT OF RETRIES RIP")
+            new_scenic = '\n'.join([template_section.format_map(lmql_outputs).strip() for template_section in template_sections[i:]])
+            print('8. Displaying final scenic before appending')
+            print(final_scenic)
+            print()
+
+            final_scenic += new_scenic
+
+            print('9. Displaying final scenic after appending')
+            print(final_scenic)
+            print()
+
         print('CHECKING FINAL SCENIC')
         compiles, message = check_compile(final_scenic)
         print(f'compiles: {compiles}, message: {message}')
