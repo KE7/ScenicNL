@@ -99,7 +99,7 @@ def regenerate_scenic(model_input, working_scenic, lmql_outputs):
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -119,14 +119,27 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather, 
     "Here is one example of a Scenic program:\n"
     "{example}\n"
 
-    "Original description:\n"
-    "{description}\n"
-
     
     "QUESTION ONE:\n"
 
-    "Based on the description, what are the all of the vehicles that need to be included in the scene?\n"
-    "First provide step-by-step justification for all vehicles you chose then provide your final answer as:\n"
+    "Based on the description, what are the main objects that need to be included in the scene? Provide step-by-step reasoning then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object).\n"
+
+    "Example 1:\n"
+    "Original description:\n"
+    "A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.\n"
+
+    "JUSTIFICATION:\n"
+    "1. The Chevy Cruise autonomous vehicle is mentioned as attempting to merge, indicating it's moving and thus a movable object.\n"
+    "2. The bicyclist entered the vehicle's path and made contact with it, indicating the bicyclist is also a movable object.\n"
+
+    "FINAL ANSWER:\n"
+    "1. Chevy Cruise autonomous vehicle\n"
+    "2. Bicyclist\n"
+    
+    "Now consider the following user input.\n"
+
+    "Original description:\n"
+    "{description}\n"
 
     "JUSTIFICATION:\n"
     "[Q1_JUSTIFICATION]\n" where STOPS_BEFORE(Q1_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q1_JUSTIFICATION)) < 500
@@ -137,134 +150,210 @@ def generate_reasoning(description, example, towns, vehicles, objects, weather, 
     
     "QUESTION TWO:\n"
 
-    "Given the relevant vehicles and objects that you identified above, find the closest matching Scenic vehicle from the list. You cannot choose vehicles that are not in the lists so if you cannot find the vehicle in the list, you must choose the closest matching vehicle.\n"
-
-    "Previously Answered Question One:\n"
-    "{Q1_FINAL_ANSWER}\n"
-
-    "VEHICLES:\n"
-    "{vehicles}\n"
-
-    "OBJECTS:\n"
-    "{objects}\n"
-
-    "Based on the description, what are the all of the objects that need to be included in the scene? Let ego denote the self-driving car.\n"
-    "Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer. For example:\n"
-
-    "JUSTIFICATION:\n"
-    "<justification_for_the_objects>\n"
-
-    "FINAL_ANSWER:\n"
-    "ego = 'vehicle.audi.a2'\n"
-    "bicycle = 'vehicle.diamondback.century'\n"
-    "pedestrian = 'walker.pedestrian.0003'\n"
-
-    "Now please provide your justification and final answer.\n"
-
-    "JUSTIFICATION:\n"
-    "[Q2_JUSTIFICATION]\n" where STOPS_BEFORE(Q2_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q2_JUSTIFICATION)) < 500
-
-    "FINAL ANSWER:\n"
-    "[Q2_FINAL_ANSWER]\n" where STOPS_BEFORE(Q2_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q2_FINAL_ANSWER)) < 100
-    
-
-    "QUESTION THREE:\n"
-
-    "Previously Provided Original Description:\n"
-    "{description}\n"
-    
-    "What details about the world and environment are missing from the description? (e.g. what is the weather, time of day, etc.)\n"
-
-    "JUSTIFICATION:\n"
-    "[Q3_JUSTIFICATION]\n" where STOPS_BEFORE(Q3_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3_JUSTIFICATION)) < 500
-
-    "FINAL ANSWER:\n"
-    "[Q3_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3_FINAL_ANSWER)) < 100
-
-
-    "QUESTION FOUR:\n"
-
     return {
         "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
-        "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
-        "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
         "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
-        "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
-        "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
     }
-
     '''
 
-@retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
-)
-@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
-    '''lmql
-    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+# @retry(
+#     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+# )
+# @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+# def generate_reasoning1(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+#     '''lmql
+#     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
-    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
-    "EXPERT_1:\n"
-    "<expert_1_answer>\n"
-    "EXPERT_2:\n"
-    "<expert_2_answer>\n"
-    "EXPERT_3:\n"
-    "<expert_3_answer>\n"
-    "FINAL_ANSWER:\n"
-    "<final_answer>\n"
+#     "We are going to play a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+#     "EXPERT_1:\n"
+#     "<expert_1_answer>\n"
+#     "EXPERT_2:\n"
+#     "<expert_2_answer>\n"
+#     "EXPERT_3:\n"
+#     "<expert_3_answer>\n"
+#     "FINAL_ANSWER:\n"
+#     "<final_answer>\n"
 
-    "Here is one example of a Scenic program:\n"
-    "{example}\n"
+#     "Here is one example of a Scenic program:\n"
+#     "{example}\n"
 
-    "Original description:\n"
-    "{description}\n"
+#     "Original description:\n"
+#     "{description}\n"
 
     
-    "QUESTION FOUR:\n"
+#     "QUESTION ONE:\n"
+
+#     "Based on the description, what are the main objects that need to be included in the scene? Provide step-by-step reasoning then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object).\n"
+
+#     "Example 1:\n"
+#     "Original description:\n"
+#     "A Chevy Cruise autonomous vehicle, while in autonomous mode, was attempting to merge onto northbound Maple Ave from 5th Street when a bicyclist unexpectedly entered the vehicle's path, causing the vehicle to apply emergency braking. The bicyclist made minor contact with the front sensor array of the vehicle but managed to remain upright and uninjured. The vehicle sustained minimal damage to its front sensor array. No law enforcement was called to the scene, and the incident was recorded by the vehicle's onboard cameras for further analysis.\n"
+
+#     "JUSTIFICATION:\n"
+#     "1. The Chevy Cruise autonomous vehicle is mentioned as attempting to merge, indicating it's moving and thus a movable object.\n"
+#     "2. The bicyclist entered the vehicle's path and made contact with it, indicating the bicyclist is also a movable object.\n"
+
+#     "FINAL ANSWER:\n"
+#     "1. Chevy Cruise autonomous vehicle\n"
+#     "2. Bicyclist\n"
+
+#     "Example 2:\n"
+#     "Original description:\n"
+#     "At approximately 12:05 PM, an autonomous BMW i8 convertible was eastbound on University Avenue when it collided with a city bus running a red light at Hamilton Avenue. At the same time, a scooter rider and a bicyclist, legally crossing Hamilton, narrowly avoided the incident, while two pedestrians were nearby on the sidewalk. Despite the BMW’s attempt to avoid the collision through emergency braking and evasive maneuvers, it sustained significant front-end damage, and the bus minor damage on its right side. Three bus passengers reported minor injuries. The complex scenario, involving multiple road users, highlighted the challenges autonomous vehicles face in dynamic urban environments. The primary cause was identified as the bus driver's failure to obey the traffic signal.\n"
+
+#     "JUSTIFICATION:\n"
+#     "1. The autonomous BMW i8 convertible is described as moving eastbound and attempting to avoid a collision, indicating it's a movable object.\n"
+#     "2. The city bus is mentioned as running a red light and colliding with the BMW, indicating it is also a movable object.\n"
+#     "3. The scooter rider and bicyclist are described as legally crossing the intersection and narrowly avoiding the incident, signifying they are moving through the scene.\n"
+#     "4. TheThe two pedestrians were nearby on the sidewalk, which doesn't inherently mean they were moving, but pedestrians are generally considered movable objects in traffic scenarios.\n"
+
+
+#     "FINAL ANSWER:\n"
+#     "1. Autonomous BMW i8 convertible\n"
+#     "2. City bus\n"
+#     "3. Scooter rider\n"
+#     "4. Bicyclist\n"
+#     "5. Pedestrian one\n"
+#     "6. Pedestrian two\n"
+
+
+#     "JUSTIFICATION:\n"
+#     "[Q1_JUSTIFICATION]\n" where STOPS_BEFORE(Q1_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q1_JUSTIFICATION)) < 500
+
+#     "FINAL ANSWER:\n"
+#     "[Q1_FINAL_ANSWER]\n" where STOPS_BEFORE(Q1_FINAL_ANSWER, "QUESTION TWO:") and len(TOKENS(Q1_FINAL_ANSWER)) < 100
+
     
-    "Previously Provided Original Description:\n"
-    "{description}\n"
+#     "QUESTION TWO:\n"
 
-    "Previously Answered Question One:\n"
-    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+#     "Given the relevant vehicles and objects that you identified above, find the closest matching Scenic vehicle from the list. You cannot choose vehicles that are not in the lists so if you cannot find the vehicle in the list, you must choose the closest matching vehicle.\n"
+
+#     "Previously Answered Question One:\n"
+#     "{Q1_FINAL_ANSWER}\n"
+
+#     "VEHICLES:\n"
+#     "{vehicles}\n"
+
+#     "OBJECTS:\n"
+#     "{objects}\n"
+
+#     "Based on the description, what are the all of the objects that need to be included in the scene? Let ego denote the self-driving car.\n"
+#     "Each expert must first provide step-by-step justification for all objects they chose, then provide the final answer. For example:\n"
+
+#     "JUSTIFICATION:\n"
+#     "<justification_for_the_objects>\n"
+
+#     "FINAL_ANSWER:\n"
+#     "ego = 'vehicle.audi.a2'\n"
+#     "bicycle = 'vehicle.diamondback.century'\n"
+#     "pedestrian = 'walker.pedestrian.0003'\n"
+
+#     "Now please provide your justification and final answer.\n"
+
+#     "JUSTIFICATION:\n"
+#     "[Q2_JUSTIFICATION]\n" where STOPS_BEFORE(Q2_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q2_JUSTIFICATION)) < 500
+
+#     "FINAL ANSWER:\n"
+#     "[Q2_FINAL_ANSWER]\n" where STOPS_BEFORE(Q2_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q2_FINAL_ANSWER)) < 100
     
-    "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
 
-    "JUSTIFICATION:\n"
-    "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
+#     "QUESTION THREE:\n"
 
-    "FINAL ANSWER:\n"
-    "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
+#     "Previously Provided Original Description:\n"
+#     "{description}\n"
+    
+#     "What details about the world and environment are missing from the description? (e.g. what is the weather, time of day, etc.)\n"
+
+#     "JUSTIFICATION:\n"
+#     "[Q3_JUSTIFICATION]\n" where STOPS_BEFORE(Q3_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3_JUSTIFICATION)) < 500
+
+#     "FINAL ANSWER:\n"
+#     "[Q3_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3_FINAL_ANSWER)) < 100
+
+
+#     "QUESTION FOUR:\n"
+
+#     return {
+#         "Q1_FINAL_ANSWER_TODO": Q1_FINAL_ANSWER,
+#         "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
+#         "Q3_FINAL_ANSWER_TODO": Q3_FINAL_ANSWER,
+#         "Q1_JUSTIFICATION_TODO": Q1_JUSTIFICATION,
+#         "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
+#         "Q3_JUSTIFICATION_TODO": Q3_JUSTIFICATION,
+#     }
+
+#     '''
+
+# @retry(
+#     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+# )
+# @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+# def generate_reasoning2(description, example, towns, vehicles, objects, weather, ANSWERS):
+#     '''lmql
+#     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+#     "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+#     "EXPERT_1:\n"
+#     "<expert_1_answer>\n"
+#     "EXPERT_2:\n"
+#     "<expert_2_answer>\n"
+#     "EXPERT_3:\n"
+#     "<expert_3_answer>\n"
+#     "FINAL_ANSWER:\n"
+#     "<final_answer>\n"
+
+#     "Here is one example of a Scenic program:\n"
+#     "{example}\n"
+
+#     "Original description:\n"
+#     "{description}\n"
+
+    
+#     "QUESTION FOUR:\n"
+    
+#     "Previously Provided Original Description:\n"
+#     "{description}\n"
+
+#     "Previously Answered Question One:\n"
+#     "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+    
+#     "Given the relevant objects, what details are missing from the description that you would need to ask the author about in order to create a more accurate scene? (e.g. what color is the car, how many pedestrians are there, how fast is the car moving, how far away is the car from the pedestrian, etc.)\n"
+
+#     "JUSTIFICATION:\n"
+#     "[Q4_JUSTIFICATION]\n" where STOPS_BEFORE(Q4_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q4_JUSTIFICATION)) < 500
+
+#     "FINAL ANSWER:\n"
+#     "[Q4_FINAL_ANSWER]\n" where STOPS_BEFORE(Q4_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q4_FINAL_ANSWER)) < 100
     
 
-    "QUESTION FIVE:\n"
+#     "QUESTION FIVE:\n"
 
-    "Previously Provided Original Description:\n"
-    "{description}\n"
+#     "Previously Provided Original Description:\n"
+#     "{description}\n"
 
-    "Previously Answered Question Four:\n"
-    "{Q4_FINAL_ANSWER}\n"
+#     "Previously Answered Question Four:\n"
+#     "{Q4_FINAL_ANSWER}\n"
 
-    "Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.\n"
+#     "Based on the missing information above, provide a reasonable probability distribution over the missing values. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour. If the color of the car is missing, you could use a uniform distribution over common car colors. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and standard deviation of 5 mph, etc.\n"
 
-    "JUSTIFICATION:\n"
-    "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
+#     "JUSTIFICATION:\n"
+#     "[Q5_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
 
-    "FINAL ANSWER:\n"
-    "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
-
-
-    "QUESTION SIX:\n"
+#     "FINAL ANSWER:\n"
+#     "[Q5_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
 
 
-    return {
-        "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
-        "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
-        "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
-        "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
-    }
+#     "QUESTION SIX:\n"
 
-    '''
+
+#     return {
+#         "Q4_FINAL_ANSWER_TODO": Q4_FINAL_ANSWER,
+#         "Q5_FINAL_ANSWER_TODO": Q5_FINAL_ANSWER,
+#         "Q4_JUSTIFICATION_TODO": Q4_JUSTIFICATION,
+#         "Q5_JUSTIFICATION_TODO": Q5_JUSTIFICATION,
+#     }
+
+#     '''
 
 # @retry(
 #     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
@@ -428,21 +517,22 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         for k, v in temp.items():
             if k not in full:
                 full[k] = v
-    # reasoning_funcs = [generate_reasoning, generate_reasoning2]
-    # lmql_tot_full = {}
-    # for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
-    #     lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
-    #     update(temp = lmql_tot_temp, full = lmql_tot_full)
-    #     print(f'Completed generate reasoning pt {reasoning_count+1}/{len(reasoning_funcs)}!')
+    reasoning_funcs = [generate_reasoning]
+    lmql_tot_full = {}
+    for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
+        lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
+        update(temp = lmql_tot_temp, full = lmql_tot_full)
+        print(f'Completed generate reasoning pt {reasoning_count+1}/{len(reasoning_funcs)}!')
 
-    # print('$%$%$%')
-    # # print(lmql_tot_full)
-    # for key in sorted(lmql_tot_full.keys()):
-    #     if 'FINAL_ANSWER' in key:
-    #         print(key, '-', lmql_tot_full[key])
-    # print('$%$%$%')
-    # #End reasoning
+    print('$%$%$%')
+    # print(lmql_tot_full)
+    for key in sorted(lmql_tot_full.keys()):
+        if 'FINAL_ANSWER' in key:
+            print(key, '-', lmql_tot_full[key])
+    print('$%$%$%')
+    #End reasoning
     
+    # assert False
 
     print('0. Displaying example_prompt for the code that follows')
     print(example_prompt)
