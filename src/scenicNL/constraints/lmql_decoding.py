@@ -542,20 +542,90 @@ def generate_reasoning_6(description, example, towns, vehicles, objects, weather
 
     "Scenic can only support the following distributions so you must pick the closest matching distribution. Under no circumstance should you use any of the other distributions\n"
 
+    "Range(low, high) - Uniform distribution over the real range [[low, high]]\n"
+    "DiscreteRange(low, high) - Uniform distribution over the discreet integer range [[low, high]]\n"
+    "Normal(mean, std) - Normal distribution with mean and standard deviation\n"
+    "TruncatedNormal(mean, stdDev, low, high) - Normal distribution with mean and standard deviation truncated to the range [[low, high]]\n"
+    "Uniform(value, …) - Uniform distribution over the list of values provided.\n"
+    "Discrete([[value: weight, … ]]) - Discrete distribution over the list of values provided with the given weights (e.g., [[value: 0.5, value: 0.2, value: 0.3]])\n"
 
+    "For weather, Scenic can only support a Uniform or Discrete distribution over the following values: [['ClearNoon', 'CloudyNoon', 'WetNoon', 'WetCloudyNoon', 'SoftRainNoon', 'MidRainyNoon', 'HardRainNoon', 'ClearSunset', 'CloudySunset', 'WetSunset', 'WetCloudySunset', 'SoftRainSunset', 'MidRainSunset', 'HardRainSunset', 'ClearNight', 'CloudyNight', 'WetNight', 'WetCloudyNight', 'SoftRainNight', 'MidRainyNight', 'HardRainNight' ,'DustStorm']]\n"
+
+    "Based on the distributions and original description, define Scenic distributions over the uncertain values. Provide values for the parameters to your distributions. You may not use any of the other distributions. If you cannot find a distribution that matches the missing information, you must choose the closest matching distribution.\n"
 
     "JUSTIFICATION:\n"
-    "[Q6_JUSTIFICATION]\n" where STOPS_BEFORE(Q5_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q5_JUSTIFICATION)) < 500
+    "[Q6_JUSTIFICATION]\n" where STOPS_BEFORE(Q6_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q6_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q6_FINAL_ANSWER]\n" where STOPS_BEFORE(Q5_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q5_FINAL_ANSWER)) < 100
+    "[Q6_FINAL_ANSWER]\n" where STOPS_BEFORE(Q6_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q6_FINAL_ANSWER)) < 100
 
 
-    "QUESTION SIX:\n"
+    "QUESTION SEVEN:\n"
 
     return {
         "Q6_FINAL_ANSWER_TODO": Q6_FINAL_ANSWER,
         "Q6_JUSTIFICATION_TODO": Q6_JUSTIFICATION,
+    }
+    '''
+
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_7(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
+
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+
+    "QUESTION SEVEN:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "You are a specialized agent for writing Scenic, a probabilistic programming language.\n"
+
+    "Based on the original description, pick from the following the best matching town. You may not choose any other town. If you cannot find a town that matches the original description, you must choose the closest matching town. Then after selecting a town, provide a high-level description (ignoring road names) of where in the town we should replicate the original description. For example, if the original description specified a highway such as US-101, provide a description about the properties of that highway, such as it is a 4 lane road.\n"
+    "Town07 - imitates a quiet rural community, a green landscape filled with cornfields, barns, grain silos and windmills.\n"
+    "Town06 - is a low density town set into a coniferous landscape exhibiting a multitude of large, 4-6 lane roads and special junctions like the Michigan Left.\n"
+    "Town05 - is an urban environment set into a backdrop of conifer-covered hills with a raised highway and large multilane roads and junctions.\n"
+    "Town04 - is a small town with a backdrop of snow-capped mountains and conifers. A multi-lane road circumnavigates the town in a figure of 8.\n"
+    "Town03 - is a larger town with features of a downtown urban area. The map includes some interesting road network features such as a roundabout, underpasses and overpasses. The town also includes a raised metro track and a large building under construction.\n"
+    "Town02 - is a small town with numerous T-junctions and a variety of buildings, there are patches of coniferous trees, a park and a residential and commercial area.\n"
+    "Town01 - is a small town with numerous T-junctions and a variety of buildings, surrounded by coniferous trees and featuring several small bridges spanning across a river that divides the town into 2 halves.\n"
+
+    "Each expert and the final answer should be provided in the following format:\n"
+    "TOWN:\n"
+    "<Town0x>\n"
+
+    "LOCATION_IN_TOWN:\n"
+    "<description_of_location_in_town>\n"
+
+    "JUSTIFICATION:\n"
+    "[Q7_JUSTIFICATION]\n" where STOPS_BEFORE(Q7_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q7_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q7_FINAL_ANSWER]\n" where STOPS_BEFORE(Q7_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q7_FINAL_ANSWER)) < 100
+
+
+    "QUESTION EIGHT:\n"
+
+    return {
+        "Q7_FINAL_ANSWER_TODO": Q7_FINAL_ANSWER,
+        "Q7_JUSTIFICATION_TODO": Q7_JUSTIFICATION,
     }
     '''
 
