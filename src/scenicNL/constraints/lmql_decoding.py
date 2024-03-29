@@ -557,7 +557,7 @@ def generate_reasoning_6(description, example, towns, vehicles, objects, weather
     "[Q6_JUSTIFICATION]\n" where STOPS_BEFORE(Q6_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q6_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q6_FINAL_ANSWER]\n" where STOPS_BEFORE(Q6_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q6_FINAL_ANSWER)) < 100
+    "[Q6_FINAL_ANSWER]\n" where STOPS_BEFORE(Q6_FINAL_ANSWER, "QUESTION SEVEN:") and len(TOKENS(Q6_FINAL_ANSWER)) < 100
 
 
     "QUESTION SEVEN:\n"
@@ -618,7 +618,7 @@ def generate_reasoning_7(description, example, towns, vehicles, objects, weather
     "[Q7_JUSTIFICATION]\n" where STOPS_BEFORE(Q7_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q7_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q7_FINAL_ANSWER]\n" where STOPS_BEFORE(Q7_FINAL_ANSWER, "QUESTION SIX:") and len(TOKENS(Q7_FINAL_ANSWER)) < 100
+    "[Q7_FINAL_ANSWER]\n" where STOPS_BEFORE(Q7_FINAL_ANSWER, "QUESTION EIGHT:") and len(TOKENS(Q7_FINAL_ANSWER)) < 100
 
 
     "QUESTION EIGHT:\n"
@@ -628,6 +628,135 @@ def generate_reasoning_7(description, example, towns, vehicles, objects, weather
         "Q7_JUSTIFICATION_TODO": Q7_JUSTIFICATION,
     }
     '''
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_3ab(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
+
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+
+    "QUESTION THREE:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "What are the main events that happened in the scene? (e.g. car stopped when pedestrian crossed the street, a car was driving in a lane then switched lanes then made a left turn, etc.). Describe these events in natural language.\n"
+
+    "JUSTIFICATION:\n"
+    "[Q3A_JUSTIFICATION]\n" where STOPS_BEFORE(Q3A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3A_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q3A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3A_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3A_FINAL_ANSWER)) < 100
+
+
+    "QUESTION FOUR:\n"
+
+    "Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula (the end of the events or time invariant properties). So for the events that we can, describe the end of the events in LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic:\n"
+    "car2 not in intersection until car1 in intersection\n"
+    "eventually car2 in intersection\n"
+    "eventually ego in intersection\n"
+    "(always car.speed < 30) implies (always distance to car > 10)\n"
+    "always not ((ego can see car1) and (ego can see car2))\n"
+
+    "Please 
+
+    "JUSTIFICATION:\n"
+    "[Q3B_JUSTIFICATION]\n" where STOPS_BEFORE(Q3B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3B_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q3B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3B_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q3B_FINAL_ANSWER)) < 100
+    
+    "QUESTION FIVE:\n"
+
+    return {
+        "Q3A_FINAL_ANSWER_TODO": Q3A_FINAL_ANSWER,
+        "Q3A_JUSTIFICATION_TODO": Q3A_JUSTIFICATION,
+        "Q3B_FINAL_ANSWER_TODO": Q3B_FINAL_ANSWER,
+        "Q3B_JUSTIFICATION_TODO": Q3B_JUSTIFICATION,
+    }
+    '''
+
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_3ab(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
+
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+
+    "QUESTION THREE:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "What are the main events that happened in the scene? (e.g. car stopped when pedestrian crossed the street, a car was driving in a lane then switched lanes then made a left turn, etc.). Describe these events in natural language.\n"
+
+    "JUSTIFICATION:\n"
+    "[Q3A_JUSTIFICATION]\n" where STOPS_BEFORE(Q3A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3A_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q3A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3A_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3A_FINAL_ANSWER)) < 100
+
+
+    "QUESTION FOUR:\n"
+
+    "Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula (the end of the events or time invariant properties). So for the events that we can, describe the end of the events in LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic:\n"
+    "car2 not in intersection until car1 in intersection\n"
+    "eventually car2 in intersection\n"
+    "eventually ego in intersection\n"
+    "(always car.speed < 30) implies (always distance to car > 10)\n"
+    "always not ((ego can see car1) and (ego can see car2))\n"
+
+    "Please 
+
+    "JUSTIFICATION:\n"
+    "[Q3B_JUSTIFICATION]\n" where STOPS_BEFORE(Q3B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3B_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q3B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3B_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3B_FINAL_ANSWER)) < 100
+    
+    "QUESTION FIVE:\n"
+
+    return {
+        "Q3A_FINAL_ANSWER_TODO": Q3A_FINAL_ANSWER,
+        "Q3A_JUSTIFICATION_TODO": Q3A_JUSTIFICATION,
+        "Q3B_FINAL_ANSWER_TODO": Q3B_FINAL_ANSWER,
+        "Q3B_FINAL_ANSWER_TODO": Q3B_FINAL_ANSWER,
+    }
+    '''
+
+
+
 
 # @retry(
 #     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
