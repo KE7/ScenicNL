@@ -455,6 +455,9 @@ def generate_reasoning_5(description, example, towns, vehicles, objects, weather
     "Relevant objects:\n"
     "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
 
+    "Missing object information:\n"
+    "{ANSWERS.get('Q4B_FINAL_ANSWER')}\n"
+
     "Based on the missing object information from the user, provide a reasonable probability distribution over the missing values. Answer only the questions that are about distance between objects, speed, weather, or time. For example, if the time of day is missing but you know that the scene is in the morning, you could use a normal distribution with mean 8am and standard deviation 1 hour (Normal(8, 1)). If the color of the car is missing, you could use a uniform distribution over common car color string names. If the car speed is missing, you could use a normal distribution with mean around a reasonable speed limit for area of the scene and reasonable standard deviation, etc.\n"
 
     "First provide step-by-step reasoning as to why you choose such a distribution then provide your final answer as a numbered list. Be concise in your reasoning (no more than 1-2 sentences per object).\n"
@@ -662,10 +665,10 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     "[Q3A_JUSTIFICATION]\n" where STOPS_BEFORE(Q3A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3A_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q3A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3A_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3A_FINAL_ANSWER)) < 100
+    "[Q3A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3A_FINAL_ANSWER, "PART TWO:") and len(TOKENS(Q3A_FINAL_ANSWER)) < 100
 
 
-    "QUESTION FOUR:\n"
+    "PART TWO:\n"
 
     "Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula (the end of the events or time invariant properties). So for the events that we can, describe the end of the events in LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic:\n"
     "car2 not in intersection until car1 in intersection\n"
@@ -680,10 +683,10 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     "[Q3B_JUSTIFICATION]\n" where STOPS_BEFORE(Q3B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3B_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q3B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3B_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q3B_FINAL_ANSWER)) < 100
+    "[Q3B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3B_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3B_FINAL_ANSWER)) < 100
     
 
-    "QUESTION FIVE:\n"
+    "QUESTION FOUR:\n"
 
     return {
         "Q3A_FINAL_ANSWER_TODO": Q3A_FINAL_ANSWER,
@@ -851,7 +854,7 @@ def generate_reasoning_8(description, example, towns, vehicles, objects, weather
     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(1)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def regenerate_scenic_code(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs):
+def regenerate_scenic_tot(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs):
     '''lmql
 
     "You are an autonomous vehicle simulation programming expert. Earlier on, you made your first attempt of the following task.\n"
@@ -873,12 +876,19 @@ def regenerate_scenic_code(model_input, example_prompt, working_scenic, new_scen
     "{new_scenic}\n"
 
     if "OTHER_CONSTANTS_TODO" in lmql_outputs:
+        "# Expert advice:\n"
+        "# {lmql_outputs.get('Q5_FINAL_ANSWER')}\n"
+        "# {lmql_outputs.get('Q6_FINAL_ANSWER')}\n"
+
         "[OTHER_CONSTANTS]\n"  where STOPS_BEFORE(OTHER_CONSTANTS, "##") and len(TOKENS(OTHER_CONSTANTS)) < 100
     else:
         OTHER_CONSTANTS = None
     
     if "VEHICLE_BEHAVIORS_TODO" in lmql_outputs:
         "## DEFINING BEHAVIORS\n"
+        "# Expert advice:\n"
+        "# {lmql_outputs.get('Q3A_FINAL_ANSWER')}\n"
+        "# {lmql_outputs.get('Q8_FINAL_ANSWER')}\n"
         "[BEHAVIORS]"  where  STOPS_BEFORE(BEHAVIORS, "##") and len(TOKENS(SPATIAL_RELATIONS)) < 400
     else:
         BEHAVIORS = None
@@ -886,6 +896,9 @@ def regenerate_scenic_code(model_input, example_prompt, working_scenic, new_scen
 
     if "SPATIAL_RELATIONS_TODO" in lmql_outputs:
         "## DEFINING SPATIAL RELATIONS\n"
+        "# Expert advice:\n"
+        "# {lmql_outputs.get('Q3B_FINAL_ANSWER')}\n"
+        "# {lmql_outputs.get('Q2_FINAL_ANSWER')}\n"
         "[SPATIAL_RELATIONS]\n" where len(TOKENS(SPATIAL_RELATIONS)) < 400
     else:
         SPATIAL_RELATIONS = None
@@ -929,6 +942,10 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         for k, v in temp.items():
             if k not in full:
                 full[k] = v
+    
+    def apply_filter(temp, f):
+        for k, v in temp.items():
+            temp[k] = f(v)
 
     reasoning_funcs = [generate_reasoning_1, generate_reasoning_9a, generate_reasoning_9b, generate_reasoning_4a, generate_reasoning_4b, generate_reasoning_5,
                        generate_reasoning_6, generate_reasoning_7, generate_reasoning_2, generate_reasoning_8]
@@ -1039,7 +1056,8 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
                 f"{working_scenic}"
 
                 # lmql_outputs_tmp = regenerate_scenic(model_input, working_scenic, lmql_outputs)
-                lmql_outputs_tmp = regenerate_scenic_code(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs)
+                apply_filter(lmql_outputs, lambda string : string.replace('\n', ' '))
+                lmql_outputs_tmp = regenerate_scenic_tot(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs)
                 lmql_outputs_tmp = {k: v for k, v in lmql_outputs_tmp.items() if v is not None} ### this is bad
                 for key in lmql_outputs_tmp:
                     lmql_outputs[key] = lmql_outputs_tmp[key]
