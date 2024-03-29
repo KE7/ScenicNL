@@ -733,38 +733,20 @@ def generate_reasoning_2(description, example, towns, vehicles, objects, weather
     "<visibility>\n"
 
     "JUSTIFICATION:\n"
-    "[Q3A_JUSTIFICATION]\n" where STOPS_BEFORE(Q3A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3A_JUSTIFICATION)) < 500
+    "[Q2_JUSTIFICATION]\n" where STOPS_BEFORE(Q2_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q2_JUSTIFICATION)) < 500
 
     "FINAL ANSWER:\n"
-    "[Q3A_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3A_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3A_FINAL_ANSWER)) < 100
+    "[Q2_FINAL_ANSWER]\n" where STOPS_BEFORE(Q2_FINAL_ANSWER, "QUESTION THREE:") and len(TOKENS(Q2_FINAL_ANSWER)) < 100
 
 
-    "QUESTION FOUR:\n"
-
-    "Scenic only allows certain properties to be described in Linear Temporal Logic (LTL) formula (the end of the events or time invariant properties). So for the events that we can, describe the end of the events in LTL formula for them. Here are some examples of valid LTL formulas that are supported in Scenic:\n"
-    "car2 not in intersection until car1 in intersection\n"
-    "eventually car2 in intersection\n"
-    "eventually ego in intersection\n"
-    "(always car.speed < 30) implies (always distance to car > 10)\n"
-    "always not ((ego can see car1) and (ego can see car2))\n"
-
-    "Please 
-
-    "JUSTIFICATION:\n"
-    "[Q3B_JUSTIFICATION]\n" where STOPS_BEFORE(Q3B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3B_JUSTIFICATION)) < 500
-
-    "FINAL ANSWER:\n"
-    "[Q3B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3B_FINAL_ANSWER, "QUESTION FOUR:") and len(TOKENS(Q3B_FINAL_ANSWER)) < 100
-    
-    "QUESTION FIVE:\n"
+    "QUESTION THREE:\n"
 
     return {
-        "Q3A_FINAL_ANSWER_TODO": Q3A_FINAL_ANSWER,
-        "Q3A_JUSTIFICATION_TODO": Q3A_JUSTIFICATION,
-        "Q3B_FINAL_ANSWER_TODO": Q3B_FINAL_ANSWER,
-        "Q3B_FINAL_ANSWER_TODO": Q3B_FINAL_ANSWER,
+        "Q2_FINAL_ANSWER_TODO": Q2_FINAL_ANSWER,
+        "Q2_JUSTIFICATION_TODO": Q2_JUSTIFICATION,
     }
     '''
+
 
 
 
