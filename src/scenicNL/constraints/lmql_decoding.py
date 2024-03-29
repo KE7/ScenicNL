@@ -720,7 +720,10 @@ def generate_reasoning_2(description, example, towns, vehicles, objects, weather
     "Original description:\n"
     "{description}\n"
 
-    "Based on the relevant objects selected from the original description, what are the spacial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.\n"
+    "Relevant objects:\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+
+    "Based on the relevant objects selected from the original description, what are the spatial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.\n"
 
     "Each expert and the final answer should be provided in the following format:\n"
     "SPATIAL_RELATIONSHIPS:\n"
@@ -747,7 +750,101 @@ def generate_reasoning_2(description, example, towns, vehicles, objects, weather
     }
     '''
 
+@retry(
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+)
+@lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
+def generate_reasoning_8(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+    '''lmql
+    "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
+    
+    "We are going to continue playing a game. For the following questions, imagine that you are 3 different autonomous driving experts. For every question, each expert must provide a step-by-step explanation for how they came up with their answer. After all the experts have answered the question, you will need to provide a final answer using the best parts of each expert's explanation. Use the following format:\n"
+    "EXPERT_1:\n"
+    "<expert_1_answer>\n"
+    "EXPERT_2:\n"
+    "<expert_2_answer>\n"
+    "EXPERT_3:\n"
+    "<expert_3_answer>\n"
+    "FINAL_ANSWER:\n"
+    "<final_answer>\n"
 
+    "Here is one example of a Scenic program:\n"
+    "{example}\n"
+
+
+    "QUESTION EIGHT:\n"
+
+    "Original description:\n"
+    "{description}\n"
+
+    "Relevant objects:\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
+
+    "Important events:\n"
+    "{ANSWERS.get('Q3A_FINAL_ANSWER')}\n"
+
+    "Here is a list of the supported behaviors in Scenic. Based on the relevant objects and important events, which behaviors do we need to use to recreate the original description? You may select more than one behavior as they are composable. If you cannot find a behavior that matches the original description, you must choose the closest matching behavior.\n"
+
+    "Here are the only behaviors that are allowed for vehicles, buses, motorcycles, and bicycles:\n"
+    "behavior ConstantThrottleBehavior(x : float):\n"
+    "behavior DriveAvoidingCollisions(target_speed : float = 25, avoidance_threshold : float = 10):\n"
+        "# Drive at a target speed, avoiding collisions with other vehicles\n"
+        "# Throttle is off and braking is applied if the distance to the nearest vehicle is less\n"
+        "# than the avoidance threshold\n"
+    "behavior AccelerateForwardBehavior(): # Accelerate forward with throttle set to 0.5\n"
+    "behavior FollowLaneBehavior(target_speed : float = 10, laneToFollow : Lane = None, is_oppositeTraffic : bool = False):\n"
+        "# Follow's the lane on which the vehicle is at, unless the laneToFollow is specified.\n"
+        "# Once the vehicle reaches an intersection, by default, the vehicle will take the straight route.\n"
+        "# If straight route is not available, then any available turn route will be taken, uniformly randomly. \n"
+        "# If turning at the intersection, the vehicle will slow down to make the turn, safely. \n"
+        "# This behavior does not terminate. A recommended use of the behavior is to accompany it with condition,\n"
+        "# e.g. do FollowLaneBehavior() until ...\n"
+        "# :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s\n"
+        "# :param laneToFollow: If the lane to follow is different from the lane that the vehicle is on, this parameter can be used to specify that lane. By default, this variable will be set to None, which means that the vehicle will follow the lane that it is currently on.\n"
+    "behavior FollowTrajectoryBehavior(target_speed : float = 10, trajectory : List[Lane] = None, turn_speed : float = None):\n"
+        "# Follows the given trajectory. The behavior terminates once the end of the trajectory is reached.\n"
+        "# :param target_speed: Its unit is in m/s. By default, it is set to 10 m/s\n"
+        "# :param trajectory: It is a list of sequential lanes to track, from the lane that the vehicle is initially on to the lane it should end up on.\n"
+    "behavior TurnBehavior(trajectory : List[Lane] = None, target_speed : float = 6):\n"
+        "# This behavior uses a controller specifically tuned for turning at an intersection.\n"
+        "# This behavior is only operational within an intersection, it will terminate if the vehicle is outside of an intersection.\n"
+    "behavior LaneChangeBehavior(laneSectionToSwitchTo : Lane, is_oppositeTraffic : bool = False, target_speed : float = 10):\n"
+        "# is_oppositeTraffic should be specified as True only if the laneSectionToSwitch to has\n"
+        "# the opposite traffic direction to the initial lane from which the vehicle started LaneChangeBehavior\n"
+
+    "Here are the only behaviors that are allowed for pedestrians:\n"
+    "behavior WalkForwardBehavior(speed=0.5):\n"
+        "take SetWalkingDirectionAction(self.heading), SetWalkingSpeedAction(speed)\n"
+        "# Walk forward behavior for pedestrians by uniformly sampling either side of the sidewalk for the pedestrian to walk on\n"
+    "behavior WalkBehavior(maxSpeed=1.4):\n"
+        "take SetWalkAction(True, maxSpeed)\n"
+    "behavior CrossingBehavior(reference_actor, min_speed=1, threshold=10, final_speed=None):\n"
+        "# This behavior dynamically controls the speed of an actor that will perpendicularly (or close to)\n"
+        "# cross the road, so that it arrives at a spot in the road at the same time as a reference actor.\n"
+        "# Args:\n"
+        "# min_speed (float): minimum speed of the crossing actor. As this is a type of 'synchronization action',\n"
+        "# a minimum speed is needed, to allow the actor to keep moving even if the reference actor has stopped\n"
+        "# threshold (float): starting distance at which the crossing actor starts moving\n"
+        "# final_speed (float): speed of the crossing actor after the reference one surpasses it\n"
+
+    "Each expert and the final answer should be provided in the following format:\n"
+    "BEHAVIOR:\n"
+    "<behavior>\n"
+
+    "JUSTIFICATION:\n"
+    "[Q8_JUSTIFICATION]\n" where STOPS_BEFORE(Q8_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q8_JUSTIFICATION)) < 500
+
+    "FINAL ANSWER:\n"
+    "[Q8_FINAL_ANSWER]\n" where STOPS_BEFORE(Q8_FINAL_ANSWER, "QUESTION NINE:") and len(TOKENS(Q8_FINAL_ANSWER)) < 100
+
+    
+    "QUESTION NINE:\n"
+
+    return {
+        "Q8_FINAL_ANSWER_TODO": Q8_FINAL_ANSWER,
+        "Q8_JUSTIFICATION_TODO": Q8_JUSTIFICATION,
+    }
+    '''
 
 
 
