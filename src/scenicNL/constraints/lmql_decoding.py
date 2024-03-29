@@ -929,20 +929,21 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
         for k, v in temp.items():
             if k not in full:
                 full[k] = v
-    reasoning_funcs = [generate_reasoning_1, generate_reasoning_9a, generate_reasoning_9b, generate_reasoning_4a, generate_reasoning_4b, generate_reasoning_5]
-    reasoning_funcs += []
+
+    reasoning_funcs = [generate_reasoning_1, generate_reasoning_9a, generate_reasoning_9b, generate_reasoning_4a, generate_reasoning_4b, generate_reasoning_5,
+                       generate_reasoning_6, generate_reasoning_7, generate_reasoning_2, generate_reasoning_8]
     lmql_tot_full = {}
     for reasoning_count, reasoning_func in enumerate(reasoning_funcs):
         lmql_tot_temp = reasoning_func(description, example, towns, vehicles, objects, weather, lmql_tot_full)
         update(temp = lmql_tot_temp, full = lmql_tot_full)
         print(f'Completed generate reasoning pt {reasoning_count+1}/{len(reasoning_funcs)}!')
 
-    print('$%$%$%')
+    print('\nStart of reasoning outputs...\n')
     # print(lmql_tot_full)
     for key in sorted(lmql_tot_full.keys()):
         if 'FINAL_ANSWER' in key:
             print(key, '-', lmql_tot_full[key])
-    print('$%$%$%')
+    print('\nEnd of reasoning outputs!\n')
     #End reasoning
     
     # assert False
