@@ -99,7 +99,7 @@ def regenerate_scenic(model_input, working_scenic, lmql_outputs):
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_1(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -158,7 +158,7 @@ def generate_reasoning_1(description, example, towns, vehicles, objects, weather
 
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_9a(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -201,7 +201,7 @@ def generate_reasoning_9a(description, example, towns, vehicles, objects, weathe
     "{description}\n"
     
     "Previously Answered Question One:\n"
-    "{Q1_FINAL_ANSWER}\n"
+    "{ANSWERS.get('Q1_FINAL_ANSWER')}\n"
 
     "JUSTIFICATION:\n"
     "<justification_for_the_objects>\n"
@@ -229,7 +229,7 @@ def generate_reasoning_9a(description, example, towns, vehicles, objects, weathe
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_9b(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -285,14 +285,14 @@ def generate_reasoning_9b(description, example, towns, vehicles, objects, weathe
     "QUESTION THREE:\n"
 
     return {
-        "Q9A_FINAL_ANSWER_TODO": Q9A_FINAL_ANSWER,
-        "Q9A_JUSTIFICATION_TODO": Q9A_JUSTIFICATION,
+        "Q9B_FINAL_ANSWER_TODO": Q9B_FINAL_ANSWER,
+        "Q9B_JUSTIFICATION_TODO": Q9B_JUSTIFICATION,
     }
     '''
 
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_4a(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -336,7 +336,7 @@ def generate_reasoning_4a(description, example, towns, vehicles, objects, weathe
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_4b(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -426,7 +426,7 @@ def generate_reasoning_4b(description, example, towns, vehicles, objects, weathe
 
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_5(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -510,7 +510,7 @@ def generate_reasoning_5(description, example, towns, vehicles, objects, weather
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_6(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -573,7 +573,7 @@ def generate_reasoning_6(description, example, towns, vehicles, objects, weather
 
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_7(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -633,7 +633,7 @@ def generate_reasoning_7(description, example, towns, vehicles, objects, weather
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_3ab(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -697,7 +697,7 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_2(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -754,7 +754,7 @@ def generate_reasoning_2(description, example, towns, vehicles, objects, weather
     '''
 
 @retry(
-    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
+    wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(2)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
 def generate_reasoning_8(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
@@ -1056,7 +1056,7 @@ def construct_scenic_program_tot(model_input, example_prompt, nat_lang_scene_des
                 f"{working_scenic}"
 
                 # lmql_outputs_tmp = regenerate_scenic(model_input, working_scenic, lmql_outputs)
-                apply_filter(lmql_outputs, lambda string : string.replace('\n', ' '))
+                apply_filter(lmql_outputs, lambda string : str(string).replace('\n', ' '))
                 lmql_outputs_tmp = regenerate_scenic_tot(model_input, example_prompt, working_scenic, new_scenic, lmql_outputs)
                 lmql_outputs_tmp = {k: v for k, v in lmql_outputs_tmp.items() if v is not None} ### this is bad
                 for key in lmql_outputs_tmp:
