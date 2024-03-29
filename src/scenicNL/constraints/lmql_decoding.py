@@ -674,7 +674,7 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     "(always car.speed < 30) implies (always distance to car > 10)\n"
     "always not ((ego can see car1) and (ego can see car2))\n"
 
-    "Please 
+    "Please output 1-2 most relevant properties to the program description provided above.\n"
 
     "JUSTIFICATION:\n"
     "[Q3B_JUSTIFICATION]\n" where STOPS_BEFORE(Q3B_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3B_JUSTIFICATION)) < 500
@@ -682,6 +682,7 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     "FINAL ANSWER:\n"
     "[Q3B_FINAL_ANSWER]\n" where STOPS_BEFORE(Q3B_FINAL_ANSWER, "QUESTION FIVE:") and len(TOKENS(Q3B_FINAL_ANSWER)) < 100
     
+
     "QUESTION FIVE:\n"
 
     return {
@@ -696,7 +697,7 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
 )
 @lmql.query(model ='openai/gpt-3.5-turbo-instruct', max_len=10000)
-def generate_reasoning_3ab(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
+def generate_reasoning_2(description, example, towns, vehicles, objects, weather, ANSWERS={}): # ANSWERS not used
     '''lmql
     "Scenic is a probabilistic programming language for modeling the environments of autonomous cars. A Scenic program defines a distribution over scenes, configurations of physical objects and agents. Scenic can also define (probabilistic) policies for dynamic agents, allowing modeling scenarios where agents take actions over time in response to the state of the world. We use CARLA to render the scenes and simulate the agents.\n"
     
@@ -714,12 +715,22 @@ def generate_reasoning_3ab(description, example, towns, vehicles, objects, weath
     "{example}\n"
 
 
-    "QUESTION THREE:\n"
+    "QUESTION TWO:\n"
 
     "Original description:\n"
     "{description}\n"
 
-    "What are the main events that happened in the scene? (e.g. car stopped when pedestrian crossed the street, a car was driving in a lane then switched lanes then made a left turn, etc.). Describe these events in natural language.\n"
+    "Based on the relevant objects selected from the original description, what are the spacial relationships between the objects? (e.g. car is in front of pedestrian, etc.) Are the objects moving or stationary? Are they visible or occluded? You can only use the following terms to describe spatial relationships: in front of, behind, left of, right of, facing, ahead of, behind, visible, and not visible.\n"
+
+    "Each expert and the final answer should be provided in the following format:\n"
+    "SPATIAL_RELATIONSHIPS:\n"
+    "<spatial_relationships>\n"
+
+    "MOVEMENT:\n"
+    "<movement>\n"
+
+    "VISIBILITY:\n"
+    "<visibility>\n"
 
     "JUSTIFICATION:\n"
     "[Q3A_JUSTIFICATION]\n" where STOPS_BEFORE(Q3A_JUSTIFICATION, "FINAL ANSWER:") and len(TOKENS(Q3A_JUSTIFICATION)) < 500
