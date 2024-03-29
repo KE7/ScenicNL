@@ -1,3 +1,4 @@
+import base64
 from enum import Enum
 import json
 import os
@@ -322,6 +323,15 @@ def sample_frames_from_video(video_path: str, num_frames : int = 10) -> List[str
     cap.release()
 
     return frames
+
+
+def encode_saved_image(image_path):
+  with open(image_path, "rb") as image_file:
+    return base64.b64encode(image_file.read()).decode('utf-8')
+  
+
+def encode_image(image):
+  return base64.b64encode(image).decode('utf-8')
 
 
 LOCAL_MODEL_ENDPOINT = "http://127.0.0.1:8080/completion"

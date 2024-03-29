@@ -386,6 +386,54 @@ class OpenAIAdapter(ModelAdapter):
             presence_penalty=0
         )
         return response.choices[0].message.content
+    
+
+    def vision_predit(
+        self,
+        images: List[str],
+        temperature: float = 0.7,
+    ) -> str:
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}",
+        }
+        system_message = {
+            "role": "system",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Fill in some stuff about Scenic and figure out what to say"
+                }
+            ]
+        }
+        user_message = {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Figure out the user prompt"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64,{images[0]}"
+                    }
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64,{images[1]}"
+                    }
+                }
+            ]
+        }
+        payload = {
+            "model": "gpt-4-vision-preview",
+            "messages": [system_message, user_message],
+            "max_tokens": 1000,
+        }
+
+
 
     @retry(
         wait=wait_exponential_jitter(initial=10, max=60), stop=stop_after_attempt(5)
