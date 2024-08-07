@@ -1,12 +1,12 @@
-# scenicNL
+# scenarioNL
 
-This repo serves as a wrapper around [Scenic](https://github.com/BerkeleyLearnVerify/Scenic) where user's can specify a file containing natural language text describing a driving scene. Our contribution is that we take this natural language text and output scenic code that represent the scenario.
+The Compound AI System that can generate [Scenic](https://github.com/BerkeleyLearnVerify/Scenic) programs from Crash Report descriptions.
 
-At the moment we only support driving scenarios for CARLA.
+At the moment we only support driving scenarios for CARLA but this is easily extendable as Scenic supports other simulators.
 
 ## Setup
 To install and run, first select which LLM backbone you would like to use. 
-Today we support GPT from OpenAI, Claude from Anthropic, and Open Source Models that are run locally.
+Today we support GPT from OpenAI, Claude from Anthropic, and Open Source Models (i.e. Llama family) that are run locally.
 
 ### OpenAI GPT Steps
 OpenAI API key if you have not already:
