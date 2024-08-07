@@ -25,9 +25,14 @@ class LLMPromptType(Enum):
     PREDICT_FEW_SHOT_WITH_HYDE = "predict_few_shot_hyde"
     PREDICT_FEW_SHOT_WITH_HYDE_TOT = "predict_few_shot_hyde_tot"
     PREDICT_TOT_THEN_HYDE = "predict_tot_then_hyde"
+    PREDICT_TOT_THEN_SPLIT = "predict_tot_then_split"
+    PREDICT_TOT_INTO_NL = "predict_tot_into_nl"
     EXPERT_DISCUSSION = "expert_discussion"
     EXPERT_SYNTHESIS = "expert_synthesis"
-
+    AST_FEEDBACK = "ast_feedback"
+    PREDICT_LMQL_TO_HYDE = 'predict_lmql_to_hyde'
+    PREDICT_LMQL_RETRY = 'predict_lmql_retry'
+    PREDICT_LMQL_TOT_RETRY = 'predict_lmql_tot_retry'
 
 class PromptFiles(Enum):
     PROMPT_PATH = os.path.join(os.curdir, 'src', 'scenicNL', 'adapters', 'prompts')
@@ -38,7 +43,9 @@ class PromptFiles(Enum):
     SCENIC_TUTORIAL = os.path.join(PROMPT_PATH, 'scenic_tutorial_prompt.txt')
     TOT_EXPERT_DISCUSSION = os.path.join(PROMPT_PATH, 'tot_questions.txt')
     EXPERT_SYNTHESIS = os.path.join(PROMPT_PATH, 'expert_synthesis.txt')
-
+    AST_FEEDBACK_CLAUDE = os.path.join(PROMPT_PATH, 'few_shot_ast.txt')
+    TOT_SPLIT = os.path.join(PROMPT_PATH, 'tot_split.txt')
+    TOT_NL = os.path.join(PROMPT_PATH, 'tot_nl.txt')
 
 @dataclass(frozen=True)
 class ModelInput:
@@ -50,8 +57,28 @@ class ModelInput:
     examples: list[str]
     nat_lang_scene_des: str
     first_attempt_scenic_program: Optional[str] = None
+    compiler_error: Optional[str] = None
     expert_discussion: Optional[str] = None
     panel_discussion: Optional[List[str]] = None
+    tot_reasoning: Optional[bool] = False
+
+    # @nat_lang_scene_des.setter
+    def set_nl(self, nat_lang_scene_des):
+        # self.nat_lang_scene_des = nat_lang_scene_des
+        object.__setattr__(self, 'nat_lang_scene_des', nat_lang_scene_des)
+
+    def set_exs(self, examples):
+        object.__setattr__(self, 'examples', examples)
+
+    def set_fasp(self, first_attempt_scenic_program):
+        object.__setattr__(self, 'first_attempt_scenic_program', first_attempt_scenic_program)
+    
+    def set_err(self, compiler_error):
+        object.__setattr__(self, 'compiler_error', compiler_error)
+    
+    def set_tot(self, tot_reasoning):
+        object.__setattr__(self, 'tot_reasoning', tot_reasoning)
+
 
 
 def load_jsonl(
@@ -159,6 +186,34 @@ def get_discussion_to_program_prompt() -> str:
         # )
 
         return prompt
+
+def get_few_shot_ast_prompt(model_input) -> str:
+    prompt = ""
+    with open(PromptFiles.AST_FEEDBACK_CLAUDE.value) as f:
+        prompt = f.read()
+
+        prompt = prompt.format(
+            natural_language_description=model_input.nat_lang_scene_des,
+            example_1=model_input.examples[0],
+            example_2=model_input.examples[1],
+            example_3=model_input.examples[2],
+            expert_discussion=model_input.expert_discussion,
+            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
+            compiler_error=model_input.compiler_error
+        )
+
+        return prompt
+
+def get_tot_nl_prompt(model_input) -> str:
+    prompt = ""
+    with open(PromptFiles.TOT_NL.value) as f:
+         prompt = f.read()
+         prompt = prompt.format(
+              natural_language_description=model_input.nat_lang_scene_des,
+              expert_discussion=model_input.expert_discussion,
+              panel_discussion=model_input.panel_discussion
+         )
+         return prompt
 
 
 class VectorDB():
@@ -277,13 +332,20 @@ def few_shot_prompt_with_rag(
         few_shot_prompt_generator: Callable[[ModelInput, bool], List[Dict[str, str]]] | Callable[[ModelInput, bool], str],
         top_k: int = 3,
     ) -> str | List[Dict[str, str]]:
-        examples = vector_index.query(model_input.first_attempt_scenic_program, top_k=top_k)
+        examples = vector_index.query(model_input.nat_lang_scene_des, top_k=top_k)
         if examples is None: # if the query fails, we just return the few shot prompt
             return few_shot_prompt_generator(model_input, False)
         
         relevant_model_input = ModelInput(
             examples=[example for example in examples],
             nat_lang_scene_des=model_input.nat_lang_scene_des,
-            first_attempt_scenic_program=model_input.first_attempt_scenic_program,
         )
         return few_shot_prompt_generator(relevant_model_input, False)
+
+def query_with_rag(
+        vector_index: VectorDB,
+        nat_lang_scene_des: str,
+        top_k: int = 3,
+) -> List[Dict[str, str]]:
+    examples = vector_index.query(nat_lang_scene_des, top_k=top_k)
+    return examples

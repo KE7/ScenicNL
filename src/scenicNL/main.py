@@ -162,6 +162,14 @@ def main():
     help="Number of workers to use for parallel processing.",
 )
 
+@click.option(
+    "--max_retries",
+    type=click.INT,
+    default=0,
+    show_default=True,
+    help="Maximum number of compiler-in-the-loop retries.",
+)
+
 def main(
     query_path: Path,
     output_path: Path,
@@ -179,6 +187,7 @@ def main(
     should_cache_retry_errors: bool,
     keep_filename: bool,
     temperature: float,
+    max_retries: int,
 ) -> None:
     """
     Generate simulator scenes from natural language descriptions.
@@ -252,7 +261,7 @@ def main(
     scenic_metric_path = os.path.join(scenic_metadata_path, 'metrics.txt')
     start_time = time.time()
 
-    compile_pass, compile_fail, api_error = 0, 0, 0
+    compile_pass = compile_fail = execute_pass = execute_fail = api_error = 0
     for index, outputs in enumerate(adapter.predict_batch(
             model_inputs=model_input_list, 
             cache_path=cache_path, 
@@ -264,6 +273,7 @@ def main(
             verbose=verbose,
             num_workers=num_workers,
             ignore_cache=ignore_cache, 
+            max_retries=max_retries,
             )
         ):
         for attempt, output in enumerate(outputs):
@@ -284,17 +294,29 @@ def main(
             with open(fname, 'w') as f:
                 f.write(output)
             try:
-                scenic.scenarioFromFile(fname, mode2D=True)
-                fname_compile = os.path.join(result_path, f'{fstub}.scenic')
-                with open(fname_compile, 'w') as f:
-                    f.write(output)
-                print(f'No errors when compiling input {debug}')
+                ast = scenic.syntax.parser.parse_file(fname)
+                print(f'Compiled input {debug} successfully: {ast}')
+                # print(f'No errors when compiling input {debug}')
                 compile_pass += 1
             except Exception as e:
                 print(f'Error while compiling for input {debug}: {e}')
                 compile_fail += 1
                 with open(scenic_error_path, 'a') as f:
-                    f.write(f'{index} - {fstub}: {e}\n')
+                    f.write(f'{index} - {fstub} compile error: {e}\n')
+            try:
+                scenario = scenic.scenarioFromFile(fname, mode2D=True)
+                print(f'Executed input {debug} successfully: {scenario}')
+
+                fsave = os.path.join(result_path, f'{fstub}.scenic')
+                execute_pass += 1
+                with open(fsave, 'w') as f:
+                    f.write(output)
+                # print(f'No errors when compiling input {debug}')
+            except Exception as e:
+                print(f'Error while executing for input {debug}: {e}')
+                execute_fail += 1
+                with open(scenic_error_path, 'a') as f:
+                    f.write(f'{index} - {fstub} execute error: {e}\n')
             print('----------------\n\n')
 
     end_time = time.time()
@@ -302,13 +324,16 @@ def main(
 
     api_error_rate = round((100*api_error/total), 2)
     compile_rate = round((100*compile_pass/total), 2)
+    execute_rate = round((100*execute_pass/total), 2)
     eval_rate = round((end_time-start_time)/total, 5)
 
-    print(f'API error rate: {api_error_rate}%')
-    print(f'Compilation success rate: {compile_rate}%')
+    print(f'Compile success rate: {compile_rate}%')
+    print(f'Execute success rate: {execute_rate}%')
+    print(f'## API error rate ##: {api_error_rate}%')
     print(scenic_metric_path)
     with open(scenic_metric_path, 'w') as f:
         f.write(f'Compile rate: {compile_rate}\n')
+        f.write(f'Execute rate: {execute_rate}\n')
         f.write(f'API error rate: {api_error_rate}\n')
         f.write(f'Secs per program: {eval_rate}\n')
 
