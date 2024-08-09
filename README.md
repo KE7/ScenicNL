@@ -1,4 +1,4 @@
-# scenarioNL
+# ScenicNL
 
 The Compound AI System that can generate [Scenic](https://github.com/BerkeleyLearnVerify/Scenic) programs from Crash Report descriptions.
 
