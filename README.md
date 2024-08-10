@@ -41,3 +41,10 @@ An example command to running our pipeline
 ```bash
 gen_scenic --query_path <path-to-descriptions> --output-path <path-to-output> --model gpt-3.5-turbo-0613 --llm_prompt_type predict_few_shot
 ```
+
+## License
+
+This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. You can view the full license terms [here](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+© [2024] [Karim Elmaaroufi]
+

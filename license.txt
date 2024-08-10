@@ -1,0 +1,6 @@
+/*
+ * This code is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+ * You can obtain a copy of the license at https://creativecommons.org/licenses/by-nc-sa/4.0/
+ * 
+ * © [2024] [Karim Elmaaroufi]
+ */
