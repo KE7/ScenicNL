@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScenarioNL</title>
+    <title>ScenicNL</title>
     <!-- Minified version -->
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <link rel="stylesheet" href="style.css">
@@ -11,7 +11,7 @@
 <body>
     <header>
 
-        <h1>ScenarioNL</h1>
+        <h1>ScenicNL</h1>
         <h2>Generating Probabilistic Scenario Programs from Natural Language</h2>
 
         <img id="splash" alt="Bicycle example." src="assets/full_bicycle_example.png"/>
@@ -19,7 +19,7 @@
             <ul>
                 <li><a href="#abstract">Abstract</a></li>
                 <li><a href="https://arxiv.org/abs/2405.03709">Paper</a></li>
-                <li><a href="https://github.com/KE7/scenarioNL">Code</a></li>
+                <li><a href="https://github.com/KE7/scenicNL">Code</a></li>
             </ul>
         </nav>
 
@@ -46,7 +46,7 @@
             <h2>Abstract</h2>
         
             <p>
-For cyber-physical systems (CPS), including robotics and autonomous vehicles, mass deployment has been hindered by fatal errors that occur when operating in rare events. To replicate rare events such as vehicle crashes, many companies have created logging systems and employed crash reconstruction experts to meticulously recreate these valuable events in simulation. However, in these methods, ”what if” questions are not easily formulated and answered. We present ScenarioNL, an AI System for creating scenario programs from natural language. Specifically, we generate these programs from police crash reports. Reports normally contain uncertainty about the exact details of the incidents which we represent through a Probabilistic Programming Language (PPL), Scenic. By using Scenic, we can clearly and concisely represent uncertainty and variation over CPS behaviors, properties, and interactions. We demonstrate how commonplace prompting techniques with the best Large Language Models (LLM) are incapable of reasoning about probabilistic scenario programs and generating code for low-resource languages such as Scenic. Our system is comprised of several LLMs chained together with several kinds of prompting strategies, a compiler, and a simulator. We evaluate our system on publicly available autonomous vehicle crash reports in California from the last five years and share insights into how we generate code that is both semantically meaningful and syntactically correct.
+                For cyber-physical systems, including robotics and autonomous vehicles, mass deployment has been hindered by fatal errors that occur when operating in rare events. To better understand failure modes, companies meticulously recreate rare crash events in simulation, but current methods do not easily allow for exploring ”what if” scenarios which could reveal how accidents might have been avoided. We present ScenicNL, an AI system that generates probabilistic scenario programs from natural language. Given the abundance of documented failures of autonomous vehicles due to regulatory requirements, we apply ScenicNL to police crash reports, providing a data-driven approach to capturing and understanding these failures. By using a probabilistic language such as Scenic, we can clearly and concisely represent such scenarios of interest and easily ask “what if” questions. We demonstrate how commonplace prompting techniques with Large Language Models are incapable of generating code for low-resource languages such as Scenic. We propose an AI system via the composition of several prompting techniques to extract the reasoning abilities needed to model probability distributions around the uncertainty in the crash events. Our system then uses Constrained Decoding and tools such as a compiler and simulator to produce scenario programs in this low-resource setting. We evaluate our system on publicly available autonomous vehicle crash reports in California from the last five years and share insights into how we generate code that is both semantically meaningful and syntactically correct. Finally, we release our code and a collection of over 500 crash reports from the California Department of Motor Vehicles.
             </p>
 
         </section>
