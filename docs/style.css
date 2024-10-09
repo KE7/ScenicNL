@@ -38,7 +38,9 @@ header ol {
     color: #888;
 }
 
-header h2 { color: #ffffff91 }
+header h1 { color: #a6ff93; }
+header h2 { color: #ffffff91; }
+header h3 { color: #f9737391; }
 
 nav li, header ol li {
     display: inline-block;
@@ -61,7 +63,7 @@ section {
     padding: 20px;
 }
 
-h1, h2 {
+h1, h2, h3 {
     text-align: center;
     margin-bottom: 10px;
 }
@@ -73,6 +75,10 @@ h1 {
 h2 {
     margin-top: 0;
     font-size: 24px;
+}
+h3 {
+    margin-top: 0;
+    font-size: 20px;
 }
 
 footer {
